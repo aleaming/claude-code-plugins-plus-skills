@@ -214,14 +214,7 @@ statsItems.push({ label: 'Pricing', value: formatPricing(plugin.pricing) });
                 <div class="gist-content" style="display: none;">
                   <div class="gist-content-inner" set:html={
                     skill.content
-                      ? skill.content
-                          .replace(/^# .+\n/, '')
-                          .replace(/## /g, '<strong>')
-                          .replace(/\n\n/g, '</strong><br/><br/>')
-                          .replace(/\n- /g, '<br/>&#8226; ')
-                          .replace(/\n\d+\. /g, (m: string) => '<br/>' + m.trim() + ' ')
-                          .replace(/`([^`]+)`/g, '<code>$1</code>')
-                          .slice(0, 2000)
+                      ? skill.content.slice(0, 3000)
                       : ''
                   } />
                 </div>

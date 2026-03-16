@@ -389,6 +389,63 @@ const cleanTools = (tools: string[]) =>
       text-decoration: none;
     }
 
+    .skill-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+      overflow-x: auto;
+      display: block;
+    }
+
+    .skill-content thead {
+      background: var(--surface-3, var(--brand-light-gray));
+    }
+
+    .skill-content th {
+      padding: 0.6rem 0.85rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--text, var(--brand-dark));
+      border-bottom: 2px solid var(--border, var(--brand-light-gray));
+      white-space: nowrap;
+    }
+
+    .skill-content td {
+      padding: 0.5rem 0.85rem;
+      border-bottom: 1px solid var(--border, var(--brand-light-gray));
+      color: var(--text, var(--brand-dark));
+      vertical-align: top;
+    }
+
+    .skill-content tbody tr:hover {
+      background: var(--surface-2, rgba(0,0,0,0.02));
+    }
+
+    .skill-content hr {
+      border: none;
+      border-top: 1px solid var(--border, var(--brand-light-gray));
+      margin: 1.5rem 0;
+    }
+
+    .skill-content pre {
+      position: relative;
+    }
+
+    .skill-content pre[data-lang]::before {
+      content: attr(data-lang);
+      position: absolute;
+      top: 0;
+      right: 0;
+      padding: 0.2rem 0.6rem;
+      font-size: 0.7rem;
+      color: var(--text-3, var(--brand-mid-gray));
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-family: 'DM Mono', 'SF Mono', Monaco, monospace;
+      opacity: 0.6;
+    }
+
     .skill-footer {
       margin-top: 2rem;
       padding-top: 1.5rem;
