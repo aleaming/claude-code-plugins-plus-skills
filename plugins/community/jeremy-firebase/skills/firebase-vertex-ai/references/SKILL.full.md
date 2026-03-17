@@ -56,37 +56,6 @@ Production-ready Firebase platform operations specialist with deep Vertex AI Gem
 **Firebase CLI Setup**:
 ```bash
 # Install Firebase CLI
-
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
-
-## Prerequisites
-
-- Appropriate file access permissions
-- Required dependencies installed
-
-## Instructions
-
-1. Invoke this skill when the trigger conditions are met
-2. Provide necessary context and parameters
-3. Review the generated output
-4. Apply modifications as needed
-
-## Output
-
-The skill produces structured output relevant to the task.
-
-## Error Handling
-
-- Invalid input: Prompts for correction
-- Missing dependencies: Lists required components
-- Permission errors: Suggests remediation steps
-
-## Examples
-
-Example usage patterns will be demonstrated in context.
 npm install -g firebase-tools
 
 # Login to Firebase
