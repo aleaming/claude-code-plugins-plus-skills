@@ -6336,8 +6336,8 @@
     {
       "name": "navigating-github",
       "source": "./plugins/productivity/navigating-github",
-      "description": "Interactive GitHub setup and learning companion. Guides users from zero to a working GitHub setup, then teaches git and GitHub through hands-on exercises on real repos. Adapts to any skill level with six modes: setup, learn, save, share, understand, fix.",
-      "version": "1.0.0",
+      "description": "First-time GitHub setup and interactive git learning. Walks users from zero to a working GitHub repo, then teaches git through 9 hands-on lessons on their actual project. Adapts to any skill level automatically.",
+      "version": "2.0.0",
       "category": "productivity",
       "keywords": [
         "github",
