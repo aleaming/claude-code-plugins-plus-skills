@@ -1,63 +1,55 @@
 ---
 name: openrouter-sdk-patterns
 description: |
-  Implement common SDK patterns for OpenRouter integration. Use when building production applications. Trigger with phrases like 'openrouter sdk', 'openrouter client pattern', 'openrouter best practices', 'openrouter code patterns'.
+  Implement common SDK usage patterns for OpenRouter. Use when building reusable client libraries or wrappers. Trigger with phrases like 'openrouter sdk', 'openrouter client library', 'openrouter wrapper', 'openrouter patterns'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-# OpenRouter SDK Patterns
+# Openrouter SDK Patterns
 
 ## Overview
 
-This skill covers proven SDK patterns including client initialization, error handling, retry logic, and configuration management for robust OpenRouter integrations.
+This skill covers best practices for building OpenRouter client wrappers, including retry logic, error handling, response typing, and reusable patterns.
 
 ## Prerequisites
 
-- OpenRouter API key configured
-- Python 3.8+ or Node.js 18+
-- OpenAI SDK installed
+- OpenRouter integration
+- OpenAI SDK (Python or TypeScript)
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
-
-## Python with OpenAI SDK
-
-Initialize the OpenAI SDK client with OpenRouter base URL and configure retry logic for production use.
+1. **Create a typed client wrapper**: Build a class that wraps the OpenAI SDK with OpenRouter-specific defaults (base URL, default headers, retry config)
+2. **Add automatic retries**: Implement retry logic with exponential backoff for 429 and 5xx errors; the OpenAI SDK has built-in retry support via `max_retries`
+3. **Type your responses**: Define TypeScript interfaces or Python dataclasses for your expected response shapes to catch errors at compile time
+4. **Implement request/response middleware**: Add hooks for logging, cost tracking, and metrics collection that run on every request
+5. **Build reusable prompt templates**: Create typed functions for common tasks (summarize, translate, classify) that encapsulate model selection and prompt engineering
 
 ## Output
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
-
-See [Openrouter Sdk Patterns implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+- A reusable OpenRouter client class with built-in retry, logging, and typing
+- Prompt template functions for common AI tasks
+- Middleware pipeline for cross-cutting concerns (logging, cost tracking)
 
 ## Error Handling
 
-| Error | Cause | Resolution |
-|-------|-------|------------|
-| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with Openrouter Sdk Patterns |
-| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
-| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Type mismatch on response | Model returned unexpected format | Add runtime validation alongside static types; handle gracefully |
+| Retry exhaustion | Max retries exceeded on persistent errors | Log the final error with full context; surface to caller with actionable message |
+| Middleware error | Logging or metrics code threw an exception | Wrap middleware in try/catch so it never breaks the main request flow |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-**Basic usage**: Apply openrouter sdk patterns to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize openrouter sdk patterns for production environments with multiple constraints and team-specific requirements.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 
-- Official Openrouter Sdk Patterns documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+- [OpenRouter Documentation](https://openrouter.ai/docs)
+- [OpenRouter Models](https://openrouter.ai/models)
+- [OpenRouter API Reference](https://openrouter.ai/docs/api-reference)
+- [OpenRouter Status](https://status.openrouter.ai)

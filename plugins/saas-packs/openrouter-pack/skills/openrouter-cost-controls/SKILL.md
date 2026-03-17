@@ -1,7 +1,7 @@
 ---
 name: openrouter-cost-controls
 description: |
-  Implement budget controls and cost limits for OpenRouter. Use when managing spending or preventing overruns. Trigger with phrases like 'openrouter budget', 'openrouter spending limit', 'cost control', 'openrouter billing alert'.
+  Implement cost control mechanisms for OpenRouter usage. Use when managing budgets or preventing overspend. Trigger with phrases like 'openrouter budget', 'openrouter spending limit', 'cost control', 'openrouter limit spend'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -12,37 +12,40 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill demonstrates implementing cost controls including per-key limits, budget alerts, and automatic cutoffs.
+This skill demonstrates setting up spending limits, per-request budgets, and automated cost monitoring to prevent unexpected charges.
 
 ## Prerequisites
 
-- OpenRouter account
-- Budget requirements defined
+- OpenRouter account with credit management access
+- Understanding of model pricing tiers
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Set account-level limits**: Configure spending limits in the OpenRouter dashboard under Settings > Limits to cap total monthly spend
+2. **Use per-request max_tokens**: Always set `max_tokens` in every request to cap completion length and prevent runaway costs
+3. **Track costs per request**: Read the `usage` field in each response and multiply by model pricing to track cumulative spend in your application
+4. **Implement budget middleware**: Create a middleware that checks cumulative spend before each request and rejects requests that would exceed the budget
+5. **Set up alerts**: Query `/api/v1/auth/key` periodically to check remaining credits and alert when balance drops below a threshold
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- Per-request cost tracking integrated into your application
+- Budget enforcement middleware that blocks requests over the limit
+- Automated alerts when spending approaches configured thresholds
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| 402 Payment Required | Account credits exhausted | Top up credits or switch to free models |
+| Budget exceeded locally | Middleware blocked the request | Increase budget limit or optimize prompts to reduce token usage |
+| Inaccurate cost tracking | Using stale pricing data | Refresh model pricing from `/models` endpoint daily |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

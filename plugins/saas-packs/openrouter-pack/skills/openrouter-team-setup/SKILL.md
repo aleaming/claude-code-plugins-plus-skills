@@ -1,7 +1,7 @@
 ---
 name: openrouter-team-setup
 description: |
-  Configure OpenRouter for team and organizational use. Use when setting up multi-user access or department billing. Trigger with phrases like 'openrouter team', 'openrouter organization', 'multi-user openrouter', 'openrouter rbac'.
+  Configure OpenRouter for multi-user team environments. Use when setting up shared access or team-level controls. Trigger with phrases like 'openrouter team', 'openrouter multi-user', 'openrouter organization', 'team api keys'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -12,37 +12,40 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill covers setting up OpenRouter for team environments including key management, access control, and usage tracking per user or department.
+This skill covers configuring OpenRouter for team use, including per-user API key strategies, usage tracking by team member, and shared budget management.
 
 ## Prerequisites
 
 - OpenRouter account with admin access
-- Team structure defined
+- Team structure and access requirements defined
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Design the key strategy**: Choose between per-user keys (best for attribution) or shared service keys (best for centralized control); consider a hybrid with a shared key plus user identification headers
+2. **Implement user tracking**: Pass `X-Title` header with user or team identifiers so usage shows up attributed in the OpenRouter dashboard
+3. **Set per-user budgets**: Create separate keys with individual credit limits for each team member or team, preventing any single user from exhausting the shared budget
+4. **Build a usage dashboard**: Aggregate per-user token counts and costs from your audit logs; display daily/weekly spend by user and model
+5. **Establish governance policies**: Define which models each team can use, set approval workflows for expensive models, and configure alerts when users approach their limits
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- API key management strategy document for the team
+- Per-user usage tracking and attribution system
+- Team budget dashboard with per-user spend visibility
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| User exceeds personal budget | No per-user limits set | Create individual keys with credit limits; implement middleware budget checks |
+| Attribution missing | Requests not tagged with user ID | Enforce `X-Title` header in shared client wrapper; reject untagged requests |
+| Key sprawl | Too many keys to manage | Consolidate to service keys with user headers; implement key lifecycle management |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

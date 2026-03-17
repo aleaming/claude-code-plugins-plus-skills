@@ -1,7 +1,7 @@
 ---
 name: openrouter-data-privacy
 description: |
-  Implement data privacy controls for OpenRouter requests. Use when handling PII or meeting compliance requirements. Trigger with phrases like 'openrouter privacy', 'openrouter pii', 'openrouter gdpr', 'openrouter data protection'.
+  Implement data privacy controls for OpenRouter API usage. Use when handling sensitive data or meeting privacy regulations. Trigger with phrases like 'openrouter privacy', 'openrouter data handling', 'openrouter pii', 'openrouter gdpr'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -12,37 +12,40 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill covers PII detection, data redaction, and compliance considerations for OpenRouter integrations handling sensitive data.
+This skill covers techniques for protecting sensitive data when using the OpenRouter API, including PII filtering, data minimization, and privacy-preserving prompt design.
 
 ## Prerequisites
 
-- Understanding of applicable privacy regulations
-- Data classification requirements
+- OpenRouter integration
+- Privacy requirements defined (GDPR, CCPA, HIPAA, etc.)
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Implement PII detection**: Scan prompts for personally identifiable information (names, emails, SSNs, phone numbers) using regex or a NLP-based PII detector before sending to the API
+2. **Apply data minimization**: Only include data in prompts that is strictly necessary for the task; strip extraneous context, metadata, and user details
+3. **Use placeholder substitution**: Replace PII with placeholders (e.g., `[USER_NAME]`, `[EMAIL]`) before sending, then re-substitute in the response
+4. **Configure data retention**: Review OpenRouter's data retention policy; if your use case requires zero retention, check if the selected providers support it
+5. **Implement consent tracking**: Log which users consented to AI processing and only send data for consented users; provide opt-out mechanisms
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- PII detection middleware that flags or redacts sensitive data before API calls
+- Data minimization checklist for prompt engineering
+- Consent tracking system integrated with your user management
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| PII detected in prompt | User input contains sensitive data | Block the request and prompt the user to remove PII, or auto-redact |
+| Missing consent record | User hasn't consented to AI processing | Block the request and redirect to consent flow |
+| Data retention violation | Provider retains data longer than policy allows | Switch to a provider with compatible retention policy; check OpenRouter docs |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

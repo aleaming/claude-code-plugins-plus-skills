@@ -1,7 +1,7 @@
 ---
 name: openrouter-usage-analytics
 description: |
-  Track and analyze OpenRouter usage patterns. Use when optimizing costs or understanding usage. Trigger with phrases like 'openrouter analytics', 'openrouter usage', 'openrouter metrics', 'track openrouter'.
+  Track and analyze OpenRouter API usage patterns. Use when optimizing costs or understanding usage trends. Trigger with phrases like 'openrouter analytics', 'openrouter usage', 'openrouter metrics', 'track openrouter'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -12,37 +12,40 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill covers implementing usage tracking, building dashboards, and analyzing patterns to optimize your OpenRouter usage.
+This skill demonstrates building usage analytics for OpenRouter to track costs, token usage, model popularity, and performance metrics over time.
 
 ## Prerequisites
 
-- OpenRouter integration
-- Analytics/metrics infrastructure (optional)
+- OpenRouter integration with logging
+- Data storage for metrics (database, time-series DB, or analytics service)
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Instrument API calls**: Add middleware that captures timestamp, model, prompt/completion token counts, cost, latency, and status for every request
+2. **Store metrics efficiently**: Write metrics to a time-series database (InfluxDB, TimescaleDB) or append-only table with proper indexing on timestamp and model
+3. **Build aggregation queries**: Create queries for daily/weekly cost by model, average latency trends, token usage distribution, and error rates
+4. **Create a dashboard**: Visualize key metrics — total spend over time, cost per model, average latency, requests per hour, and error rate trends
+5. **Set up automated reports**: Schedule daily or weekly summary emails/alerts with top-line metrics and any anomalies detected
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- Analytics pipeline capturing cost, latency, and usage per request
+- Dashboard with charts for spend, token usage, model distribution, and errors
+- Automated weekly report summarizing key usage trends and anomalies
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Missing metrics for some requests | Instrumentation middleware not covering all paths | Centralize all API calls through a single instrumented client |
+| Metric storage growing too fast | High request volume with verbose logging | Aggregate metrics hourly/daily; keep raw data only for recent period |
+| Dashboard showing stale data | Query or aggregation pipeline lagging | Check pipeline health; add alerting on data freshness |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

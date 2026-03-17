@@ -1,7 +1,7 @@
 ---
 name: openrouter-multi-provider
 description: |
-  Execute work with multiple providers through OpenRouter. Use when comparing providers or building provider-agnostic systems. Trigger with phrases like 'openrouter providers', 'openrouter multi-model', 'compare models', 'provider selection'.
+  Use multiple AI providers through OpenRouter. Use when leveraging different providers for different capabilities. Trigger with phrases like 'openrouter providers', 'multi provider', 'openrouter openai anthropic', 'use multiple models'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -12,37 +12,40 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill covers strategies for working with multiple AI providers through OpenRouter's unified API.
+This skill shows how to leverage OpenRouter's unified API to access models from OpenAI, Anthropic, Google, Meta, Mistral, and other providers through a single integration point.
 
 ## Prerequisites
 
-- OpenRouter integration
-- Understanding of different provider capabilities
+- OpenRouter integration with sufficient credits
+- Familiarity with models from at least two providers
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Understand the provider namespace**: OpenRouter model IDs use `provider/model-name` format (e.g., `openai/gpt-4-turbo`, `anthropic/claude-3.5-sonnet`, `google/gemini-pro`)
+2. **Compare provider strengths**: Test the same prompt across providers to evaluate quality, speed, and cost; each provider excels at different task types
+3. **Route by task type**: Use OpenAI models for code generation, Anthropic for analysis and safety, Google for multimodal, and open-source models for cost-sensitive tasks
+4. **Handle provider-specific features**: Some features (like system prompts, tool calling, or JSON mode) work differently across providers; test each model's behavior
+5. **Build a provider abstraction**: Create a thin wrapper that normalizes provider differences so your application code doesn't need to know which provider is serving the request
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- A unified client that works with any provider through OpenRouter
+- Provider comparison matrix for your specific use cases
+- Task-to-provider routing logic that optimizes for quality and cost
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Feature not supported | Provider doesn't support the requested feature (e.g., tools) | Check model capabilities via `/models` endpoint before sending |
+| Different response formats | Providers return slightly different structures | Normalize responses through your abstraction layer |
+| Provider outage | Single provider is down | Implement cross-provider fallback (e.g., OpenAI -> Anthropic -> Google) |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

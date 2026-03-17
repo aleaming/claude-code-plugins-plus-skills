@@ -21,28 +21,31 @@ This skill demonstrates streaming response implementation for lower perceived la
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Enable streaming**: Set `stream: true` in your chat completion request body
+2. **Handle SSE chunks**: Parse each `data: {...}` line from the response stream, extracting `choices[0].delta.content` from each chunk
+3. **Detect stream end**: Watch for `data: [DONE]` to know when the stream is complete; accumulate chunks for the full response
+4. **Implement frontend rendering**: Use `ReadableStream` or `EventSource` in the browser to display tokens as they arrive
+5. **Add error recovery**: Handle mid-stream disconnections with automatic retry and partial response preservation
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- Real-time token-by-token text output in the UI
+- Reduced time-to-first-token compared to non-streaming requests
+- Complete response assembled from all chunks with usage stats from the final chunk
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Stream cuts off mid-response | Network timeout or model error | Implement reconnection logic; save partial output |
+| Missing `usage` in stream | Some models omit usage in streaming mode | Set `stream_options: { include_usage: true }` or make a separate token count call |
+| Empty delta chunks | Keep-alive pings from the server | Filter chunks where `delta.content` is null or empty |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

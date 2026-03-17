@@ -1,7 +1,7 @@
 ---
 name: openrouter-pricing-basics
 description: |
-  Execute understand OpenRouter pricing and cost estimation. Use when budgeting or optimizing costs. Trigger with phrases like 'openrouter pricing', 'openrouter costs', 'openrouter budget', 'openrouter token pricing'.
+  Understand OpenRouter model pricing tiers and cost calculation. Use when budgeting or comparing model costs. Trigger with phrases like 'openrouter pricing', 'openrouter cost', 'model pricing', 'openrouter budget'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -12,37 +12,40 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill explains the OpenRouter pricing model, how to estimate costs, and strategies for cost-effective model selection.
+This skill explains OpenRouter's per-token pricing model, how to calculate costs for different models, and strategies for staying within budget.
 
 ## Prerequisites
 
-- OpenRouter account
-- Basic understanding of token-based pricing
+- OpenRouter account with credits
+- Understanding of token concepts (prompt vs completion tokens)
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Understand the pricing model**: OpenRouter charges per token with separate rates for prompt (input) and completion (output) tokens, listed as price per 1M tokens
+2. **Query model pricing**: Use the `/models` endpoint and inspect `pricing.prompt` and `pricing.completion` fields for each model
+3. **Estimate request costs**: Calculate cost as `(prompt_tokens * prompt_price + completion_tokens * completion_price)` using the `usage` object from each response
+4. **Track cumulative spend**: Use the `X-OpenRouter-Cost` response header or query `/api/v1/auth/key` to check remaining credits
+5. **Optimize costs**: Use cheaper models for simple tasks (e.g., `google/gemma-2-9b-it:free`) and reserve expensive models for complex reasoning
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- Cost-per-request calculations for your chosen models
+- Credit balance and usage tracking setup
+- Model pricing comparison table sorted by cost
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| 402 Payment Required | Insufficient credits for the chosen model | Top up credits or switch to a cheaper/free model |
+| Unexpected costs | Completion tokens exceeded max_tokens | Always set `max_tokens` to cap output length |
+| Price mismatch | Using outdated pricing data | Re-query `/models` endpoint; pricing updates dynamically |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

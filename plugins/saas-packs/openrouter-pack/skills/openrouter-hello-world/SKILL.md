@@ -22,28 +22,30 @@ This skill provides a minimal working example to verify your OpenRouter integrat
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Set your API key**: Export `OPENROUTER_API_KEY` as an environment variable or add it to your `.env` file
+2. **Send a test completion**: Make a POST request to `https://openrouter.ai/api/v1/chat/completions` with a simple prompt using `model: "openai/gpt-3.5-turbo"`
+3. **Verify the response**: Confirm the response contains `choices[0].message.content` and `usage` token counts
+4. **Try a different model**: Swap the model to `anthropic/claude-3-haiku` or `google/gemma-2-9b-it:free` to confirm multi-model routing works
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- A JSON response with `id`, `model`, `choices`, and `usage` fields
+- Token usage breakdown (prompt_tokens, completion_tokens, total_tokens)
+- Confirmation that your API key and network configuration are correct
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| 401 Unauthorized | Invalid or missing API key | Verify key starts with `sk-or-` and is exported correctly |
+| 404 Not Found | Wrong base URL | Use `https://openrouter.ai/api/v1` (not v2) |
+| 400 Bad Request | Malformed JSON body | Check `messages` array has `role` and `content` fields |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

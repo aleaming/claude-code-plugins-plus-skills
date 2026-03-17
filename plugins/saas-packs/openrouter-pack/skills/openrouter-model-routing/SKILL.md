@@ -1,62 +1,55 @@
 ---
 name: openrouter-model-routing
 description: |
-  Implement advanced model routing with A/B testing. Use when optimizing model selection or running experiments. Trigger with phrases like 'openrouter a/b test', 'model experiment', 'openrouter routing', 'model comparison'.
+  Implement intelligent model routing strategies with OpenRouter. Use when optimizing cost/quality tradeoffs across models. Trigger with phrases like 'openrouter routing', 'model selection', 'route requests', 'model routing strategy'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-# OpenRouter Model Routing
+# Openrouter Model Routing
 
 ## Overview
 
-This skill covers advanced routing patterns including A/B testing, gradual rollouts, and performance-based model selection.
+This skill teaches you how to build intelligent routing logic that selects the best model based on task complexity, cost constraints, or latency requirements.
 
 ## Prerequisites
 
-- OpenRouter integration
-- Metrics collection capability
+- OpenRouter integration with multiple models tested
+- Understanding of model capabilities and pricing differences
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
-
-## Intelligent Model Selection
-
-Use multi-criteria routing to select models based on cost, latency, and quality requirements per request.
+1. **Classify request complexity**: Analyze the incoming prompt to determine if it needs a simple, mid-tier, or advanced model (e.g., by token count, keyword patterns, or task type)
+2. **Build a routing table**: Map task categories to model IDs — e.g., simple Q&A to `google/gemma-2-9b-it:free`, code generation to `anthropic/claude-3.5-sonnet`, reasoning to `openai/gpt-4-turbo`
+3. **Implement the router function**: Create a function that takes a prompt and returns the appropriate model ID based on your classification logic
+4. **Add cost guardrails**: Set per-request `max_tokens` and budget caps to prevent expensive models from exceeding cost limits
+5. **Monitor and tune**: Log which model handles each request and track quality metrics to adjust routing thresholds over time
 
 ## Output
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
-
-See [testing implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+- A routing function that selects models based on task type and constraints
+- Cost savings from using cheaper models for simple tasks
+- Quality metrics per route to validate routing decisions
 
 ## Error Handling
 
-| Error | Cause | Resolution |
-|-------|-------|------------|
-| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with testing |
-| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
-| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Wrong model selected | Classification logic too simple | Add more granular task categories; test with diverse prompts |
+| Model unavailable | Selected model is temporarily down | Chain to fallback model (see openrouter-fallback-config) |
+| Cost overrun | Complex tasks routed to expensive models | Set hard `max_tokens` limits and daily budget caps |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-**Basic usage**: Apply openrouter model routing to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize openrouter model routing for production environments with multiple constraints and team-specific requirements.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 
-- Official testing documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+- [OpenRouter Documentation](https://openrouter.ai/docs)
+- [OpenRouter Models](https://openrouter.ai/models)
+- [OpenRouter API Reference](https://openrouter.ai/docs/api-reference)
+- [OpenRouter Status](https://status.openrouter.ai)

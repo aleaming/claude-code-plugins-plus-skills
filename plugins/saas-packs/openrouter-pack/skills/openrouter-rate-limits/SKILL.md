@@ -1,7 +1,7 @@
 ---
 name: openrouter-rate-limits
 description: |
-  Handle OpenRouter rate limits with proper backoff strategies. Use when experiencing 429 errors or building high-throughput systems. Trigger with phrases like 'openrouter rate limit', 'openrouter 429', 'openrouter throttle', 'openrouter backoff'.
+  Understand and handle OpenRouter rate limits effectively. Use when building high-throughput systems. Trigger with phrases like 'openrouter rate limit', 'openrouter 429', 'openrouter throttle', 'request limits'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -12,37 +12,40 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill teaches rate limit handling patterns including exponential backoff, token bucket algorithms, and request queuing.
+This skill covers OpenRouter's rate limiting behavior, how to read rate limit headers, and implementing retry strategies that respect limits.
 
 ## Prerequisites
 
 - OpenRouter integration
-- Understanding of HTTP status codes
+- Understanding of HTTP 429 status codes and retry-after semantics
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Read rate limit headers**: Inspect `X-RateLimit-Limit`, `X-RateLimit-Remaining`, and `X-RateLimit-Reset` from each response to know your current limits
+2. **Implement exponential backoff**: On 429 responses, wait `2^attempt * base_delay` seconds before retrying, with jitter to prevent thundering herd
+3. **Pre-check remaining quota**: Before sending a batch of requests, check `X-RateLimit-Remaining` and pace requests to stay under the limit
+4. **Use a token bucket or leaky bucket**: Implement client-side rate limiting to smooth request bursts and avoid hitting server limits
+5. **Handle per-model limits**: Different models may have different rate limits; track limits per model ID separately
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- Automatic retry logic that handles 429 responses gracefully
+- Client-side rate limiter that prevents hitting server limits
+- Dashboard or log output showing rate limit utilization over time
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| 429 Too Many Requests | Exceeded requests-per-minute or tokens-per-minute limit | Use exponential backoff with jitter; respect `Retry-After` header |
+| Retry storm | Multiple clients retrying simultaneously | Add random jitter (0-1s) to each retry delay |
+| Silent throttling | Responses slow down before 429 | Monitor response latency; proactively reduce request rate when latency increases |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

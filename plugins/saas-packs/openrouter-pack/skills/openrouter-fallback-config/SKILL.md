@@ -1,7 +1,7 @@
 ---
 name: openrouter-fallback-config
 description: |
-  Configure model fallback chains for high availability. Use when building fault-tolerant LLM systems. Trigger with phrases like 'openrouter fallback', 'openrouter backup model', 'openrouter redundancy', 'model failover'.
+  Configure model fallback chains for reliability. Use when building resilient systems that need high availability. Trigger with phrases like 'openrouter fallback', 'model fallback', 'openrouter backup model', 'failover config'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -12,38 +12,40 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill demonstrates how to configure and implement model fallback chains that automatically switch to backup models on failure.
+This skill shows how to configure fallback model chains so requests automatically retry with alternative models when the primary model is unavailable or errors.
 
 ## Prerequisites
 
 - OpenRouter integration
-- Multiple suitable models identified
-- Understanding of your latency/cost requirements
+- Multiple models identified as primary and fallback options
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Use OpenRouter's native fallback**: Pass an array of model IDs in the `models` field (instead of `model`) — OpenRouter will try each in order until one succeeds
+2. **Set per-model parameters**: Use the `route` field with `"fallback"` strategy to let OpenRouter handle failover automatically
+3. **Implement client-side fallback**: For more control, catch 5xx or timeout errors and retry with the next model in your own fallback list
+4. **Configure timeout thresholds**: Set `request_timeout` per attempt so slow models fail fast and the fallback triggers quickly
+5. **Test the chain**: Temporarily use an invalid model ID as primary to verify your fallback chain activates correctly
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- A fallback chain that transparently retries with alternative models
+- Reduced downtime when individual models or providers have outages
+- Logs showing which model ultimately served each request
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| All fallbacks exhausted | Every model in the chain failed | Add more diverse fallbacks across providers; alert on full chain failure |
+| Slow cascading retries | Each model timing out sequentially | Reduce per-model timeout to 10-15 seconds; use parallel fallback instead |
+| Inconsistent responses | Different models in the chain have different capabilities | Ensure all fallback models support the features your prompt uses (e.g., tool calling) |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

@@ -22,28 +22,31 @@ This skill guides you through obtaining and configuring OpenRouter API credentia
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Create an OpenRouter account**: Sign up at [openrouter.ai](https://openrouter.ai) and navigate to the API Keys page
+2. **Generate an API key**: Click "Create Key", give it a descriptive name, and copy the `sk-or-...` value immediately (it won't be shown again)
+3. **Configure your environment**: Add `OPENROUTER_API_KEY=sk-or-...` to your `.env` file or export it in your shell profile
+4. **Initialize the OpenAI SDK**: Point the SDK at `base_url="https://openrouter.ai/api/v1"` with your key
+5. **Verify authentication**: Run a minimal chat completion request and confirm you get a 200 response with valid output
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- A working OpenAI SDK client configured for OpenRouter
+- Environment variable set and loadable from `.env`
+- Successful test request confirming authentication works
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| 401 `invalid_api_key` | Key is malformed or revoked | Regenerate at openrouter.ai/keys |
+| 401 `missing_api_key` | Authorization header missing | Add `Authorization: Bearer sk-or-...` header |
+| 403 `insufficient_credits` | Account has no credits | Add credits at openrouter.ai/credits or use a free model |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

@@ -1,62 +1,55 @@
 ---
 name: openrouter-routing-rules
 description: |
-  Implement intelligent model routing based on request characteristics. Use when optimizing for cost, speed, or quality per request. Trigger with phrases like 'openrouter routing', 'model selection', 'smart routing', 'dynamic model'.
+  Define custom routing rules for OpenRouter requests. Use when implementing complex routing logic beyond simple model selection. Trigger with phrases like 'openrouter rules', 'routing rules', 'custom routing', 'openrouter request routing'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-# OpenRouter Routing Rules
+# Openrouter Routing Rules
 
 ## Overview
 
-This skill covers implementing request-based routing logic to select optimal models based on content, urgency, or cost constraints.
+This skill shows how to implement rule-based routing that dynamically selects models based on prompt content, user tier, cost constraints, or time-of-day patterns.
 
 ## Prerequisites
 
-- OpenRouter integration
-- Understanding of model capabilities and pricing
+- OpenRouter integration with multiple models configured
+- Routing requirements defined (by user tier, task type, cost, etc.)
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
-
-## Basic Routing Strategies
-
-Use content-based, cost-based, or latency-based routing to direct requests to the optimal model.
+1. **Define routing dimensions**: Identify the factors that should influence model selection — user tier (free/paid), task type (chat/code/analysis), cost budget, latency requirement
+2. **Build a rules engine**: Create a configuration-driven rules engine where each rule has conditions (e.g., `user.tier == "free"`) and actions (e.g., `model = "google/gemma-2-9b-it:free"`)
+3. **Implement rule evaluation**: Process rules in priority order; the first matching rule determines the model; always include a default/catch-all rule
+4. **Add dynamic rules**: Support rules that query real-time data (current cost, model availability, error rates) to make routing decisions
+5. **Test with rule scenarios**: Write test cases for each rule to verify correct model selection under different conditions
 
 ## Output
 
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
-
-See [optimization implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+- A configurable rules engine that selects models based on multiple dimensions
+- Rule configuration file (JSON/YAML) that can be updated without code changes
+- Test suite validating each routing rule produces the correct model selection
 
 ## Error Handling
 
-| Error | Cause | Resolution |
-|-------|-------|------------|
-| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with optimization |
-| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
-| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+| Error | Cause | Fix |
+|-------|-------|-----|
+| No rule matched | Conditions don't cover all cases | Always include a default catch-all rule at the end |
+| Rule evaluation error | Dynamic rule query failed (e.g., cost API timeout) | Add fallback values for dynamic data; never block on rule evaluation |
+| Wrong model selected | Rule priority order incorrect | Add logging to show which rule matched and why; review priority ordering |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-**Basic usage**: Apply openrouter routing rules to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize openrouter routing rules for production environments with multiple constraints and team-specific requirements.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 
-- Official optimization documentation
-- Community best practices and patterns
-- Related skills in this plugin pack
+- [OpenRouter Documentation](https://openrouter.ai/docs)
+- [OpenRouter Models](https://openrouter.ai/models)
+- [OpenRouter API Reference](https://openrouter.ai/docs/api-reference)
+- [OpenRouter Status](https://status.openrouter.ai)

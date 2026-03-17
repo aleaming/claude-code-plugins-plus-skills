@@ -1,7 +1,7 @@
 ---
 name: openrouter-openai-compat
 description: |
-  Configure OpenRouter as an OpenAI API drop-in replacement. Use when migrating from OpenAI or using OpenAI-compatible libraries. Trigger with phrases like 'openrouter openai', 'openrouter drop-in', 'openrouter compatibility', 'migrate to openrouter'.
+  Leverage OpenRouter's OpenAI API compatibility layer. Use when migrating from OpenAI or maintaining dual compatibility. Trigger with phrases like 'openrouter openai compatible', 'openrouter drop-in', 'openrouter migration from openai', 'openai to openrouter'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -12,37 +12,40 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill demonstrates how to use OpenRouter with any OpenAI-compatible library or codebase with minimal changes.
+This skill explains how to use existing OpenAI SDK code with OpenRouter by changing only the base URL and API key, enabling access to 100+ models with minimal code changes.
 
 ## Prerequisites
 
-- Existing OpenAI integration or familiarity with OpenAI API
+- Existing OpenAI SDK integration (Python or Node.js)
 - OpenRouter API key
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Swap the base URL**: Change `base_url` from `https://api.openai.com/v1` to `https://openrouter.ai/api/v1` in your OpenAI client initialization
+2. **Update the API key**: Replace your OpenAI key with your OpenRouter `sk-or-...` key
+3. **Update model IDs**: Change model names to OpenRouter format (e.g., `gpt-4` becomes `openai/gpt-4` or use any other provider's model)
+4. **Add OpenRouter-specific headers**: Optionally set `HTTP-Referer` and `X-Title` headers for better analytics tracking in the OpenRouter dashboard
+5. **Test compatibility**: Run your existing test suite against OpenRouter; most endpoints work identically, but verify edge cases like streaming, tools, and embeddings
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- Existing OpenAI code working through OpenRouter with no logic changes
+- Access to non-OpenAI models (Anthropic, Google, etc.) through the same SDK
+- Side-by-side comparison showing the minimal changes needed
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| 400 unsupported parameter | OpenRouter doesn't support a parameter your code sends | Remove or conditionally set parameters like `logprobs` or `response_format` based on the target model |
+| Different embedding format | Embedding endpoints may behave differently | Use OpenRouter-specific embedding models or fall back to direct OpenAI for embeddings |
+| Missing `organization` header | OpenRouter doesn't use org-level auth | Remove the `organization` parameter from client initialization |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

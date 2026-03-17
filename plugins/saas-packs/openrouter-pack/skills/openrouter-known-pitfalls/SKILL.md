@@ -1,7 +1,7 @@
 ---
 name: openrouter-known-pitfalls
 description: |
-  Execute avoid common OpenRouter mistakes and anti-patterns. Use when reviewing code or onboarding developers. Trigger with phrases like 'openrouter pitfalls', 'openrouter mistakes', 'openrouter gotchas', 'openrouter common issues'.
+  Avoid common OpenRouter integration pitfalls and gotchas. Use proactively when designing or reviewing an integration. Trigger with phrases like 'openrouter pitfalls', 'openrouter gotchas', 'openrouter mistakes', 'openrouter best practices'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -12,36 +12,39 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill documents common mistakes, anti-patterns, and gotchas to avoid when working with OpenRouter.
+This skill documents the most common mistakes developers make when integrating OpenRouter and how to avoid them.
 
 ## Prerequisites
 
-- OpenRouter integration or planning one
+- OpenRouter integration (planned or existing)
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Avoid hardcoding model IDs**: Models get renamed or removed; always validate model availability at startup and handle missing models gracefully
+2. **Don't ignore token limits**: Each model has different context windows; always check `context_length` from the models API and validate prompt size before sending
+3. **Handle provider differences**: The same prompt can produce different results across providers; test critical prompts with your specific model, not just any model
+4. **Set max_tokens explicitly**: Without `max_tokens`, models may generate very long (and expensive) responses; always set a reasonable limit
+5. **Don't store API keys in code**: Use environment variables or a secrets manager; add `.env` to `.gitignore`; rotate keys if they're ever exposed
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- Checklist of common pitfalls with prevention strategies
+- Code review checklist for OpenRouter integrations
+- Configuration validation script that catches common mistakes
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `model_not_found` after working fine | Model was renamed or deprecated | Query `/models` at startup; maintain a fallback model list |
+| Unexpectedly large bill | No `max_tokens` set on expensive model | Always set `max_tokens`; implement cost tracking middleware |
+| Different behavior across models | Assuming all models handle prompts identically | Test with each model you plan to use; adjust prompts per model if needed |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

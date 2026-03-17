@@ -1,7 +1,7 @@
 ---
 name: openrouter-model-availability
 description: |
-  Build check model availability and implement fallback chains. Use when building resilient systems or handling model outages. Trigger with phrases like 'openrouter availability', 'openrouter fallback', 'openrouter model down', 'openrouter health check'.
+  Monitor model availability and implement health checks. Use when building reliable systems that depend on specific models. Trigger with phrases like 'openrouter model status', 'model availability', 'openrouter health check', 'is model available'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -12,37 +12,40 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill covers model health monitoring, availability checking, and implementing automatic fallback chains for production reliability.
+This skill covers monitoring model availability on OpenRouter, implementing health checks, and handling model downtime gracefully.
 
 ## Prerequisites
 
 - OpenRouter integration
-- Multiple model options identified
+- List of models your application depends on
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Query model status**: Periodically call `GET /api/v1/models` and check if your required models are present; absent models are unavailable
+2. **Implement health probes**: Send lightweight test requests (short prompt, `max_tokens: 1`) to each critical model on a schedule to verify end-to-end availability
+3. **Track availability metrics**: Log probe results and calculate uptime percentages per model; detect patterns (e.g., models that go down at certain times)
+4. **Set up alerts**: Trigger notifications when a critical model fails health checks or disappears from the models list
+5. **Automate failover**: When a health check fails, automatically switch to a pre-configured fallback model and log the failover event
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- Health check service that probes critical models on a regular schedule
+- Availability dashboard showing uptime percentage per model
+- Automated failover that activates when models become unavailable
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Health check timeout | Model is slow or overloaded | Increase probe timeout to 30s; distinguish between "slow" and "down" |
+| False positive alerts | Transient network issues triggering alerts | Require 2-3 consecutive failures before alerting; add probe from multiple locations |
+| Model removed from catalog | Provider discontinued the model | Subscribe to OpenRouter changelogs; implement model ID aliasing for easy migration |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

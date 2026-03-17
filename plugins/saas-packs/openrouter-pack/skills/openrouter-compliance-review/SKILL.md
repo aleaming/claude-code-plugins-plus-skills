@@ -1,7 +1,7 @@
 ---
 name: openrouter-compliance-review
 description: |
-  Execute conduct security and compliance review of OpenRouter integration. Use when preparing for audits or security assessments. Trigger with phrases like 'openrouter security review', 'openrouter compliance', 'openrouter audit', 'security assessment'.
+  Run a compliance review of your OpenRouter integration. Use when preparing for audits or governance reviews. Trigger with phrases like 'openrouter compliance', 'openrouter governance', 'openrouter security review', 'audit openrouter setup'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -12,37 +12,40 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill provides a framework for conducting security and compliance reviews of OpenRouter integrations.
+This skill provides a framework for reviewing your OpenRouter integration against security, privacy, and regulatory compliance requirements.
 
 ## Prerequisites
 
-- Working OpenRouter integration
-- Compliance requirements documented
+- OpenRouter integration in use
+- Compliance requirements documented (SOC2, GDPR, HIPAA, etc.)
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Inventory data flows**: Map every place where data enters and exits the OpenRouter API — prompts, responses, headers, and logs — to understand your data exposure surface
+2. **Review key management**: Verify API keys are stored in environment variables or a secrets manager (never in code), rotated on a schedule, and scoped to minimum required permissions
+3. **Check data residency**: Confirm that the models and providers you use process data in regions that comply with your regulatory requirements (check OpenRouter's data processing docs)
+4. **Validate logging practices**: Ensure audit logs capture required events without storing sensitive content; verify PII redaction and log retention policies
+5. **Document and remediate**: Produce a compliance checklist with pass/fail status for each item; create tickets for any findings that need remediation
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- Data flow diagram showing all touchpoints with the OpenRouter API
+- Compliance checklist with pass/fail status for each requirement
+- Remediation action items with priority and assignee
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Missing data flow documentation | Integration added without review | Retroactively document; add compliance review to your deployment checklist |
+| Keys in source code | Developer committed credentials | Rotate key immediately; add secret scanning to CI pipeline |
+| Non-compliant data residency | Using models hosted in restricted regions | Restrict model selection to compliant providers; use OpenRouter's provider filtering |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

@@ -1,7 +1,7 @@
 ---
 name: openrouter-load-balancing
 description: |
-  Execute distribute requests across multiple OpenRouter configurations. Use when scaling or implementing geographic distribution. Trigger with phrases like 'openrouter load balance', 'distribute requests', 'openrouter scaling', 'multi-key openrouter'.
+  Distribute OpenRouter requests for high availability. Use when building scalable systems that need load distribution. Trigger with phrases like 'openrouter load balance', 'distribute requests', 'openrouter scaling', 'high availability'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -12,37 +12,40 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill teaches load balancing patterns for distributing requests across multiple API keys or configurations.
+This skill covers strategies for distributing API requests across multiple keys, models, or instances for improved throughput and reliability.
 
 ## Prerequisites
 
-- Multiple OpenRouter API keys
-- Understanding of your traffic patterns
+- OpenRouter integration
+- Multiple API keys or model options (for distribution)
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Use multiple API keys**: Create separate API keys for different services or teams; distribute requests across keys to multiply your rate limits
+2. **Implement round-robin distribution**: Cycle through API keys or equivalent models on each request to spread load evenly
+3. **Add health-based routing**: Track error rates and latency per key/model; route traffic away from unhealthy endpoints automatically
+4. **Monitor per-key usage**: Track request counts and costs per API key to ensure balanced utilization and catch anomalies
+5. **Implement circuit breakers**: When a key or model exceeds error thresholds, temporarily remove it from the pool and re-check after a cooldown period
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- Load balancer distributing requests across multiple API keys or models
+- Health dashboard showing per-key error rates and latency
+- Automatic failover when individual keys or models become unhealthy
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Uneven load distribution | Round-robin not accounting for request duration | Use weighted distribution based on current in-flight requests |
+| All keys rate-limited | Traffic spike exceeded aggregate limits | Add more keys or implement request queuing with backpressure |
+| Health check false positive | Transient errors marking a key as unhealthy | Use sliding window error rates (e.g., 5 errors in 60s) instead of single-error triggers |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

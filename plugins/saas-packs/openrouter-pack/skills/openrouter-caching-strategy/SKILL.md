@@ -1,7 +1,7 @@
 ---
 name: openrouter-caching-strategy
 description: |
-  Implement response caching for OpenRouter efficiency. Use when optimizing costs or reducing latency for repeated queries. Trigger with phrases like 'openrouter cache', 'cache llm responses', 'openrouter redis', 'semantic caching'.
+  Implement response caching to reduce costs and latency. Use when dealing with repeated queries or high-volume scenarios. Trigger with phrases like 'openrouter cache', 'cache responses', 'openrouter caching', 'reduce api calls'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -12,37 +12,40 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill covers caching strategies from simple LRU caches to semantic similarity caching for intelligent response reuse.
+This skill shows how to implement caching layers for OpenRouter responses to reduce costs, lower latency, and handle repeated queries efficiently.
 
 ## Prerequisites
 
 - OpenRouter integration
-- Caching infrastructure (Redis recommended for production)
+- Cache storage (in-memory, Redis, or filesystem)
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Generate cache keys**: Hash the model ID, messages array, and key parameters (temperature, max_tokens) into a deterministic cache key
+2. **Implement exact-match caching**: Store responses keyed by the hash; return cached responses for identical requests (works best with `temperature: 0`)
+3. **Add TTL-based expiration**: Set cache entries to expire after a configurable period (e.g., 1 hour for factual queries, 5 minutes for dynamic content)
+4. **Consider semantic caching**: For fuzzy matching, use embedding similarity to find cached responses for semantically similar (but not identical) prompts
+5. **Track cache hit rates**: Log cache hits vs misses to measure cost savings and tune your caching strategy
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- Cache hit rate metrics showing percentage of requests served from cache
+- Cost savings report comparing cached vs uncached request costs
+- Latency improvement measurements (cached responses return in <5ms vs 500ms+ for API calls)
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Stale cached responses | TTL too long for dynamic content | Reduce TTL or add cache invalidation triggers |
+| Cache key collisions | Hash function not including all relevant parameters | Include model, messages, temperature, max_tokens, and tools in the key |
+| Memory pressure | In-memory cache growing unbounded | Set max cache size with LRU eviction; use Redis for large caches |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

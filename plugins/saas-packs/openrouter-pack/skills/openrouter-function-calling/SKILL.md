@@ -21,28 +21,31 @@ This skill demonstrates implementing function calling and tool use patterns with
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Define tool schemas**: Create a `tools` array with JSON Schema definitions for each function, specifying name, description, and parameter types
+2. **Send a request with tools**: Include the `tools` array in your chat completion request; set `tool_choice: "auto"` to let the model decide when to call functions
+3. **Parse tool calls**: Extract `tool_calls` from `response.choices[0].message`, deserialize each `function.arguments` JSON string
+4. **Execute and return results**: Run each function locally, then send a follow-up request with `role: "tool"` messages containing the results
+5. **Handle multi-turn loops**: Continue the request-execute-respond cycle until the model returns a final text response without tool calls
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- Model-generated function calls with properly typed arguments
+- Multi-turn conversation with tool execution results fed back to the model
+- Final synthesized response incorporating tool outputs
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `tool_calls` is null | Model chose not to call tools or doesn't support them | Check model compatibility; use `tool_choice: "required"` to force |
+| JSON parse error on arguments | Model generated malformed JSON | Wrap `JSON.parse` in try/catch; retry with a more capable model |
+| 400 invalid tool schema | Schema has unsupported types or format | Use only JSON Schema draft-07 types; avoid `$ref` or complex constructs |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

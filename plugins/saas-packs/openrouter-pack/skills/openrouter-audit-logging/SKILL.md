@@ -22,28 +22,31 @@ This skill demonstrates implementing comprehensive audit logging for security, c
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Define audit event schema**: Create a structured log format that captures timestamp, user ID, model used, prompt hash (not raw content for privacy), token counts, cost, and response status
+2. **Instrument the API client**: Add pre-request and post-response hooks that automatically log every OpenRouter API call with the defined schema
+3. **Implement log storage**: Write audit logs to an append-only store (database table, S3 bucket, or centralized logging service) with retention policies
+4. **Add PII redaction**: Before logging, scrub prompts and responses of personally identifiable information using regex patterns or a PII detection library
+5. **Build audit queries**: Create reporting queries that answer common audit questions: who called what model, when, how much it cost, and whether any errors occurred
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- Structured audit log entries for every API call with user, model, cost, and status
+- PII-redacted log storage with configurable retention periods
+- Audit reporting queries for compliance reviews and cost analysis
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Log storage full | Retention policy not configured or too long | Implement log rotation and archival; set TTL on log entries |
+| Missing audit entries | Logging middleware not covering all code paths | Centralize API calls through a single client wrapper with mandatory logging |
+| PII leak in logs | Redaction patterns missing edge cases | Use a comprehensive PII detection library; review logs periodically for leaks |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 

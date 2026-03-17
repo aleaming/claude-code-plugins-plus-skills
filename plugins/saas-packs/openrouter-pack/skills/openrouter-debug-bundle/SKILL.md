@@ -1,7 +1,7 @@
 ---
 name: openrouter-debug-bundle
 description: |
-  Execute set up comprehensive logging and debugging for OpenRouter. Use when investigating issues or monitoring requests. Trigger with phrases like 'openrouter debug', 'openrouter logging', 'openrouter trace', 'monitor openrouter'.
+  Create debug bundles for troubleshooting OpenRouter issues. Use when diagnosing API failures or unexpected behavior. Trigger with phrases like 'openrouter debug', 'openrouter troubleshoot', 'debug openrouter', 'openrouter issue'.
 allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
@@ -12,37 +12,40 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill shows how to implement request/response logging, timing metrics, and debugging utilities for OpenRouter integrations.
+This skill provides a systematic approach to collecting diagnostic information when OpenRouter requests fail or return unexpected results.
 
 ## Prerequisites
 
-- OpenRouter integration
-- Logging infrastructure (optional but recommended)
+- OpenRouter integration with logging enabled
+- Access to request/response logs
 
 ## Instructions
 
-Follow these steps to implement this skill:
-
-1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
-2. **Review the Implementation**: Study the code examples and patterns below
-3. **Adapt to Your Environment**: Modify configuration values for your setup
-4. **Test the Integration**: Run the verification steps to confirm functionality
-5. **Monitor in Production**: Set up appropriate logging and monitoring
+1. **Capture the full request**: Log the complete request including URL, headers (redact the API key), body, model ID, and timestamp
+2. **Capture the full response**: Log status code, response headers (especially `X-Request-ID`, rate limit headers), response body, and response time
+3. **Check the generation ID**: Extract the `id` field from the response (e.g., `gen-abc123`) — this is needed when contacting OpenRouter support
+4. **Compare against a known-good request**: Diff the failing request against a previously successful one to isolate what changed
+5. **Bundle and report**: Package the sanitized request, response, error message, and environment info (SDK version, Node/Python version) into a debug report
 
 ## Output
 
-Successful execution produces:
-- Working OpenRouter integration
-- Verified API connectivity
-- Example responses demonstrating functionality
+- A structured debug bundle with request, response, and environment metadata
+- Isolated diff showing what changed between working and failing requests
+- Actionable next steps based on the error pattern
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Fix |
+|-------|-------|-----|
+| No request ID in response | Request failed before reaching OpenRouter | Check network connectivity; verify base URL is correct |
+| Intermittent failures | Model provider instability | Log timestamps and correlate with OpenRouter status page; try a different provider |
+| Response differs from docs | Model-specific behavior variation | Check the specific model's documentation; some models handle parameters differently |
+
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for full error reference.
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for runnable code samples.
 
 ## Resources
 
