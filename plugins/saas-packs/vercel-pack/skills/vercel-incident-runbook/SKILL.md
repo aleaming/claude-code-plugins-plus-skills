@@ -22,23 +22,25 @@ compatible-with: claude-code, codex, openclaw
 
 ## Instructions
 
+Incident response for Vercel deployments requires distinguishing between three root cause categories: Vercel platform issues (check vercel-status.com), build or deployment configuration issues (broken builds, missing environment variables, bad rollouts), and application-level issues (code bugs, dependency failures, third-party API outages affecting the deployed application). Accurate categorization determines whether the fix is a Vercel support escalation, a configuration rollback, or an application code fix.
+
 ### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
+Run the triage commands to identify the issue source. Check the Vercel status page for active incidents. Review the deployment log for the current production build to identify any build warnings that may have introduced instability. Test the deployed application from multiple regions using the Vercel Functions tab to distinguish geographically isolated issues from global outages.
 
 ### Step 2: Follow Decision Tree
-Determine if the issue is Vercel-side or internal.
+Determine if the issue is Vercel-side or internal. If the status page shows no active incident but your application is failing, the issue is internal. Check whether the problem started after a recent deployment — if so, a rollback to the last good deployment is the fastest mitigation.
 
 ### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
+For deployment-related issues, use Vercel's instant rollback feature to revert to the previous production deployment without a new build. For application code issues that cannot be quickly fixed, enable a maintenance page using Vercel's rewrite rules to give users a clear error state rather than broken functionality.
 
 ### Step 4: Communicate Status
-Update internal and external stakeholders.
+Update internal and external stakeholders with clear, jargon-free status updates. Specify the user impact, the current mitigation status, and the expected resolution timeline.
 
 ## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
+- Issue categorized as platform, deployment, or application layer
+- Remediation applied (rollback, maintenance page, or code fix)
+- Stakeholders notified with impact summary and timeline
+- Postmortem evidence collected including deployment history and error logs
 
 ## Error Handling
 

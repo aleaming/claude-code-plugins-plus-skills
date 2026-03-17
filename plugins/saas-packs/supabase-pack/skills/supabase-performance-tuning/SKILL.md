@@ -22,23 +22,25 @@ compatible-with: claude-code, codex, openclaw
 
 ## Instructions
 
+Performance tuning a Supabase integration should follow a measurement-first discipline. Applying optimizations without a baseline makes it impossible to quantify impact, and premature optimization often targets the wrong bottleneck. Start with profiling, then apply targeted improvements in order of expected impact.
+
 ### Step 1: Establish Baseline
-Measure current latency for critical Supabase operations.
+Measure current latency for critical Supabase operations using application-level instrumentation or the Supabase query editor's explain analyze output. Record P50, P95, and P99 latencies for each operation under representative load. Identify the three to five slowest operations as your primary targets.
 
 ### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+Add response caching for frequently accessed data that changes infrequently. Use TTL-based invalidation for data that has a predictable freshness requirement and event-driven invalidation for data that must be immediately consistent after writes. An LRU cache in memory is appropriate for single-instance applications; Redis is needed for multi-instance deployments.
 
 ### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+Use DataLoader or a similar batching library to coalesce multiple individual record lookups into a single Supabase query with an `IN` clause. This is especially effective in GraphQL resolvers where N+1 query problems are common. Verify the batch size does not exceed Supabase's row limit per request.
 
 ### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+Configure connection pooling with keep-alive settings appropriate for your deployment environment. Serverless functions require aggressive connection reuse via PgBouncer in transaction mode; long-running servers can use session-mode pooling with a larger pool size.
 
 ## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+- Measured baseline latency documented for the top critical operations
+- Caching layer implemented with appropriate invalidation strategy
+- Request batching eliminating N+1 query patterns
+- Connection pooling configured for the deployment environment
 
 ## Error Handling
 

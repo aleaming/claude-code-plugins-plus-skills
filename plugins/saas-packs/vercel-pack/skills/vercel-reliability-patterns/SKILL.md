@@ -22,23 +22,25 @@ compatible-with: claude-code, codex, openclaw
 
 ## Instructions
 
+Building reliable Vercel-deployed services requires addressing reliability at two levels: the reliability of calls made from your serverless functions to external dependencies, and the reliability of the Vercel deployment itself as seen by end users. Circuit breakers protect against dependency degradation propagating to user-facing failures. Idempotency keys make operations safe to retry after function timeouts. Vercel's edge caching and instant rollback capabilities protect against deployment-level failures.
+
 ### Step 1: Implement Circuit Breaker
-Wrap Vercel calls with circuit breaker.
+Wrap calls to external services (databases, third-party APIs) inside your serverless functions with a circuit breaker. When a dependency is degraded, the circuit opens and subsequent calls immediately return a fallback response rather than waiting for the full timeout, which keeps your Vercel function execution time low and prevents cascading failures. Use a library like opossum and configure the failure threshold based on the dependency's expected reliability.
 
 ### Step 2: Add Idempotency Keys
-Generate deterministic keys for operations.
+Generate deterministic keys for state-modifying API operations by hashing the request payload and user identity. Return the cached result for duplicate requests rather than executing the operation again. This is critical for mutation endpoints that may be retried by clients after a network error or Vercel function timeout.
 
 ### Step 3: Configure Bulkheads
-Separate queues for different priorities.
+Separate processing queues for background operations so that a surge in low-priority work does not consume all available function concurrency and starve real-time user-facing requests.
 
 ### Step 4: Set Up Dead Letter Queue
-Handle permanent failures gracefully.
+Route background operations that exceed their retry budget to a dead letter queue rather than silently dropping them. Alert on DLQ depth and provide a replay interface so failed operations can be reprocessed after the underlying issue is resolved.
 
 ## Output
-- Circuit breaker protecting Vercel calls
-- Idempotency preventing duplicates
-- Bulkhead isolation implemented
-- DLQ for failed operations
+- Circuit breakers protecting all external dependency calls from cascading failures
+- Idempotency implemented on all state-modifying API endpoints
+- Bulkhead concurrency isolation between real-time and background workloads
+- Dead letter queue capturing and alerting on permanently failed operations
 
 ## Error Handling
 

@@ -22,23 +22,25 @@ compatible-with: claude-code, codex, openclaw
 
 ## Instructions
 
+Performance tuning Vercel deployments centers on four levers: reducing JavaScript bundle size (which directly controls Time to Interactive), leveraging Vercel's edge caching for static and dynamic content, minimizing serverless function cold-start time, and moving latency-critical code to Edge Functions which run close to the user without cold-start penalties. Measuring before and after each optimization is essential to confirm impact and justify the added complexity.
+
 ### Step 1: Establish Baseline
-Measure current latency for critical Vercel operations.
+Measure current performance metrics using Vercel's built-in analytics or Lighthouse. Record Core Web Vitals (LCP, FID, CLS), serverless function cold-start latency, and cache hit rates for the most-visited routes. Identify which pages or API routes account for the largest share of poor-performing user experiences.
 
 ### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+Configure Vercel's cache-control headers to maximize edge cache utilization for eligible responses. For dynamic pages generated with Next.js ISR or Vercel's `stale-while-revalidate` pattern, set revalidation intervals appropriate to how frequently the underlying data changes. Cache hit rate is the single most impactful metric to improve since it eliminates function invocations entirely.
 
 ### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+Use DataLoader or similar batching libraries to eliminate N+1 query patterns in serverless function handlers. Batching reduces the number of database round-trips per request, which has a multiplicative effect on function latency since each network hop adds cold connection overhead.
 
 ### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+Configure connection pooling and keep-alive for database connections used inside serverless functions. Since functions may be invoked by many concurrent instances, use a connection pooler like PgBouncer to prevent connection exhaustion at the database level.
 
 ## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+- Baseline Core Web Vitals and function latency documented for target routes
+- Edge caching configured with optimized cache-control headers
+- N+1 query patterns eliminated through request batching
+- Connection pooling configured to prevent database connection exhaustion
 
 ## Error Handling
 

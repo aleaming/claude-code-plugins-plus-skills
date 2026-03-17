@@ -22,23 +22,25 @@ compatible-with: claude-code, codex, openclaw
 
 ## Instructions
 
+Supabase anti-patterns typically cluster into three risk categories: security risks (exposing service role keys, missing RLS policies, over-privileged anon access), performance risks (N+1 queries, missing indexes, fetching more columns than needed), and reliability risks (no retry logic, synchronous auth checks in every request, missing error handling). Addressing security issues first prevents data exposure, while performance fixes have the greatest impact on user experience.
+
 ### Step 1: Review for Anti-Patterns
-Scan codebase for each pitfall pattern.
+Scan the codebase for each pitfall pattern listed in the references. Use grep or a code search tool to find all locations where Supabase client calls are made. Look specifically for service role key usage in client-side code, missing `.select()` column lists that fetch entire rows, and `await` chains that make multiple sequential queries where a single join would suffice.
 
 ### Step 2: Prioritize Fixes
-Address security issues first, then performance.
+Address security issues first: any client-side exposure of the service role key or missing RLS policies on tables containing user data are critical. Then tackle performance issues that affect P95 latency. Finally, address reliability gaps like missing error handling.
 
 ### Step 3: Implement Better Approach
-Replace anti-patterns with recommended patterns.
+Replace anti-patterns with recommended patterns. Document the change in a PR description so reviewers understand why the old approach was problematic.
 
 ### Step 4: Add Prevention
-Set up linting and CI checks to prevent recurrence.
+Set up linting and CI checks to prevent recurrence. Add ESLint rules that flag service key usage in frontend bundles and require `.select()` calls to specify columns explicitly.
 
 ## Output
-- Anti-patterns identified
-- Fixes prioritized and implemented
-- Prevention measures in place
-- Code quality improved
+- Anti-patterns identified with severity classification
+- Security, performance, and reliability fixes implemented
+- ESLint and CI prevention measures active
+- Code quality measurably improved with documented rationale
 
 ## Error Handling
 

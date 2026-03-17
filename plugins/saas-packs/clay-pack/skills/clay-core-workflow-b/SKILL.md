@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Clay Core Workflow B
 
 ## Overview
-Secondary workflow for Clay. Complements the primary workflow.
+Secondary workflow for Clay. Complements the enrichment workflow by focusing on AI-powered personalization, waterfall enrichment strategies, and CRM synchronization. Use this skill when you need to generate personalized outreach snippets for each prospect using their enriched profile data, configure waterfall logic to try cheaper data sources before falling back to premium ones, or sync enriched records back to Salesforce or HubSpot automatically.
 
 ## Prerequisites
 - Completed `clay-install-auth` setup
@@ -25,23 +25,30 @@ Secondary workflow for Clay. Complements the primary workflow.
 ## Instructions
 
 ### Step 1: Setup
+Define the personalization or sync task. For AI personalization, configure the Clay AI column with a prompt template that references the prospect's enriched fields — company, role, recent news, or tech stack — to generate unique first-line copy for each outreach email. For waterfall enrichment, order your data provider sequence from lowest cost to highest so expensive lookups are only triggered when cheaper sources return no data.
+
 ```typescript
 // Step 1 implementation
 ```
 
 ### Step 2: Process
+Run the configured columns across your table. For AI personalization, review a random sample of generated snippets to verify quality and relevance before using them in campaigns. For waterfall enrichment, inspect the provider column to see which source filled each record and calculate the average cost per enriched contact. For CRM sync, trigger the export and verify that records map to the correct object types and field names in your CRM.
+
 ```typescript
 // Step 2 implementation
 ```
 
 ### Step 3: Complete
+Export or push the finalized records to your outreach tool or CRM. For personalized campaigns, attach the generated snippets as a field in your email sequence tool's contact import. Document the waterfall configuration and credit cost breakdown so the approach can be reproduced or refined for future campaigns.
+
 ```typescript
 // Step 3 implementation
 ```
 
 ## Output
 - Completed Core Workflow B execution
-- Results from Clay API
+- Personalized outreach snippets or waterfall-enriched records
+- CRM sync confirmation with mapped field values
 - Success confirmation or error details
 
 ## Error Handling

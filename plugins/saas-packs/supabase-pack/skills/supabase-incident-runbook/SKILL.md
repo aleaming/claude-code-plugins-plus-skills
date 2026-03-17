@@ -22,23 +22,25 @@ compatible-with: claude-code, codex, openclaw
 
 ## Instructions
 
+Incident response for Supabase integrations requires distinguishing quickly between platform-side outages (check status.supabase.com) and issues in your own integration code or infrastructure. Misattributing a platform outage as an internal bug wastes critical time during an incident. Always verify the Supabase status page before investing engineering effort in local remediation.
+
 ### Step 1: Quick Triage
-Run the triage commands to identify the issue source.
+Run the triage commands to identify the issue source. Check Supabase status page, verify your API credentials have not expired, and run a minimal health check query against your Supabase instance. Compare error rates against your baseline metrics to understand the scope and onset time.
 
 ### Step 2: Follow Decision Tree
-Determine if the issue is Supabase-side or internal.
+Determine if the issue is Supabase-side or internal. Platform outages require monitoring the status page and communicating degraded service to users. Internal issues require examining your application logs, recent deployments, and configuration changes for the root cause.
 
 ### Step 3: Execute Immediate Actions
-Apply the appropriate remediation for the error type.
+Apply the appropriate remediation for the error type. For connection failures, enable circuit breakers and fallback responses. For data inconsistencies, pause write operations to prevent further corruption while you investigate.
 
 ### Step 4: Communicate Status
-Update internal and external stakeholders.
+Update internal and external stakeholders. Provide clear, jargon-free status updates at regular intervals. Avoid speculation about root cause until confirmed by investigation.
 
 ## Output
-- Issue identified and categorized
-- Remediation applied
-- Stakeholders notified
-- Evidence collected for postmortem
+- Issue identified and categorized as platform-side or internal
+- Remediation applied with evidence of restored service
+- Stakeholders notified with timeline and impact summary
+- Evidence collected for postmortem including timeline and root cause
 
 ## Error Handling
 

@@ -22,23 +22,25 @@ compatible-with: claude-code, codex, openclaw
 
 ## Instructions
 
-### Assess current configuration
-Document existing implementation and data inventory.
+Migrating to Vercel from another deployment platform or migrating a Vercel-hosted application to a different architecture is most safely done incrementally using the strangler fig pattern. The key risk in any migration is a hard cutover that cannot be quickly reversed if problems emerge. Building gradual traffic shifting into your migration plan gives you the ability to limit user impact during the transition and validate that the new deployment behaves identically to the old one before fully committing.
+
+### Step 1: Assess Current Configuration
+Document the existing deployment configuration: build pipeline, environment variables, serverless function patterns, custom headers and redirect rules, domain configuration, and any Vercel-specific features in use (edge functions, incremental static regeneration, middleware). Identify which aspects of the current deployment have no direct equivalent in the target architecture and require architectural decisions before proceeding.
 
 ### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
+Create an abstraction layer for gradual migration using Vercel's rewrite rules or middleware to route a percentage of traffic to the new deployment. This allows you to run both versions in parallel and compare behavior under real traffic without fully committing to the migration.
 
 ### Step 3: Migrate Data
-Run batch data migration with error handling.
+For migrations involving data store changes alongside the platform migration, run batch data migration with error handling and verification checksums. Keep both data stores in sync during the parallel-run period.
 
 ### Step 4: Shift Traffic
-Gradually route traffic to new Vercel integration.
+Gradually increase traffic to the new deployment, monitoring error rates and latency at each increment before proceeding. Decommission the old deployment only after running fully on the new configuration for a stability period with no regressions.
 
 ## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to Vercel
+- Migration assessment documented with full configuration inventory
+- Adapter layer implementing incremental traffic shifting
+- Data migrated and verified where applicable
+- Traffic fully shifted with old deployment decommissioned after stability period
 
 ## Error Handling
 

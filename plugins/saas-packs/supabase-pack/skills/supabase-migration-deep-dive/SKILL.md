@@ -22,23 +22,25 @@ compatible-with: claude-code, codex, openclaw
 
 ## Instructions
 
-### Assess current configuration
-Document existing implementation and data inventory.
+Large-scale migrations to Supabase are most safely executed using the strangler fig pattern — running the old and new systems in parallel, incrementally routing traffic to Supabase, and only decommissioning the legacy system once confidence is high. Attempting a big-bang cutover introduces significant rollback complexity, especially if data has already been modified on the new system. Plan your rollback checkpoint before starting any traffic shift.
+
+### Step 1: Assess Current Configuration
+Document existing implementation and data inventory. Catalog all tables, indexes, stored procedures, and integration points that must be replicated in Supabase. Identify data that requires transformation or normalization during migration, and flag any features in the legacy system that have no direct equivalent in Supabase.
 
 ### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
+Create an abstraction layer that routes requests to either the legacy system or Supabase based on a feature flag. This allows you to test real traffic against Supabase for a subset of users before committing to the migration, and it provides an instant rollback path by flipping the flag back.
 
 ### Step 3: Migrate Data
-Run batch data migration with error handling.
+Run batch data migration with error handling. Migrate in chunks, verify row counts and checksums after each batch, and maintain a migration log that records which records have been moved. Keep the legacy and Supabase datasets in sync during the parallel-run period using a change data capture approach.
 
 ### Step 4: Shift Traffic
-Gradually route traffic to new Supabase integration.
+Gradually route traffic to the new Supabase integration, increasing the percentage over days rather than hours. Monitor error rates and latency at each increment before proceeding. Decommission the legacy system only after running fully on Supabase for a stability period.
 
 ## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Data migrated successfully
-- Traffic fully shifted to Supabase
+- Migration assessment documented with full data inventory
+- Adapter layer implemented with feature-flag-controlled routing
+- Data migrated and verified against checksums
+- Traffic fully shifted to Supabase with legacy system decommissioned
 
 ## Error Handling
 

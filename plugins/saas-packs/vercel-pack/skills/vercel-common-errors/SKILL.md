@@ -21,19 +21,21 @@ compatible-with: claude-code, codex, openclaw
 
 ## Instructions
 
+Vercel errors typically originate from one of three layers: the build pipeline (configuration errors, dependency failures), the serverless function runtime (timeouts, memory limits, environment variable issues), or the edge network (routing mismatches, header size limits). Identifying which layer is responsible saves significant debugging time before you start making changes.
+
 ### Step 1: Identify the Error
-Check error message and code in your logs or console.
+Check the error message and code in your Vercel deployment logs or function logs. Build errors appear in the deployment log with exit codes and compilation output. Runtime errors appear in the function log with request context. Note the HTTP status code if the error came from a deployed function — 504 typically means a function timeout, 413 means a request payload exceeded Vercel's size limit, and 500 means an uncaught exception in your function code.
 
 ### Step 2: Find Matching Error Below
-Match your error to one of the documented cases.
+Match your error to one of the documented cases in the references file. Distinguish between errors that occur on every request (deterministic, require a code fix) and errors that occur intermittently (potentially cold-start related or caused by external service degradation). Deterministic errors should be fixed before promoting to production; intermittent errors may require retry logic or graceful degradation.
 
 ### Step 3: Apply Solution
-Follow the solution steps for your specific error.
+Follow the solution steps for your specific error. After applying a fix, trigger a new deployment and test the affected endpoint or route. If the error was related to environment variables, verify the variable is present in both preview and production environments in the Vercel dashboard.
 
 ## Output
-- Identified error cause
-- Applied fix
-- Verified resolution
+- Identified error cause and the layer (build, runtime, or edge network) where it originated
+- Applied fix with verification via a new deployment
+- Environment variable or configuration change confirmed in all required environments
 
 ## Error Handling
 

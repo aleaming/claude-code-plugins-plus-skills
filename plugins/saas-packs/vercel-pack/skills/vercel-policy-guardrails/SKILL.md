@@ -22,23 +22,25 @@ compatible-with: claude-code, codex, openclaw
 
 ## Instructions
 
+Policy guardrails for Vercel deployments protect against the most common failure modes: accidental secret exposure in client bundles, deployment to wrong environments, incompatible edge runtime API usage, and runaway serverless function costs. Implementing guardrails at multiple enforcement points (lint, pre-commit, CI, and runtime) ensures that issues are caught as early as possible in the development lifecycle rather than discovered in production.
+
 ### Step 1: Create ESLint Rules
-Implement custom lint rules for Vercel patterns.
+Implement custom lint rules that flag Vercel-specific anti-patterns: using `process.env` variables prefixed with `NEXT_PUBLIC_` for secrets (which exposes them in the client bundle), importing Node.js-only modules in files with `export const runtime = 'edge'`, and omitting explicit region configuration for latency-sensitive edge functions. Rules should provide error messages that clearly state what is wrong and suggest the correct approach.
 
 ### Step 2: Configure Pre-Commit Hooks
-Set up hooks to catch issues before commit.
+Set up pre-commit hooks that scan staged files for Vercel project IDs, deployment tokens, or other credentials that should not enter version control. Pair with a `.env.example` file that documents required variables without values so contributors know what to configure without copying secrets.
 
 ### Step 3: Add CI Policy Checks
-Implement policy-as-code in CI pipeline.
+Implement CI checks that validate the Vercel configuration file (`vercel.json`) schema, confirm that all environment variables referenced in code are declared in your deployment configuration, and run bundle size analysis to alert when the JavaScript bundle crosses your performance budget thresholds.
 
 ### Step 4: Enable Runtime Guardrails
-Add production safeguards for dangerous operations.
+Add middleware that enforces authentication on all routes matching your protected path patterns, with a fallback to a clear error page for unauthenticated requests rather than a broken UI state.
 
 ## Output
-- ESLint plugin with Vercel rules
-- Pre-commit hooks blocking secrets
-- CI policy checks passing
-- Runtime guardrails active
+- ESLint rules detecting secret exposure and edge runtime incompatibilities
+- Pre-commit hooks preventing credentials from entering version control
+- CI checks validating configuration schema and bundle size budgets
+- Middleware enforcing authentication on all protected routes
 
 ## Error Handling
 

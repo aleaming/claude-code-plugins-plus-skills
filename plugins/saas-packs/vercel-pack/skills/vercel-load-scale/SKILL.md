@@ -22,23 +22,25 @@ compatible-with: claude-code, codex, openclaw
 
 ## Instructions
 
+Load testing Vercel deployments requires understanding the platform's auto-scaling model: serverless functions scale horizontally without configuration, but they have per-invocation concurrency limits and cold-start penalties that can cause latency spikes under sudden traffic bursts. Load tests should simulate both sustained load (to measure steady-state performance) and spike scenarios (to measure cold-start amplification) to give a complete picture of behavior under production traffic patterns.
+
 ### Step 1: Create Load Test Script
-Write k6 test script with appropriate thresholds.
+Write a k6 test script that models your realistic traffic pattern including the read/write ratio, request size distribution, and geographic origin if applicable. Set thresholds for P95 and P99 latency at values aligned to your user experience SLAs. Include a warm-up phase to establish a baseline before the peak load phase to isolate cold-start latency from steady-state latency.
 
 ### Step 2: Configure Auto-Scaling
-Set up HPA with CPU and custom metrics.
+Vercel serverless functions scale automatically, but you may need to configure concurrency limits or use Vercel's Edge Functions for lower-latency scaling at the edge. For workloads with predictable spikes, consider pre-warming strategies or migrating latency-critical paths to edge functions which eliminate cold starts entirely.
 
 ### Step 3: Run Load Test
-Execute test and collect metrics.
+Execute the test against a staging deployment that mirrors production configuration. Collect function invocation metrics from the Vercel dashboard alongside your k6 output. Watch for error rate increases at high concurrency levels and log cold-start occurrences to quantify their frequency and duration.
 
 ### Step 4: Analyze and Document
-Record results in benchmark template.
+Record results in the benchmark template documenting throughput, latency percentiles, cold-start frequency, and error rate at each load level. Derive capacity recommendations identifying the traffic volume at which latency SLAs are breached.
 
 ## Output
-- Load test script created
-- HPA configured
-- Benchmark results documented
-- Capacity recommendations defined
+- Load test script covering steady-state and spike traffic scenarios
+- Scaling configuration aligned to traffic patterns and latency requirements
+- Benchmark results documenting performance at each load level
+- Capacity recommendations with identified SLA breach thresholds
 
 ## Error Handling
 
