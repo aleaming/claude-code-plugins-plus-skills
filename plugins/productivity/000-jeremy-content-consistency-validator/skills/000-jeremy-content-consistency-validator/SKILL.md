@@ -10,6 +10,16 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Content Consistency Validator
 
+## Overview
+
+Checks content for tone, terminology, formatting, and structural consistency across multiple documentation sources (websites, GitHub repos, local docs). Generates read-only discrepancy reports with severity-classified findings and actionable fix suggestions including file paths and line numbers.
+
+## Examples
+
+- **Pre-release audit**: Before tagging a new version, run the validator to catch version mismatches between your README, docs site, and changelog — e.g., the website says v2.1.0 but the GitHub README still references v2.0.0.
+- **Post-rebrand check**: After renaming a product or updating terminology (e.g., "plugin" to "extension"), validate that all docs, landing pages, and contributing guides use the new term consistently.
+- **Onboarding review**: When a new contributor flags confusing docs, run a consistency check to surface contradictory feature claims, outdated contact info, or missing sections across your documentation sources.
+
 ## Prerequisites
 
 - Access to at least two content sources (website, GitHub repo, or local docs directory)
