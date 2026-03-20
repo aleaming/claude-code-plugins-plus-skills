@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.20.0] - 2026-03-20
+
+### Added
+- **pr-to-spec MCP plugin** - Convert PRs and local diffs into structured, agent-consumable specs with intent drift detection. 6 MCP tools for agentic coding workflows.
+- **claude-memory-kit plugin** - Persistent agent memory system (#370, @seankim-android)
+- **prism-scanner plugin** - Added to ecosystem section (#369, @aidongise-cell)
+- **Content consistency validator improvements** - Enhanced skill structure validation with skill-review CI (#347, @fernandezbaptiste)
+
+### Changed
+- **8 SaaS packs rewritten with production content** - 150+ skills upgraded:
+  - MaintainX pack (24 skills) - CMMS API integration
+  - Evernote pack (24 skills) - Note management workflows
+  - Apollo pack (22 skills) - Sales engagement APIs
+  - Clerk pack (22 skills) - Auth/user management
+  - Speak pack (9 skills) - Language learning APIs
+  - Obsidian pack (10 skills) - Vault plugin development
+  - Lokalise pack (23 skills) - Localization workflows
+  - Juicebox pack (18 skills) - Community platform APIs
+- **Agent spec updated for v2.1.78** - New `effort`, `maxTurns`, `disallowedTools` fields; corrected agent vs skill tool patterns
+- **Performance budget** - Bumped to 19.5MB for 346+ plugins
+
+### Fixed
+- **Homepage badges** - Removed redundant badges above Killer Skill and Jeremy's Stash headings
+- **Skill-review CI** - Removed insecure workflow dispatch, restored Overview + Examples sections
+- **HTML attribute sanitization** - Complete quote escaping in discover-skills.mjs
+- **Repository URL consistency** - Fixed pr-to-spec → pr-to-prompt mapping
+- **Validation script** - Fixed duplicate tuple entry, added anchor skip
+
+### Metrics
+- Commits since v4.19.0: 13
+- Files changed: 432 (+56,454 lines)
+- Contributors: Jeremy Longshore, fernandezbaptiste, aidongise-cell, seankim-android, intentsolutions.io
+
+---
+
 ## [4.19.0] - 2026-03-17
 
 ### Added
