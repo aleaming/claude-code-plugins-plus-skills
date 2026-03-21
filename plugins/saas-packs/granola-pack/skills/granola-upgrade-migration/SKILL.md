@@ -19,254 +19,65 @@ compatible-with: claude-code, codex, openclaw
 !`pip freeze 2>/dev/null | head -20`
 
 ## Overview
-Guide for upgrading Granola versions and migrating between subscription plans.
+Guide for upgrading Granola app versions and migrating between subscription plans. Covers auto-update configuration, plan upgrades and downgrades, data export/import, and enterprise migrations from competing tools.
 
-## App Version Upgrades
+## Prerequisites
+- Current Granola version information (Menu > About Granola)
+- Admin access for organization-level changes
+- Data backup before major upgrades
 
-### Check Current Version
+## Instructions
+
+### Step 1: Check Current Version
 ```bash
 # macOS - Check installed version
 defaults read /Applications/Granola.app/Contents/Info.plist CFBundleShortVersionString
-
-# Or in Granola app:
-# Menu > About Granola
 ```
 
-### Auto-Update Settings
-```
-Granola > Preferences > General
-- Check for updates automatically: Enabled (recommended)
-- Download updates in background: Enabled
-- Notify before installing: Your preference
-```
+### Step 2: Configure Auto-Updates
+Navigate to Granola > Preferences > General. Enable "Check for updates automatically" and "Download updates in background."
 
-### Manual Update Process
+### Step 3: Upgrade App Version
 ```bash
 # macOS via Homebrew
 brew update
 brew upgrade --cask granola
-
-# Or download directly
-open https://granola.ai/download
-
-# Verify update
-defaults read /Applications/Granola.app/Contents/Info.plist CFBundleShortVersionString
 ```
+Alternatively, download the latest version directly from granola.ai/download.
 
-### Update Troubleshooting
-```markdown
-## Common Update Issues
+### Step 4: Upgrade Subscription Plan
+Navigate to Settings > Account > Subscription. Select the target plan (Pro, Business, or Enterprise) and complete the upgrade flow. Plan features activate immediately with prorated billing.
 
-Issue: Update fails to install
-Solution:
-1. Quit Granola completely
-2. Delete ~/Library/Caches/Granola
-3. Redownload installer
-4. Run installer as admin
-
-Issue: App crashes after update
-Solution:
-1. Clear preferences (backup first)
-2. Re-authenticate
-3. Contact support if persists
 ```
-
-## Plan Migrations
-
-### Upgrade Path
-```
-Free → Pro → Business → Enterprise
-
-Upgrade includes:
+Upgrade Path: Free → Pro → Business → Enterprise
 - Immediate access to new features
-- No data loss
-- Prorated billing
-- Increased limits take effect immediately
+- No data loss during upgrade
+- Prorated billing applied
 ```
 
-### Upgrading Plans
+### Step 5: Export Data Before Downgrades
+Before downgrading, export all data via Settings > Data > Export in Markdown or JSON format. Verify the export contains all notes, transcripts, and action items.
 
-#### Free to Pro
-```markdown
-## Upgrade Steps
-1. Settings > Account > Subscription
-2. Click "Upgrade to Pro"
-3. Enter payment information
-4. Confirm subscription
-5. Immediate access to Pro features
+For complete update troubleshooting, plan upgrade details, data import/export procedures, rollback steps, and enterprise migration checklists, see [migration procedures](references/migration-procedures.md).
 
-Benefits Gained:
-- Unlimited meetings
-- Longer recording duration
-- All integrations
-- Custom templates
-- Priority processing
-```
+## Output
+- Granola updated to latest version
+- Subscription plan changed with features activated
+- Data exported and verified before any downgrades
 
-#### Pro to Business
-```markdown
-## Upgrade Steps
-1. Settings > Account > Subscription
-2. Click "Upgrade to Business"
-3. Set initial team size
-4. Complete payment
-5. Configure workspace settings
+## Error Handling
 
-Benefits Gained:
-- Team workspaces
-- Admin controls
-- SSO support
-- Audit logs
-- Priority support
-```
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Update fails to install | Cached data conflict | Delete ~/Library/Caches/Granola and retry |
+| App crashes after update | Corrupted preferences | Clear preferences and re-authenticate |
+| Billing error on upgrade | Payment method expired | Update payment method in Account settings |
 
-#### Business to Enterprise
-```markdown
-## Enterprise Migration
-1. Contact sales@granola.ai
-2. Discuss requirements
-3. Custom agreement
-4. Dedicated onboarding
-5. Migration support
+## Examples
 
-Enterprise Features:
-- Custom limits
-- Dedicated support
-- SLA guarantees
-- On-premise option
-- Custom integrations
-```
+**Version upgrade**: Run `brew update && brew upgrade --cask granola` to update. Verify with `defaults read /Applications/Granola.app/Contents/Info.plist CFBundleShortVersionString`. Clear caches if the update fails.
 
-### Downgrade Considerations
-```markdown
-## Downgrading Plans
-
-Before downgrading:
-- [ ] Export data exceeding new limits
-- [ ] Document current integrations
-- [ ] Notify team members
-- [ ] Review feature dependencies
-
-Data Handling:
-- Notes preserved (read-only if over limit)
-- Integrations disconnected
-- Team access removed
-- Templates kept but locked
-
-Timeline:
-- Downgrade at next billing cycle
-- Access maintained until then
-- No prorated refunds typically
-```
-
-## Data Migration
-
-### Export All Data
-```markdown
-## Complete Data Export
-
-1. Settings > Data > Export
-2. Select "All Data"
-3. Choose format:
-   - Markdown (readable)
-   - JSON (complete)
-   - PDF (archival)
-4. Wait for export generation
-5. Download zip file
-6. Verify contents
-```
-
-### Import to New Account
-```markdown
-## Limitations
-- No direct import between accounts
-- Manual recreation of templates required
-- Integrations must be reconfigured
-
-Workaround:
-1. Export as Markdown
-2. Import to Notion/other tool
-3. Reference in new account
-```
-
-### Workspace Migration
-```markdown
-## Move Between Workspaces
-
-Scenario: Moving from personal to team workspace
-
-Steps:
-1. Export notes from personal account
-2. Join team workspace
-3. Share/recreate important notes
-4. Transfer integrations manually
-5. Update calendar connections
-```
-
-## Version Compatibility
-
-### Breaking Changes Awareness
-```markdown
-## Before Major Updates
-
-Check:
-- Release notes at granola.ai/updates
-- Breaking changes section
-- Integration compatibility
-- Minimum system requirements
-
-Prepare:
-- Backup current data
-- Document custom settings
-- Note integration configs
-- Plan rollback if needed
-```
-
-### Rollback Procedure
-```markdown
-## If Update Causes Issues
-
-macOS:
-1. Download previous version from granola.ai/downloads/archive
-2. Quit Granola
-3. Move current app to trash
-4. Install previous version
-5. Report issue to support
-
-Note: Account data is cloud-synced,
-app version doesn't affect stored data
-```
-
-## Enterprise Migration Checklist
-
-### From Other Tools to Granola
-```markdown
-## Migration from Otter.ai/Fireflies/Other
-
-Phase 1: Data Export (Week 1)
-- [ ] Export all meeting notes
-- [ ] Export transcripts
-- [ ] Download audio (if needed)
-- [ ] Document integrations used
-
-Phase 2: Granola Setup (Week 1-2)
-- [ ] Configure Granola workspace
-- [ ] Set up integrations
-- [ ] Create templates
-- [ ] Train team
-
-Phase 3: Parallel Running (Week 2-4)
-- [ ] Run both tools
-- [ ] Compare quality
-- [ ] Identify gaps
-- [ ] Adjust configuration
-
-Phase 4: Cutover (Week 5)
-- [ ] Disable old tool
-- [ ] Full switch to Granola
-- [ ] Monitor closely
-- [ ] Support team actively
-```
+**Plan migration with data preservation**: Export all data as JSON before downgrading from Business to Pro. Document active integrations (they disconnect on downgrade), notify team members, and re-import critical notes after the downgrade completes.
 
 ## Resources
 - [Granola Updates](https://granola.ai/updates)
@@ -275,37 +86,3 @@ Phase 4: Cutover (Week 5)
 
 ## Next Steps
 Proceed to `granola-ci-integration` for CI/CD workflow integration.
-
-## Prerequisites
-
-- Access to the migration environment or API
-- Required CLI tools installed and authenticated
-- Familiarity with migration concepts and terminology
-
-## Instructions
-
-1. Assess the current state of the migration configuration
-2. Identify the specific requirements and constraints
-3. Apply the recommended patterns from this skill
-4. Validate the changes against expected behavior
-5. Document the configuration for team reference
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
-
-## Error Handling
-
-| Error | Cause | Resolution |
-|-------|-------|------------|
-| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with migration |
-| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
-| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
-
-## Examples
-
-**Basic usage**: Apply granola upgrade migration to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize granola upgrade migration for production environments with multiple constraints and team-specific requirements.

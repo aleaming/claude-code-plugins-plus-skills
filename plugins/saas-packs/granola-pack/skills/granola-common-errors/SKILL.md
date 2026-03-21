@@ -15,29 +15,34 @@ compatible-with: claude-code, codex, openclaw
 # Granola Common Errors
 
 ## Overview
-Diagnose and resolve common Granola issues for uninterrupted meeting capture.
+Diagnose and resolve common Granola issues covering audio capture, calendar sync, processing failures, and integration errors. Each error includes symptoms, root causes, and step-by-step remediation.
 
-## Quick Diagnostics
+## Prerequisites
+- Granola installed (even if malfunctioning)
+- Terminal access for diagnostic commands
+- Admin access on macOS or Windows
 
-### Check Granola Status
+## Instructions
+
+### Step 1: Run Quick Diagnostics
 ```bash
 # macOS - Check if Granola is running
 pgrep -l Granola
 
 # Check audio devices
 system_profiler SPAudioDataType | grep "Default Input"
-
-# Check microphone permissions
-tccutil list | grep Granola
 ```
 
-## Common Errors & Solutions
+### Step 2: Identify the Error Category
+Match symptoms to the appropriate section below, then apply the corresponding fix.
 
-### Audio Issues
+### Step 3: Apply the Fix
+Follow the resolution steps for the matched error. Verify the fix resolved the issue before closing.
 
-#### Error: "No Audio Captured"
+## Audio Issues
+
+### Error: "No Audio Captured"
 **Symptoms:** Meeting recorded but transcript is empty
-**Causes & Solutions:**
 
 | Cause | Solution |
 |-------|----------|
@@ -52,140 +57,45 @@ set -euo pipefail
 sudo killall coreaudiod
 ```
 
-#### Error: "Poor Transcription Quality"
-**Symptoms:** Many errors in transcript
-**Solutions:**
-1. Use quality microphone or headset
+### Error: "Poor Transcription Quality"
+1. Use a quality microphone or headset
 2. Reduce background noise
-3. Speak clearly and at moderate pace
-4. Position microphone closer
+3. Speak clearly at a moderate pace
+4. Position microphone closer to the speaker
 
-### Calendar Sync Issues
+## Calendar Sync Issues
 
-#### Error: "Meeting Not Detected"
-**Symptoms:** Granola doesn't auto-start for scheduled meeting
-**Solutions:**
+### Error: "Meeting Not Detected"
+1. **Check calendar connection:** Settings > Integrations > Calendar; disconnect and reconnect
+2. **Verify event visibility:** Event must be on a synced calendar with a video link
+3. **Force sync:** Click the sync button in Granola and wait 30 seconds
 
-1. **Check calendar connection:**
-   - Settings > Integrations > Calendar
-   - Disconnect and reconnect
-
-2. **Verify event visibility:**
-   - Event must be on synced calendar
-   - You must be an attendee
-   - Event needs video link
-
-3. **Force sync:**
-   - Click sync button in Granola
-   - Wait 30 seconds
-   - Check if meeting appears
-
-#### Error: "Calendar Authentication Failed"
-**Symptoms:** Can't connect Google/Outlook calendar
-**Solutions:**
-```
+### Error: "Calendar Authentication Failed"
 1. Clear browser cache
 2. Log out of Google/Microsoft account
-3. Log back in
-4. Try connecting Granola again
-5. Use private/incognito browser window
-```
+3. Log back in and reconnect Granola
+4. Alternatively, use a private/incognito browser window
 
-### Processing Issues
+For processing errors, integration errors, app issues, and error codes, see [detailed error reference](references/detailed-errors.md).
 
-#### Error: "Notes Not Appearing"
-**Symptoms:** Meeting ended but no notes generated
-**Solutions:**
+## Output
+- Identified root cause of the Granola issue
+- Applied resolution steps with verified fix
+- Documented the error and solution for team reference
 
-| Timeframe | Action |
-|-----------|--------|
-| < 2 min | Wait - processing takes time |
-| 2-5 min | Check internet connection |
-| 5-10 min | Restart Granola app |
-| > 10 min | Contact support |
+## Error Handling
 
-#### Error: "Processing Failed"
-**Symptoms:** Error message after meeting
-**Causes:**
-- Audio file corrupted
-- Meeting too short (< 2 min)
-- Server issues
-- Storage full
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Re-authenticate with Granola account |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
 
-**Solutions:**
-1. Check Granola status page
-2. Verify sufficient disk space
-3. Try re-uploading if option available
-4. Contact support with meeting ID
+## Examples
 
-### Integration Issues
+**Audio troubleshooting**: Run `pgrep -l Granola` to confirm the app is running, then check `system_profiler SPAudioDataType` to verify the correct input device. Reset Core Audio with `sudo killall coreaudiod` if the device is correct but audio is not captured.
 
-#### Error: "Zapier Connection Lost"
-**Symptoms:** Automations not triggering
-**Solutions:**
-1. Open Zapier dashboard
-2. Find Granola connection
-3. Click "Reconnect"
-4. Re-authorize access
-5. Test Zap manually
-
-#### Error: "Slack/Notion Sync Failed"
-**Symptoms:** Notes not appearing in connected apps
-**Solutions:**
-1. Check integration status in Settings
-2. Verify target workspace permissions
-3. Re-authenticate if expired
-4. Check target channel/database exists
-
-### App Issues
-
-#### Error: "App Won't Start"
-**Solutions (macOS):**
-```bash
-set -euo pipefail
-# Force quit Granola
-killall Granola
-
-# Clear preferences (caution: resets settings)
-rm -rf ~/Library/Preferences/com.granola.*
-rm -rf ~/Library/Application\ Support/Granola
-
-# Reinstall
-brew reinstall granola
-```
-
-**Solutions (Windows):**
-```
-1. Task Manager > End Granola process
-2. Settings > Apps > Granola > Repair
-3. If fails, uninstall and reinstall
-```
-
-#### Error: "Update Failed"
-**Solutions:**
-1. Close Granola completely
-2. Download latest from granola.ai/download
-3. Install over existing version
-4. Restart computer if needed
-
-## Error Code Reference
-
-| Code | Meaning | Action |
-|------|---------|--------|
-| E001 | Authentication failed | Re-login to Granola |
-| E002 | Audio capture error | Check microphone |
-| E003 | Network error | Check internet |
-| E004 | Processing timeout | Retry or contact support |
-| E005 | Storage full | Free up disk space |
-| E006 | Calendar sync error | Reconnect calendar |
-
-## When to Contact Support
-- Errors persist after troubleshooting
-- Data loss or corruption
-- Billing issues
-- Feature requests
-
-**Support:** help@granola.ai
+**Calendar sync fix**: Navigate to Settings > Integrations > Calendar, disconnect the calendar, wait 10 seconds, reconnect, and verify the next scheduled meeting appears in Granola.
 
 ## Resources
 - [Granola Status](https://status.granola.ai)
@@ -194,37 +104,3 @@ brew reinstall granola
 
 ## Next Steps
 Proceed to `granola-debug-bundle` for creating diagnostic reports.
-
-## Prerequisites
-
-- Access to the Granola Common Errors environment or API
-- Required CLI tools installed and authenticated
-- Familiarity with Granola Common Errors concepts and terminology
-
-## Instructions
-
-1. Assess the current state of the Granola Common Errors configuration
-2. Identify the specific requirements and constraints
-3. Apply the recommended patterns from this skill
-4. Validate the changes against expected behavior
-5. Document the configuration for team reference
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
-
-## Error Handling
-
-| Error | Cause | Resolution |
-|-------|-------|------------|
-| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with Granola Common Errors |
-| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
-| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
-
-## Examples
-
-**Basic usage**: Apply granola common errors to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize granola common errors for production environments with multiple constraints and team-specific requirements.

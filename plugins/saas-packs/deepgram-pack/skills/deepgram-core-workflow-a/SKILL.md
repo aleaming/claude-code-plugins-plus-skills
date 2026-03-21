@@ -15,7 +15,7 @@ compatible-with: claude-code, codex, openclaw
 # Deepgram Core Workflow A: Pre-recorded Transcription
 
 ## Overview
-Implement a complete pre-recorded audio transcription workflow using Deepgram's Nova-2 model.
+Implement a complete pre-recorded audio transcription workflow using Deepgram's Nova-2 model. Covers file and URL transcription, configurable feature options, batch processing, and speaker diarization.
 
 ## Prerequisites
 - Completed `deepgram-install-auth` setup
@@ -24,267 +24,60 @@ Implement a complete pre-recorded audio transcription workflow using Deepgram's 
 
 ## Instructions
 
-### Step 1: Set Up Transcription Service
-Create a service class to handle transcription operations.
+### Step 1: Create Transcription Service
+Create a service class to handle transcription operations with configurable options for model, language, punctuation, and diarization.
 
-### Step 2: Implement File and URL Transcription
-Add methods for both local files and remote URLs.
-
-### Step 3: Add Feature Options
-Configure punctuation, diarization, and formatting.
-
-### Step 4: Process Results
-Extract and format transcription results.
-
-## Output
-- Transcription service class
-- Support for file and URL transcription
-- Configurable transcription options
-- Formatted transcript output
-
-## Error Handling
-| Error | Cause | Solution |
-|-------|-------|----------|
-| Audio Too Long | Exceeds limits | Split into chunks or use async |
-| Unsupported Format | Invalid audio type | Convert to WAV/MP3/FLAC |
-| Empty Response | No speech detected | Check audio quality |
-| Timeout | Large file processing | Use callback URL pattern |
-
-## Examples
-
-### TypeScript Transcription Service
+### Step 2: Implement URL Transcription
 ```typescript
-// services/transcription.ts
 import { createClient } from '@deepgram/sdk';
-import { readFile } from 'fs/promises';
 
-export interface TranscriptionOptions {
-  model?: 'nova-2' | 'nova' | 'enhanced' | 'base';
-  language?: string;
-  punctuate?: boolean;
-  diarize?: boolean;
-  smartFormat?: boolean;
-  utterances?: boolean;
-  paragraphs?: boolean;
-}
-
-export interface TranscriptionResult {
-  transcript: string;
-  confidence: number;
-  words: Array<{
-    word: string;
-    start: number;
-    end: number;
-    confidence: number;
-  }>;
-  utterances?: Array<{
-    speaker: number;
-    transcript: string;
-    start: number;
-    end: number;
-  }>;
-}
-
-export class TranscriptionService {
-  private client;
-
-  constructor(apiKey: string) {
-    this.client = createClient(apiKey);
-  }
-
-  async transcribeUrl(
-    url: string,
-    options: TranscriptionOptions = {}
-  ): Promise<TranscriptionResult> {
-    const { result, error } = await this.client.listen.prerecorded.transcribeUrl(
-      { url },
-      {
-        model: options.model || 'nova-2',
-        language: options.language || 'en',
-        punctuate: options.punctuate ?? true,
-        diarize: options.diarize ?? false,
-        smart_format: options.smartFormat ?? true,
-        utterances: options.utterances ?? false,
-        paragraphs: options.paragraphs ?? false,
-      }
-    );
-
-    if (error) throw new Error(error.message);
-
-    return this.formatResult(result);
-  }
-
-  async transcribeFile(
-    filePath: string,
-    options: TranscriptionOptions = {}
-  ): Promise<TranscriptionResult> {
-    const audio = await readFile(filePath);
-    const mimetype = this.getMimeType(filePath);
-
-    const { result, error } = await this.client.listen.prerecorded.transcribeFile(
-      audio,
-      {
-        model: options.model || 'nova-2',
-        language: options.language || 'en',
-        punctuate: options.punctuate ?? true,
-        diarize: options.diarize ?? false,
-        smart_format: options.smartFormat ?? true,
-        mimetype,
-      }
-    );
-
-    if (error) throw new Error(error.message);
-
-    return this.formatResult(result);
-  }
-
-  private formatResult(result: any): TranscriptionResult {
-    const channel = result.results.channels[0];
-    const alternative = channel.alternatives[0];
-
-    return {
-      transcript: alternative.transcript,
-      confidence: alternative.confidence,
-      words: alternative.words || [],
-      utterances: result.results.utterances,
-    };
-  }
-
-  private getMimeType(filePath: string): string {
-    const ext = filePath.split('.').pop()?.toLowerCase();
-    const mimeTypes: Record<string, string> = {
-      wav: 'audio/wav',
-      mp3: 'audio/mpeg',
-      flac: 'audio/flac',
-      ogg: 'audio/ogg',
-      m4a: 'audio/mp4',
-      webm: 'audio/webm',
-    };
-    return mimeTypes[ext || ''] || 'audio/wav';
-  }
-}
+const deepgram = createClient(process.env.DEEPGRAM_API_KEY!);
+const { result, error } = await deepgram.listen.prerecorded.transcribeUrl(
+  { url: 'https://example.com/audio.wav' },
+  { model: 'nova-2', smart_format: true, punctuate: true, diarize: false }
+);
 ```
 
-### Batch Transcription
+### Step 3: Add File Transcription
+Read the audio file into a buffer, detect the MIME type from the file extension, and pass both to `transcribeFile`. Alternatively, use `transcribeUrl` for remote audio files to avoid local I/O.
+
+### Step 4: Configure Feature Options
+Enable optional features per transcription request: `diarize` for speaker identification, `utterances` for turn-based segments, `paragraphs` for structured output.
+
+### Step 5: Process Results
+Extract transcript text, confidence scores, and word-level timing from the response. Format diarized output with speaker labels.
+
 ```typescript
-// services/batch-transcription.ts
-import { TranscriptionService, TranscriptionResult } from './transcription';
-
-export async function batchTranscribe(
-  files: string[],
-  options: { concurrency?: number } = {}
-): Promise<Map<string, TranscriptionResult | Error>> {
-  const service = new TranscriptionService(process.env.DEEPGRAM_API_KEY!);
-  const results = new Map<string, TranscriptionResult | Error>();
-  const concurrency = options.concurrency || 5;
-
-  // Process in batches
-  for (let i = 0; i < files.length; i += concurrency) {
-    const batch = files.slice(i, i + concurrency);
-
-    const batchResults = await Promise.allSettled(
-      batch.map(file => service.transcribeFile(file))
-    );
-
-    batchResults.forEach((result, index) => {
-      const file = batch[index];
-      if (result.status === 'fulfilled') {
-        results.set(file, result.value);
-      } else {
-        results.set(file, result.reason);
-      }
-    });
-  }
-
-  return results;
-}
-```
-
-### Speaker Diarization
-```typescript
-// Example with speaker diarization
-const result = await service.transcribeFile('./meeting.wav', {
-  diarize: true,
-  utterances: true,
-});
-
-// Format as conversation
+// Speaker diarization output
 result.utterances?.forEach(utterance => {
   console.log(`Speaker ${utterance.speaker}: ${utterance.transcript}`);
 });
 ```
 
-### Python Example
-```python
-# services/transcription.py
-from deepgram import DeepgramClient, PrerecordedOptions, FileSource
-from pathlib import Path
-from typing import Optional
-import mimetypes
+### Step 6: Implement Batch Processing (Optional)
+Process multiple audio files concurrently with configurable concurrency limits using `Promise.allSettled`.
 
-class TranscriptionService:
-    def __init__(self, api_key: str):
-        self.client = DeepgramClient(api_key)
+For complete TypeScript service class, batch transcription implementation, and Python SDK equivalent, see [implementation reference](references/implementation.md).
 
-    def transcribe_url(
-        self,
-        url: str,
-        model: str = 'nova-2',
-        language: str = 'en',
-        diarize: bool = False
-    ) -> dict:
-        options = PrerecordedOptions(
-            model=model,
-            language=language,
-            smart_format=True,
-            punctuate=True,
-            diarize=diarize,
-        )
+## Output
+- Transcription service class with file and URL support
+- Configurable transcription options (model, language, diarization)
+- Batch processing capability with concurrency control
+- Formatted transcript with word-level timing and speaker labels
 
-        response = self.client.listen.rest.v("1").transcribe_url(
-            {"url": url},
-            options
-        )
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Audio Too Long | Exceeds limits | Split into chunks or use async callback |
+| Unsupported Format | Invalid audio type | Convert to WAV/MP3/FLAC |
+| Empty Response | No speech detected | Check audio quality and volume |
+| Timeout | Large file processing | Use callback URL pattern |
 
-        return self._format_result(response)
+## Examples
 
-    def transcribe_file(
-        self,
-        file_path: str,
-        model: str = 'nova-2',
-        diarize: bool = False
-    ) -> dict:
-        with open(file_path, 'rb') as f:
-            audio = f.read()
+**Single file transcription**: Create the service with an API key, call `transcribeFile('./meeting.wav', { diarize: true })`, and format the result with speaker labels and timestamps.
 
-        mimetype, _ = mimetypes.guess_type(file_path)
-
-        source = FileSource(audio, mimetype or 'audio/wav')
-
-        options = PrerecordedOptions(
-            model=model,
-            smart_format=True,
-            punctuate=True,
-            diarize=diarize,
-        )
-
-        response = self.client.listen.rest.v("1").transcribe_file(
-            source,
-            options
-        )
-
-        return self._format_result(response)
-
-    def _format_result(self, response) -> dict:
-        channel = response.results.channels[0]
-        alternative = channel.alternatives[0]
-
-        return {
-            'transcript': alternative.transcript,
-            'confidence': alternative.confidence,
-            'words': alternative.words,
-        }
-```
+**Batch processing**: Pass an array of file paths to `batchTranscribe` with concurrency set to 5. Iterate over results, logging successful transcripts and retrying failures.
 
 ## Resources
 - [Deepgram Pre-recorded API](https://developers.deepgram.com/docs/getting-started-with-pre-recorded-audio)

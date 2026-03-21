@@ -15,12 +15,12 @@ compatible-with: claude-code, codex, openclaw
 # Speak Rate Limits
 
 ## Overview
-Rate limit management for Speak's language learning API. Audio processing endpoints are computationally expensive, with stricter limits on pronunciation assessment than text-based endpoints.
+Rate limit management for Speak's language learning API. Audio processing endpoints are computationally expensive, with stricter limits on pronunciation assessment than text-based endpoints. Covers per-endpoint tracking, batch queuing, and retry logic.
 
 ## Prerequisites
 - Speak API access configured
 - Understanding of audio processing latency
-- Queue infrastructure for batch assessments
+- Queue infrastructure for batch assessments (optional)
 
 ## Speak API Rate Limits
 
@@ -33,110 +33,45 @@ Rate limit management for Speak's language learning API. Audio processing endpoi
 
 ## Instructions
 
-### Step 1: Audio-Aware Rate Limiter
+### Step 1: Identify Endpoint Limits
+Review the rate limits table above. Map each API call in the application to its endpoint category. Alternatively, check the `X-RateLimit-Remaining` response header for real-time tracking.
 
-Audio endpoints are slower and more resource-intensive. Track per-endpoint.
+### Step 2: Implement Per-Endpoint Rate Limiter
+Create a thread-safe rate limiter that tracks sliding windows per endpoint. Block requests that would exceed the limit until capacity is available.
 
-```python
-import time, threading
+### Step 3: Add Retry Logic for 429 Responses
+Parse the `Retry-After` header from 429 responses. Sleep for the specified duration before retrying. Limit retries to 3 attempts with exponential backoff.
 
-class SpeakRateLimiter:
-    def __init__(self):
-        self.limits = {
-            "pronunciation": 30,
-            "conversation_start": 20,
-            "conversation_turn": 60,
-            "translation": 120,
-        }
-        self.windows = {k: [] for k in self.limits}
-        self.lock = threading.Lock()
+### Step 4: Queue Batch Assessments
+Submit multiple pronunciation assessments to a priority queue. Process them sequentially within rate limits, recording results per student.
 
-    def wait_if_needed(self, endpoint: str):
-        with self.lock:
-            now = time.time()
-            self.windows[endpoint] = [t for t in self.windows[endpoint] if now - t < 60]
-            if len(self.windows[endpoint]) >= self.limits[endpoint]:
-                sleep_time = 60 - (now - self.windows[endpoint][0])
-                time.sleep(sleep_time + 0.1)
-            self.windows[endpoint].append(time.time())
+### Step 5: Monitor Rate Limit Usage
+Track used vs. available capacity per endpoint. Log warnings when approaching 80% of any endpoint limit. Adjust batch processing speed based on remaining capacity.
 
-limiter = SpeakRateLimiter()
+For complete Python rate limiter class, batch assessment queue, retry handler, and rate status monitor, see [limiter implementation](references/limiter-implementation.md).
 
-def assess_pronunciation(client, audio_path, text):
-    limiter.wait_if_needed("pronunciation")
-    return client.assess_pronunciation(audio_path, text)
-```
-
-### Step 2: Batch Assessment Queue
-
-Queue multiple student recordings and process within rate limits.
-
-```python
-from queue import PriorityQueue
-import threading
-
-class AssessmentQueue:
-    def __init__(self, client, limiter):
-        self.queue = PriorityQueue()
-        self.client = client
-        self.limiter = limiter
-        self.results = {}
-
-    def submit(self, student_id: str, audio_path: str, text: str, priority: int = 5):
-        self.queue.put((priority, student_id, audio_path, text))
-
-    def process_all(self) -> dict:
-        while not self.queue.empty():
-            priority, student_id, audio_path, text = self.queue.get()
-            self.limiter.wait_if_needed("pronunciation")
-            try:
-                result = self.client.assess_pronunciation(audio_path, text)
-                self.results[student_id] = {"score": result["score"], "status": "ok"}
-            except Exception as e:
-                self.results[student_id] = {"error": str(e), "status": "failed"}
-        return self.results
-```
-
-### Step 3: Handle 429 with Retry-After
-
-```python
-def speak_with_retry(fn, *args, max_retries=3):
-    for attempt in range(max_retries):
-        try:
-            return fn(*args)
-        except requests.HTTPError as e:
-            if e.response.status_code == 429:  # HTTP 429 Too Many Requests
-                wait = int(e.response.headers.get("Retry-After", 5))
-                time.sleep(wait)
-            else:
-                raise
-    raise Exception("Max retries exceeded")
-```
+## Output
+- Rate limiter implementation configured per endpoint
+- Retry logic with backoff for 429 responses
+- Batch assessment queue with priority ordering
+- Monitoring output showing rate limit usage
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| 429 on assessment | Exceeded 30/min | Queue assessments, spread over time |
-| Slow batch processing | Sequential audio processing | Respect rate limits, don't parallelize too much |
-| Session timeout | Conversation idle too long | Send turns within session timeout |
-| Audio upload rejected | File too large | Compress audio, limit to 25MB |
+| 429 on assessment | Exceeded 30/min pronunciation limit | Queue assessments and spread over time |
+| Slow batch processing | Sequential audio processing | Respect rate limits; avoid excessive parallelism |
+| Session timeout | Conversation idle too long | Send turns within the session timeout window |
+| Audio upload rejected | File exceeds 25MB | Compress audio before uploading |
 
 ## Examples
 
-### Rate Status Check
-```python
-status = {endpoint: {
-    "used": len(limiter.windows[endpoint]),
-    "limit": limiter.limits[endpoint],
-    "available": limiter.limits[endpoint] - len(limiter.windows[endpoint])
-} for endpoint in limiter.limits}
-```
+**Basic rate limiting**: Instantiate `SpeakRateLimiter()`, call `limiter.wait_if_needed("pronunciation")` before each assessment request, and let the limiter automatically sleep when the 30/min limit is reached.
+
+**Batch student assessments**: Submit 50 student recordings to `AssessmentQueue` with priority levels, call `process_all()` to process within rate limits, and review the results dictionary for scores and failures.
 
 ## Resources
 - [Speak API Docs](https://docs.speak.com)
 
-## Output
-
-- Rate limiter implementation configured per endpoint
-- Retry logic with exponential backoff for 429 responses
-- Monitoring dashboard or log output showing rate limit usage
+## Next Steps
+Proceed to `speak-sdk-patterns` for production-ready SDK patterns.

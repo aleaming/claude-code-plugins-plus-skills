@@ -14,8 +14,11 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Vercel Deploy Integration
 
+## Overview
+Deploy Vercel-powered applications to production across Vercel, Fly.io, or Google Cloud Run. Covers platform-specific secret management, deployment workflows, health verification, and environment isolation for staging and production.
+
 ## Prerequisites
-- Vercel API keys for production environment
+- Vercel API keys for the production environment
 - Platform CLI installed (vercel, fly, or gcloud)
 - Application code ready for deployment
 - Environment variables documented
@@ -23,30 +26,52 @@ compatible-with: claude-code, codex, openclaw
 ## Instructions
 
 ### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+Select the target platform based on infrastructure requirements. Alternatively, deploy to multiple platforms for redundancy or multi-region availability.
 
-### Step 2: Configure Secrets
-Store Vercel API keys securely using the platform's secrets management.
+### Step 2: Configure Production Secrets
+1. Store `VERCEL_TOKEN` and environment-specific API keys using the platform's secrets management
+2. Add database connection strings and third-party service credentials
+3. Verify secrets are scoped to the correct environment (preview, development, or production)
 
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Vercel integration.
+### Step 3: Deploy the Application
+1. Run the platform deploy command (e.g., `vercel deploy --prod`, `fly deploy`, `gcloud run deploy`)
+2. Verify the build completes without errors
+3. Check deployment logs for configuration issues
 
 ### Step 4: Verify Health
-Test the health check endpoint to confirm Vercel connectivity.
+1. Test the health check endpoint to confirm application connectivity
+2. Verify API routes return expected responses
+3. Check serverless function cold start times and edge function latency
+
+### Step 5: Configure Environment Isolation
+Set up separate environments for staging and production. Use environment-specific variables and deployment branches to isolate data and configuration.
+
+For platform-specific guides, troubleshooting, and deployment examples, see:
+- [Vercel deployment guide](references/vercel-deployment.md)
+- [Cloud Run deployment guide](references/google-cloud-run.md)
+- [Deployment examples](references/examples.md)
+- [Error reference](references/errors.md)
 
 ## Output
 - Application deployed to production
-- Vercel secrets securely configured
-- Health check endpoint functional
+- Secrets securely configured per platform
+- Health check endpoint functional and verified
 - Environment-specific configuration in place
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Build failure | Missing environment variables | Verify all required vars are set in the platform |
+| Function timeout | Cold start too slow | Optimize bundle size or use edge functions |
+| Secret not found | Wrong environment scope | Check secret is scoped to production |
+| Deploy rejected | Branch protection rule | Merge to the production branch first |
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
+**Vercel production deploy**: Run `vercel env add` for each secret scoped to production, then run `vercel deploy --prod`. Verify with `curl https://your-app.vercel.app/api/health`. Alternatively, configure automatic deployments from the main branch in the Vercel dashboard.
+
+**Cloud Run deploy**: Create secrets with `gcloud secrets create`, reference them in the service YAML, deploy with `gcloud run deploy`, and verify the health endpoint returns a 200 status.
 
 ## Resources
 - [Vercel Documentation](https://vercel.com/docs)
@@ -54,6 +79,5 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 - [Cloud Run Documentation](https://cloud.google.com/run/docs)
 - [Vercel Deploy Guide](https://vercel.com/docs/deploy)
 
-## Overview
-
-Deploy Vercel integrations to Vercel, Fly.
+## Next Steps
+Proceed to `vercel-observability` for monitoring and logging configuration.

@@ -15,13 +15,13 @@ compatible-with: claude-code, codex, openclaw
 # Deepgram Local Dev Loop
 
 ## Overview
-Set up an efficient local development workflow for Deepgram integration with fast feedback cycles.
+Set up an efficient local development workflow for Deepgram integration with fast feedback cycles, test fixtures, and mock responses for offline development.
 
 ## Prerequisites
 - Completed `deepgram-install-auth` setup
 - Node.js 18+ with npm/pnpm or Python 3.10+
 - Sample audio files for testing
-- Environment variables configured
+- Environment variables configured in `.env`
 
 ## Instructions
 
@@ -31,21 +31,16 @@ mkdir -p src tests fixtures
 touch src/transcribe.ts tests/transcribe.test.ts
 ```
 
-### Step 2: Set Up Environment Files
+### Step 2: Configure Environment Files
 ```bash
 # .env.development
 DEEPGRAM_API_KEY=your-dev-api-key
 DEEPGRAM_MODEL=nova-2
-
-# .env.test
-DEEPGRAM_API_KEY=your-test-api-key
-DEEPGRAM_MODEL=nova-2
 ```
 
-### Step 3: Create Test Fixtures
+### Step 3: Download Test Fixtures
 ```bash
 set -euo pipefail
-# Download sample audio for testing
 curl -o fixtures/sample.wav https://static.deepgram.com/examples/nasa-podcast.wav
 ```
 
@@ -60,11 +55,19 @@ curl -o fixtures/sample.wav https://static.deepgram.com/examples/nasa-podcast.wa
 }
 ```
 
+### Step 5: Create Mock Responses
+Build mock response objects that mirror the Deepgram API structure for offline testing. Use these mocks to avoid API calls during unit tests and CI runs.
+
+### Step 6: Run Tests and Iterate
+Execute `npm test` to run the test suite against fixtures. Alternatively, use `npm run test:watch` for continuous feedback during development.
+
+For complete TypeScript dev entry point, Vitest test setup, mock response objects, and alternative test framework options, see [test setup reference](references/test-setup.md).
+
 ## Output
-- Project structure with src, tests, fixtures directories
+- Project structure with src, tests, and fixtures directories
 - Environment files for development and testing
 - Watch mode scripts for rapid iteration
-- Sample audio fixtures for testing
+- Mock responses for offline test execution
 
 ## Error Handling
 | Error | Cause | Solution |
@@ -72,76 +75,13 @@ curl -o fixtures/sample.wav https://static.deepgram.com/examples/nasa-podcast.wa
 | Fixture Not Found | Missing audio file | Run fixture download script |
 | Env Not Loaded | dotenv not configured | Install and configure dotenv |
 | Watch Mode Fails | Missing tsx | Install tsx: `npm i -D tsx` |
-| API Rate Limited | Too many dev requests | Use cached responses in tests |
+| API Rate Limited | Too many dev requests | Use cached mock responses in tests |
 
 ## Examples
 
-### TypeScript Dev Setup
-```typescript
-// src/transcribe.ts
-import { createClient } from '@deepgram/sdk';
-import { config } from 'dotenv';
+**Quick dev setup**: Create the project structure, download the NASA podcast fixture, configure `.env` with the API key, and run `tsx watch src/transcribe.ts` for live reloading during development.
 
-config(); // Load .env
-
-const deepgram = createClient(process.env.DEEPGRAM_API_KEY!);
-
-export async function transcribeAudio(audioPath: string) {
-  const audio = await Bun.file(audioPath).arrayBuffer();
-
-  const { result, error } = await deepgram.listen.prerecorded.transcribeFile(
-    Buffer.from(audio),
-    { model: process.env.DEEPGRAM_MODEL || 'nova-2', smart_format: true }
-  );
-
-  if (error) throw error;
-  return result.results.channels[0].alternatives[0].transcript;
-}
-
-// Dev mode: run with sample
-if (import.meta.main) {
-  transcribeAudio('./fixtures/sample.wav').then(console.log);
-}
-```
-
-### Test Setup with Vitest
-```typescript
-// tests/transcribe.test.ts
-import { describe, it, expect, beforeAll } from 'vitest';
-import { transcribeAudio } from '../src/transcribe';
-
-describe('Deepgram Transcription', () => {
-  it('should transcribe audio file', async () => {
-    const transcript = await transcribeAudio('./fixtures/sample.wav');
-    expect(transcript).toBeDefined();
-    expect(transcript.length).toBeGreaterThan(0);
-  });
-
-  it('should handle empty audio gracefully', async () => {
-    await expect(transcribeAudio('./fixtures/empty.wav'))
-      .rejects.toThrow();
-  });
-});
-```
-
-### Mock Responses for Testing
-```typescript
-// tests/mocks/deepgram.ts
-export const mockTranscriptResponse = {
-  results: {
-    channels: [{
-      alternatives: [{
-        transcript: 'This is a test transcript.',
-        confidence: 0.99,
-        words: [
-          { word: 'This', start: 0.0, end: 0.2, confidence: 0.99 },
-          { word: 'is', start: 0.2, end: 0.3, confidence: 0.99 },
-        ]
-      }]
-    }]
-  }
-};
-```
+**Offline test suite**: Create mock response objects matching the Deepgram API shape, inject them into tests via dependency injection or module mocking, and run `vitest` without any network calls.
 
 ## Resources
 - [Deepgram SDK Reference](https://developers.deepgram.com/docs/sdk)

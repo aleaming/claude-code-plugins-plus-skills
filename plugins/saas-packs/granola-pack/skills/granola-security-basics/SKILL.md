@@ -15,53 +15,22 @@ compatible-with: claude-code, codex, openclaw
 # Granola Security Basics
 
 ## Overview
-Implement security best practices for protecting meeting data in Granola.
+Implement security best practices for protecting meeting data in Granola. Covers access controls, data retention, sensitive meeting handling, compliance requirements, and incident response procedures.
 
-## Data Flow & Security
+## Prerequisites
+- Granola account with admin access (Business plan recommended)
+- Understanding of organizational security policies
+- Compliance requirements identified (GDPR, HIPAA, SOC 2)
 
-### How Granola Handles Data
-```
-Audio Capture (Local Device)
-        ↓
-Encrypted Transmission (TLS 1.3)
-        ↓
-Processing Server (Transient)
-        ↓
-Encrypted Storage (AES-256)  # 256 bytes
-        ↓
-Access via App (Auth Required)
-```
+## Instructions
 
-### Key Security Features
-| Feature | Status | Details |
-|---------|--------|---------|
-| Encryption at rest | Yes | AES-256 |
-| Encryption in transit | Yes | TLS 1.3 |
-| SOC 2 Type II | Yes | Certified |
-| GDPR compliant | Yes | EU data options |
-| Audio retention | Configurable | Delete after processing |
+### Step 1: Secure Personal Account
+1. Set a strong unique password for the Granola account
+2. Enable two-factor authentication (2FA)
+3. Review connected apps and revoke unused integrations
+4. Use SSO if available on Business or Enterprise plan
 
-## Access Control Best Practices
-
-### Personal Account Security
-```markdown
-## Checklist
-- [ ] Use strong unique password
-- [ ] Enable 2FA (two-factor authentication)
-- [ ] Review connected apps regularly
-- [ ] Log out from shared devices
-- [ ] Use SSO if available (Business/Enterprise)
-```
-
-### Sharing Permissions
-| Share Level | Access | Use Case |
-|-------------|--------|----------|
-| Private | Owner only | Sensitive meetings |
-| Team | Workspace members | Internal meetings |
-| Link (View) | Anyone with link | Read-only sharing |
-| Link (Edit) | Anyone with link | Collaborative notes |
-
-### Configure Sharing Defaults
+### Step 2: Configure Sharing Defaults
 ```
 Settings > Privacy > Default Sharing
 - New meetings: Private (recommended)
@@ -69,142 +38,39 @@ Settings > Privacy > Default Sharing
 - External sharing: Disabled (for compliance)
 ```
 
-## Sensitive Meeting Handling
+### Step 3: Set Data Retention Policy
+Configure retention in Settings > Privacy > Data Retention. Delete audio after processing to retain notes while removing raw recordings. Alternatively, set 7-day or 30-day audio retention for audit trail needs.
 
-### Pre-Meeting
-```markdown
-## Sensitive Meeting Checklist
-- [ ] Disable auto-recording
-- [ ] Confirm attendee list
-- [ ] Review sharing settings
-- [ ] Check for screen share visibility
-- [ ] Consider using "Off the Record" mode
-```
+### Step 4: Apply Compliance Controls
+Review GDPR, HIPAA, and SOC 2 requirements against Granola's certifications. Enable audit logging and configure data residency for regulated workspaces.
 
-### During Meeting
-- Announce recording to all participants
-- Pause recording for sensitive discussions
-- Avoid displaying sensitive documents on screen
+### Step 5: Establish Sensitive Meeting Protocol
+1. Disable auto-recording before sensitive meetings
+2. Announce recording to all participants
+3. Review and redact notes before sharing
+4. Set expiration on shared links
 
-### Post-Meeting
-- Review notes before sharing
-- Redact sensitive information
-- Use private sharing link
-- Set expiration on shared links
+For complete security architecture, compliance matrices, admin checklists, audit logging details, and incident response procedures, see [security controls reference](references/security-controls.md).
 
-## Data Retention & Deletion
+## Output
+- Personal account secured with 2FA and strong password
+- Sharing defaults configured for organizational policy
+- Data retention policy applied
+- Compliance controls verified against requirements
 
-### Retention Settings
-```
-Settings > Privacy > Data Retention
+## Error Handling
 
-Options:
-- Keep forever (default)
-- Delete audio after 30 days
-- Delete audio after 7 days
-- Delete audio immediately after processing
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| 2FA setup fails | Authenticator app misconfigured | Resync time on device or use backup codes |
+| Sharing override blocked | Organization policy restriction | Contact admin to modify workspace policy |
+| Data export fails | Insufficient permissions | Request export access from workspace admin |
 
-Recommendation: Delete audio after processing
-(Notes are retained, raw audio is deleted)
-```
+## Examples
 
-### Manual Deletion
-```markdown
-## Delete Meeting Data
+**Individual security setup**: Enable 2FA, set default sharing to Private, configure audio deletion after processing, and review connected apps quarterly.
 
-1. Open meeting in Granola
-2. Click ... menu > Delete
-3. Confirm deletion
-4. Note: Deletion is permanent
-
-## Bulk Deletion
-1. Settings > Data
-2. Export data (backup)
-3. Select date range
-4. Click "Delete meetings in range"
-```
-
-### Export & Portability
-```markdown
-## Data Export Options
-
-Formats:
-- Markdown (.md)
-- PDF
-- Word (.docx)
-- JSON (full data)
-
-Export includes:
-- Meeting notes
-- Transcripts
-- Action items
-- Metadata
-
-Does NOT include:
-- Raw audio files
-- AI model data
-```
-
-## Compliance Considerations
-
-### GDPR (EU Users)
-| Requirement | Granola Support |
-|-------------|-----------------|
-| Right to access | Data export available |
-| Right to delete | Full deletion option |
-| Data portability | JSON export |
-| Consent | Recording notifications |
-| DPA available | Yes (Business plans) |
-
-### HIPAA (Healthcare)
-- Standard plans: Not HIPAA compliant
-- Enterprise: BAA available on request
-- Recommendation: Use only for non-PHI meetings
-
-### SOC 2 Type II
-- Granola is SOC 2 Type II certified
-- Audit reports available for Enterprise customers
-- Covers security, availability, confidentiality
-
-## Team Security (Business Plans)
-
-### Admin Controls
-```markdown
-## Available Controls
-- [ ] Enforce SSO login
-- [ ] Set password policies
-- [ ] Manage user permissions
-- [ ] View audit logs
-- [ ] Control external sharing
-- [ ] Enforce 2FA
-- [ ] IP allowlisting
-```
-
-### Audit Logging
-```
-Available Events:
-- User login/logout
-- Meeting recorded
-- Notes shared
-- Data exported
-- Settings changed
-- User added/removed
-```
-
-## Security Incident Response
-
-### If Account Compromised
-1. Immediately change password
-2. Revoke all sessions (Settings > Security > Sign out everywhere)
-3. Review recent activity
-4. Check shared notes
-5. Enable 2FA if not already
-6. Contact support if data exposed
-
-### Reporting Security Issues
-- Email: security@granola.ai
-- Include: Detailed description, steps to reproduce
-- Response: Within 24 hours
+**Team security rollout**: Enforce SSO login for all team members, enable audit logging, set external sharing to disabled, configure IP allowlisting, and establish a quarterly access review cadence.
 
 ## Resources
 - [Granola Security](https://granola.ai/security)
@@ -213,37 +79,3 @@ Available Events:
 
 ## Next Steps
 Proceed to `granola-prod-checklist` for production deployment preparation.
-
-## Prerequisites
-
-- Access to the security environment or API
-- Required CLI tools installed and authenticated
-- Familiarity with security concepts and terminology
-
-## Instructions
-
-1. Assess the current state of the security configuration
-2. Identify the specific requirements and constraints
-3. Apply the recommended patterns from this skill
-4. Validate the changes against expected behavior
-5. Document the configuration for team reference
-
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
-
-## Error Handling
-
-| Error | Cause | Resolution |
-|-------|-------|------------|
-| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with security |
-| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
-| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
-
-## Examples
-
-**Basic usage**: Apply granola security basics to a standard project setup with default configuration options.
-
-**Advanced scenario**: Customize granola security basics for production environments with multiple constraints and team-specific requirements.

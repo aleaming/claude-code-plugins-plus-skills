@@ -15,16 +15,16 @@ compatible-with: claude-code, codex, openclaw
 # Deepgram SDK Patterns
 
 ## Overview
-Production patterns for the Deepgram speech-to-text SDK (`deepgram-sdk`). Covers pre-recorded transcription, live streaming, speaker diarization, and multi-language support with proper error handling.
+Production patterns for the Deepgram speech-to-text SDK. Covers client initialization, pre-recorded transcription, live streaming, speaker diarization, and batch processing with proper error handling and concurrency control.
 
 ## Prerequisites
 - `pip install deepgram-sdk` or `npm install @deepgram/sdk`
-- `DEEPGRAM_API_KEY` environment variable
-- Audio files or microphone access
+- `DEEPGRAM_API_KEY` environment variable configured
+- Audio files or microphone access for testing
 
 ## Instructions
 
-### Step 1: Client Initialization
+### Step 1: Initialize Client
 
 ```python
 from deepgram import DeepgramClient, PrerecordedOptions, LiveOptions
@@ -39,111 +39,43 @@ import { createClient, DeepgramClient } from '@deepgram/sdk';
 const deepgram = createClient(process.env.DEEPGRAM_API_KEY!);
 ```
 
-### Step 2: Pre-Recorded Transcription
+### Step 2: Configure Transcription Options
+Set model (`nova-2` for best accuracy), enable `smart_format` for clean output, and add `diarize` for multi-speaker scenarios. Alternatively, use `enhanced` or `base` models for faster processing at lower cost.
 
-```python
-def transcribe_file(file_path: str, language: str = "en") -> dict:
-    client = get_deepgram_client()
-    with open(file_path, "rb") as audio:
-        response = client.listen.rest.v("1").transcribe_file(
-            {"buffer": audio.read(), "mimetype": get_mimetype(file_path)},
-            PrerecordedOptions(
-                model="nova-2",
-                language=language,
-                smart_format=True,
-                punctuate=True,
-                diarize=True,
-                utterances=True,
-                paragraphs=True
-            )
-        )
-    transcript = response.results.channels[0].alternatives[0]
-    return {
-        "text": transcript.transcript,
-        "confidence": transcript.confidence,
-        "words": [{"word": w.word, "start": w.start, "end": w.end, "speaker": getattr(w, 'speaker', None)}
-                  for w in (transcript.words or [])]
-    }
-```
+### Step 3: Implement Pre-Recorded Transcription
+Open the audio file, detect MIME type, and call the REST transcription endpoint. Extract transcript text, confidence score, and word-level timing from the response.
 
-### Step 3: Live Streaming Transcription
+### Step 4: Add Live Streaming (Optional)
+Create an async WebSocket connection with `LiveOptions`. Register event handlers to process interim and final results in real time.
 
-```python
-import asyncio
+### Step 5: Implement Batch Processing
+Process multiple files concurrently using an asyncio semaphore to respect rate limits. Gather results with `asyncio.gather` and handle exceptions per-file.
 
-async def stream_microphone():
-    client = get_deepgram_client()
-    connection = client.listen.asyncwebsocket.v("1")
+For complete Python and TypeScript implementations including pre-recorded transcription, streaming, batch processing, and speaker-labeled formatting, see [code patterns](references/code-patterns.md).
 
-    async def on_message(self, result, **kwargs):
-        transcript = result.channel.alternatives[0].transcript
-        if transcript:
-            print(f"[{result.type}] {transcript}")
-
-    connection.on("Results", on_message)
-
-    options = LiveOptions(
-        model="nova-2",
-        language="en",
-        smart_format=True,
-        interim_results=True,
-        endpointing=300  # 300: timeout: 5 minutes
-    )
-
-    await connection.start(options)
-    # Send audio chunks from microphone...
-    # await connection.send(audio_bytes)
-    await connection.finish()
-```
-
-### Step 4: Batch Processing with Concurrency Control
-
-```python
-import asyncio
-from concurrent.futures import ThreadPoolExecutor
-
-async def batch_transcribe(files: list[str], max_concurrent: int = 5) -> list:
-    semaphore = asyncio.Semaphore(max_concurrent)
-    results = []
-
-    async def process_one(path):
-        async with semaphore:
-            loop = asyncio.get_event_loop()
-            result = await loop.run_in_executor(None, transcribe_file, path)
-            return {"file": path, **result}
-
-    tasks = [process_one(f) for f in files]
-    results = await asyncio.gather(*tasks, return_exceptions=True)
-    return [r if not isinstance(r, Exception) else {"error": str(r)} for r in results]
-```
+## Output
+- Production-ready client initialization with environment-based configuration
+- Pre-recorded transcription with word-level timing and speaker labels
+- Batch processing pipeline with configurable concurrency
+- Live streaming connection with interim result handling
 
 ## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
-| `401 Unauthorized` | Invalid API key | Check `DEEPGRAM_API_KEY` |
+| `401 Unauthorized` | Invalid API key | Check `DEEPGRAM_API_KEY` value |
 | `400 Unsupported format` | Bad audio codec | Convert to WAV/MP3/FLAC |
 | Empty transcript | No speech in audio | Check audio quality and volume |
 | WebSocket disconnect | Network instability | Implement reconnection logic |
 
 ## Examples
 
-### Speaker-Labeled Transcript
-```python
-result = transcribe_file("meeting.wav")
-current_speaker = None
-for word in result["words"]:
-    if word["speaker"] != current_speaker:
-        current_speaker = word["speaker"]
-        print(f"\nSpeaker {current_speaker}:", end=" ")
-    print(word["word"], end=" ")
-```
+**Pre-recorded with diarization**: Call `transcribe_file("meeting.wav")` with `diarize=True`, then iterate over words grouping by `speaker` field to produce speaker-labeled output like `Speaker 0: Hello everyone...`.
+
+**Batch processing**: Pass a list of 50 audio file paths to `batch_transcribe` with `max_concurrent=5`. Review results for errors and retry failed files individually.
 
 ## Resources
 - [Deepgram SDK Python](https://github.com/deepgram/deepgram-python-sdk)
 - [Deepgram API Docs](https://developers.deepgram.com/docs)
 
-## Output
-
-- Configuration files or code changes applied to the project
-- Validation report confirming correct implementation
-- Summary of changes made and their rationale
+## Next Steps
+Proceed to `deepgram-data-handling` for transcript storage and processing patterns.
