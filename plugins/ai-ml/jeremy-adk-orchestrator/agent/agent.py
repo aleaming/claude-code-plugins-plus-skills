@@ -79,7 +79,7 @@ def get_agent() -> LlmAgent:
         context_window_size=2_000_000,  # 2M token context for Gemini 2.0
         output_key="orchestration_result",
         metadata={
-            "version": "1.0.0",
+            "version": "2.1.0",
             "deployment_target": "vertex-ai-engine",
             "capabilities": ["a2a", "multi-agent", "session-management", "monitoring"],
             "compliance": "R5-ready"

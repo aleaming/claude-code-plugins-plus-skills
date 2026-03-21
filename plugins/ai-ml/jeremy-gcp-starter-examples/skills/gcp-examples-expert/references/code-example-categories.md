@@ -63,7 +63,7 @@ def production_agent_with_observability(project_id: str):
 
 ### 3. Firebase Genkit
 
-**Source**: firebase/genkit
+**Source**: genkit-ai/genkit
 
 **Examples Provided**:
 - RAG flows with vector search
@@ -83,7 +83,7 @@ const ragFlow = ai.defineFlow({
   inputSchema: z.object({ query: z.string() }),
   outputSchema: z.object({ answer: z.string() })
 }, async (input) => {
-  // Implementation from firebase/genkit examples
+  // Implementation from genkit-ai/genkit examples
 });
 ```
 

@@ -123,9 +123,6 @@ exec -l $SHELL
 # Update to latest version
 gcloud components update
 
-# Install alpha commands (for Agent Engine)
-gcloud components install alpha
-
 # Install beta commands (for Security Command Center)
 gcloud components install beta
 ```
@@ -135,8 +132,16 @@ gcloud components install beta
 gcloud --version
 # Should show: Google Cloud SDK 450.0.0+ (or higher)
 
-# Test Agent Engine access
-gcloud alpha ai agent-engines list --location=us-central1 --project=YOUR_PROJECT_ID
+# Test Agent Engine access (SDK-only — no gcloud CLI for Agent Engine)
+python3 -c "
+import vertexai
+client = vertexai.Client(project='YOUR_PROJECT_ID', location='us-central1')
+for engine in client.agent_engines.list():
+    print(engine.name)
+"
+
+# Test Model Armor access
+gcloud model-armor --help
 
 # Test Security Command Center access
 gcloud scc findings list organizations/YOUR_ORG_ID --limit=1
@@ -148,17 +153,16 @@ gcloud scc findings list organizations/YOUR_ORG_ID --limit=1
 
 1. **ADK CLI Deployment:**
 ```bash
-adk deploy \
+adk deploy agent_engine \
     --project=YOUR_PROJECT_ID \
-    --location=us-central1 \
-    --agent-id=my-adk-agent \
-    --source=./agent-code/
+    --region=us-central1 \
+    agent_module
 ```
 
 2. **Python SDK Deployment:**
 ```python
-from google.adk import Agent
-from google.cloud import aiplatform
+from google.adk.agents import Agent
+import vertexai
 
 agent = Agent(
     name="my-adk-agent",
@@ -166,9 +170,13 @@ agent = Agent(
     model="gemini-2.0-flash-001"
 )
 
-deployment = client.agent_engines.deploy(
+client = vertexai.Client(project="YOUR_PROJECT_ID", location="us-central1")
+remote_agent = client.agent_engines.create(
     agent=agent,
-    config={"agent_framework": "google-adk"}
+    config={
+        "requirements": ["google-cloud-aiplatform[agent_engines,adk]"],
+        "staging_bucket": "gs://YOUR_BUCKET",
+    },
 )
 ```
 
@@ -512,7 +520,7 @@ The validator generates a comprehensive report with:
 
 1. **Executive Summary**
    - Overall readiness score (0-100%)
-   - Status: PRODUCTION READY / NEEDS IMPROVEMENT / NOT READY
+   - Status: READY / NEEDS WORK / NOT READY
    - Critical issues count
    - Warnings count
 
@@ -545,7 +553,7 @@ Agent ID: projects/my-project/locations/us-central1/reasoningEngines/12345
 Validated: 2025-11-13 10:30:00 UTC
 
 ----------------------------------------------------------
-OVERALL SCORE: 82% - NEEDS IMPROVEMENT
+OVERALL SCORE: 82% - NEEDS WORK
 ----------------------------------------------------------
 
 Security:       85/100  (30% weight) → 25.5 points
@@ -677,7 +685,7 @@ NEXT STEPS
 - ADK agents targeted for Agent Engine deployment (NOT Cloud Run)
 - Appropriate IAM permissions for validation
 - Python 3.10+ for running validation scripts
-- gcloud CLI with alpha components
+- gcloud CLI (Agent Engine management is SDK-only or REST API)
 - Cloud Logging and Monitoring enabled
 - Security Command Center enabled (for security validation)
 

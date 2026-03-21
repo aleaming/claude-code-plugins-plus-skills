@@ -105,28 +105,32 @@ pip install --upgrade \
     'google-cloud-trace>=1.13.0'
 ```
 
-### Required gcloud CLI Tools
+### Agent Engine Management (Python SDK Only)
 
-**Install gcloud CLI:**
-```bash
-# Install gcloud (if not already installed)
-curl https://sdk.cloud.google.com | bash
-exec -l $SHELL
+**There is no `gcloud` CLI for Agent Engine.** All management is done via the Python SDK:
 
-# Update to latest version
-gcloud components update
+```python
+import vertexai
 
-# Install alpha commands (for Agent Engine)
-gcloud components install alpha
+client = vertexai.Client(project="YOUR_PROJECT_ID", location="us-central1")
+
+# List all deployed agents (reasoning engines)
+for agent in client.agent_engines.list():
+    print(f"{agent.display_name}: {agent.resource_name}")
+
+# Get a specific agent
+agent = client.agent_engines.get(
+    name="projects/YOUR_PROJECT/locations/us-central1/reasoningEngines/12345"
+)
+
+# Delete an agent
+# client.agent_engines.delete(name=agent.resource_name)
 ```
 
-**Verify Installation:**
+**Verify SDK Installation:**
 ```bash
-gcloud --version
-# Should show: Google Cloud SDK 450.0.0+ (or higher)
-
-# Test Agent Engine access
-gcloud alpha ai agent-engines list --location=us-central1 --project=YOUR_PROJECT_ID
+python3 -c "import vertexai; print('Vertex AI SDK ready')"
+python3 -c "import google.adk; print(f'ADK SDK version: {google.adk.__version__}')"
 ```
 
 ### ADK Agent Deployment Methods
@@ -138,39 +142,33 @@ gcloud alpha ai agent-engines list --location=us-central1 --project=YOUR_PROJECT
 # Install ADK CLI
 pip install google-adk
 
-# Deploy agent to Agent Engine
-adk deploy \
-    --project=YOUR_PROJECT_ID \
-    --location=us-central1 \
-    --agent-id=my-adk-agent \
-    --source=./agent-code/
+# Deploy agent to Agent Engine (interactive — prompts for project/location)
+adk deploy cloud_run  # Deploy to Cloud Run
+# Or deploy via the Python SDK (see method 2 below) for Agent Engine
 ```
 
 2. **Python SDK Deployment:**
 ```python
-from google.adk import Agent
-from google.cloud import aiplatform
+from google.adk.agents import Agent
+import vertexai
 
 # Define ADK agent
 agent = Agent(
     name="my-adk-agent",
-    description="Production ADK agent",
-    tools=[...],
-    model="gemini-2.0-flash-001"
+    model="gemini-2.5-flash",
+    instruction="Production ADK agent for deployment tasks.",
+    tools=[my_tool_function],
 )
 
 # Deploy to Agent Engine
-client = aiplatform.Client(project=PROJECT_ID, location=LOCATION)
-deployment = client.agent_engines.deploy(
-    agent=agent,
-    config={
-        "agent_framework": "google-adk",  # ← Required
-        "memory_bank": {"enabled": True},
-        "code_execution": {"enabled": True}
-    }
+client = vertexai.Client(project=PROJECT_ID, location=LOCATION)
+remote_agent = client.agent_engines.create(
+    agent_engine=agent,
+    requirements=["google-adk>=1.15.1"],
+    display_name="my-adk-agent",
 )
 
-print(f"Agent deployed: {deployment.endpoint}")
+print(f"Agent deployed: {remote_agent.resource_name}")
 ```
 
 3. **Terraform Deployment:**
@@ -256,18 +254,18 @@ Claude Code Plugin
     ↓
 AgentCard Discovery
     ↓ GET /.well-known/agent-card
-Agent Metadata (capabilities, tools, schemas)
+Agent Metadata (capabilities, skills, schemas)
     ↓
-Task Submission
-    ↓ POST /v1/agents/{agent_id}/tasks:send
-Task Created (task_id, session_id)
+Task Submission (A2A JSON-RPC 2.0)
+    ↓ POST / (method: "tasks/send")
+Task Created (task id, status)
     ↓
-Status Polling
-    ↓ GET /v1/tasks/{task_id}/status
-Task Status (running, completed, failed)
+Task Status
+    ↓ POST / (method: "tasks/get")
+Task State (submitted, working, completed, failed)
     ↓
-Result Retrieval
-    ↓ GET /v1/tasks/{task_id}/result
+Result in task artifacts
+    ↓ parts[].text / parts[].data
 Agent Output
 ```
 
@@ -306,58 +304,67 @@ agent_card = discover_agent_capabilities(
 
 ### Task Submission
 
-**Submit a task to an ADK agent:**
+**Submit a task to an ADK agent via A2A JSON-RPC:**
 
 ```python
 import requests
 import json
 
-def submit_task(agent_endpoint, task_input, session_id=None):
+def submit_task(agent_endpoint, message_text, task_id=None):
     """
-    Submit a task to an ADK agent via A2A protocol.
+    Submit a task to an ADK agent via A2A protocol (JSON-RPC 2.0).
 
     Args:
-        agent_endpoint: Agent Engine endpoint URL
-        task_input: Structured input matching agent's input_schema
-        session_id: Optional session ID for Memory Bank persistence
+        agent_endpoint: A2A-compliant agent URL
+        message_text: Natural language instruction
+        task_id: Optional task ID (generated if not provided)
 
     Returns:
         task_id: Unique identifier for tracking task status
     """
+    import uuid
+    task_id = task_id or str(uuid.uuid4())
+
     payload = {
-        "input": task_input,
-        "session_id": session_id  # For Memory Bank continuity
+        "jsonrpc": "2.0",
+        "method": "tasks/send",
+        "params": {
+            "id": task_id,
+            "message": {
+                "role": "user",
+                "parts": [{"text": message_text}],
+            },
+        },
+        "id": f"req-{task_id}",
     }
 
     response = requests.post(
-        f"{agent_endpoint}/v1/agents/{agent_id}/tasks:send",
+        agent_endpoint,
         json=payload,
-        headers={"Authorization": f"Bearer {get_access_token()}"}
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {get_access_token()}",
+        }
     )
 
     result = response.json()
-    task_id = result['task_id']
-    session_id = result.get('session_id')
+    task_status = result.get("result", {}).get("status", {}).get("state")
 
     print(f"Task submitted: {task_id}")
-    print(f"Session ID: {session_id}")
+    print(f"Status: {task_status}")
 
-    return task_id, session_id
+    return task_id
 
 # Example
-task_id, session_id = submit_task(
-    agent_endpoint="https://...",
-    task_input={
-        "text": "Analyze sentiment of customer reviews",
-        "reviews": ["Great product!", "Terrible experience"]
-    },
-    session_id="session-abc-123"  # Reuse existing session
+task_id = submit_task(
+    agent_endpoint="https://my-agent.example.com",
+    message_text="Analyze sentiment of customer reviews",
 )
 ```
 
 ### Status Polling
 
-**Monitor task execution:**
+**Monitor task execution via A2A JSON-RPC:**
 
 ```python
 import time
@@ -366,69 +373,105 @@ def poll_task_status(agent_endpoint, task_id, timeout=300):
     """
     Poll task status until completion or timeout.
 
-    Status values:
-    - PENDING: Task queued
-    - RUNNING: Agent is processing
-    - COMPLETED: Task finished successfully
-    - FAILED: Task encountered error
+    A2A task states:
+    - submitted: Task queued
+    - working: Agent is processing
+    - input-required: Agent needs more info
+    - completed: Task finished successfully
+    - failed: Task encountered error
+    - canceled: Task was canceled
     """
     start_time = time.time()
 
     while time.time() - start_time < timeout:
-        response = requests.get(
-            f"{agent_endpoint}/v1/tasks/{task_id}/status",
-            headers={"Authorization": f"Bearer {get_access_token()}"}
+        payload = {
+            "jsonrpc": "2.0",
+            "method": "tasks/get",
+            "params": {"id": task_id},
+            "id": f"poll-{int(time.time())}",
+        }
+
+        response = requests.post(
+            agent_endpoint,
+            json=payload,
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {get_access_token()}",
+            }
         )
 
-        status = response.json()
-        print(f"Status: {status['state']} ({status.get('progress', 0)}%)")
+        result = response.json().get("result", {})
+        state = result.get("status", {}).get("state", "unknown")
+        print(f"Status: {state}")
 
-        if status['state'] in ['COMPLETED', 'FAILED']:
-            return status
+        if state == "completed":
+            return result
+        elif state == "failed":
+            return result
 
         time.sleep(5)  # Poll every 5 seconds
 
     raise TimeoutError(f"Task {task_id} did not complete within {timeout}s")
 
 # Example
-status = poll_task_status(agent_endpoint, task_id)
+result = poll_task_status(agent_endpoint, task_id)
 
-if status['state'] == 'COMPLETED':
+state = result.get("status", {}).get("state")
+if state == "completed":
     print("Task completed successfully!")
+    artifacts = result.get("artifacts", [])
+    for artifact in artifacts:
+        for part in artifact.get("parts", []):
+            print(f"Output: {part.get('text', '')}")
 else:
-    print(f"Task failed: {status.get('error_message')}")
+    print(f"Task failed: {result.get('status', {}).get('message')}")
 ```
 
 ### Result Retrieval
 
-**Get agent output:**
+**Get agent output (included in tasks/get response):**
+
+In A2A, results are returned as `artifacts` in the `tasks/get` response -- there is no separate result endpoint. Each artifact contains `parts` (text, data, or file).
 
 ```python
 def get_task_result(agent_endpoint, task_id):
     """
-    Retrieve completed task output.
+    Retrieve completed task output via tasks/get.
 
-    Returns agent's structured response matching output_schema.
+    Results are in the 'artifacts' field of the task response.
+    Each artifact has 'parts' with text or structured data.
     """
-    response = requests.get(
-        f"{agent_endpoint}/v1/tasks/{task_id}/result",
-        headers={"Authorization": f"Bearer {get_access_token()}"}
+    payload = {
+        "jsonrpc": "2.0",
+        "method": "tasks/get",
+        "params": {"id": task_id},
+        "id": f"result-{task_id}",
+    }
+
+    response = requests.post(
+        agent_endpoint,
+        json=payload,
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {get_access_token()}",
+        }
     )
 
-    result = response.json()
+    task = response.json().get("result", {})
+    artifacts = task.get("artifacts", [])
 
     print("Agent Output:")
-    print(json.dumps(result['output'], indent=2))
+    for artifact in artifacts:
+        for part in artifact.get("parts", []):
+            if "text" in part:
+                print(part["text"])
+            elif "data" in part:
+                print(json.dumps(part["data"], indent=2))
 
-    return result['output']
+    return artifacts
 
 # Example
-output = get_task_result(agent_endpoint, task_id)
-
-# Process structured output
-sentiment_scores = output['sentiment_analysis']
-print(f"Positive: {sentiment_scores['positive']}")
-print(f"Negative: {sentiment_scores['negative']}")
+artifacts = get_task_result(agent_endpoint, task_id)
 ```
 
 ## Multi-Agent Orchestration
@@ -730,4 +773,4 @@ MIT
 
 ## Version
 
-1.0.0 (2025) - A2A protocol support with ADK Agent Engine orchestration
+2.1.0 (2026) - SDK accuracy fixes, expanded error/example references, corrected imports

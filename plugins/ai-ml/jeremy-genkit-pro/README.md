@@ -201,4 +201,4 @@ MIT
 
 ## Version
 
-1.0.0 (2025) - Initial release with Genkit 1.0 support
+2.1.0 (2026) - Accuracy audit: expanded error docs, fixed repo references, added effort metadata

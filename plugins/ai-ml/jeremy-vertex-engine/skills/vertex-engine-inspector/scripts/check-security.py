@@ -79,26 +79,24 @@ def check_iam_permissions(project_id: str, service_account: str) -> Tuple[bool, 
 
 
 def check_vpc_configuration(project_id: str, region: str, agent_id: str) -> Tuple[bool, str]:
-    """Check if VPC is properly configured"""
-    cmd = [
-        "gcloud", "ai", "agents", "describe", agent_id,
-        f"--project={project_id}",
-        f"--region={region}",
-        "--format=json"
-    ]
-
-    returncode, output = run_command(cmd)
-    if returncode != 0:
-        return False, "Failed to retrieve agent configuration"
-
+    """Check if VPC is properly configured.
+    Uses vertexai Python SDK (no gcloud CLI exists for Agent Engine).
+    """
     try:
-        agent_info = json.loads(output)
-        vpc_config = agent_info.get("network", {})
+        import vertexai
+        client = vertexai.Client(project=project_id, location=region)
+        engine = client.agent_engines.get(
+            name=f"projects/{project_id}/locations/{region}/reasoningEngines/{agent_id}"
+        )
+        # Check for VPC/network config in the engine metadata
+        vpc_config = getattr(engine, "network", None) or getattr(engine, "network_config", None)
 
         if vpc_config:
-            return True, f"VPC configured: {vpc_config.get('network', 'unknown')}"
+            return True, f"VPC configured: {vpc_config}"
         else:
             return False, "No VPC configuration found"
+    except ImportError:
+        return False, "vertexai SDK not installed (pip install google-cloud-aiplatform[agent_engines])"
     except Exception as e:
         return False, f"Error checking VPC: {e}"
 
@@ -203,27 +201,24 @@ def main():
     agent_id = sys.argv[2]
     region = sys.argv[3] if len(sys.argv) > 3 else "us-central1"
 
-    print(f"{Colors.BLUE}Checking security for Agent: {agent_id}{Colors.NC}")
+    print(f"{Colors.BLUE}Checking security for Agent Engine: {agent_id}{Colors.NC}")
     print(f"Project: {project_id}")
     print(f"Region: {region}\n")
 
-    # Get agent info for service account
-    cmd = [
-        "gcloud", "ai", "agents", "describe", agent_id,
-        f"--project={project_id}",
-        f"--region={region}",
-        "--format=json"
-    ]
-
-    returncode, output = run_command(cmd)
+    # Get agent engine info for service account via Python SDK
+    # (no gcloud CLI exists for Agent Engine)
     service_account = ""
-
-    if returncode == 0:
-        try:
-            agent_info = json.loads(output)
-            service_account = agent_info.get("serviceAccount", "")
-        except Exception:
-            pass
+    try:
+        import vertexai
+        client = vertexai.Client(project=project_id, location=region)
+        engine = client.agent_engines.get(
+            name=f"projects/{project_id}/locations/{region}/reasoningEngines/{agent_id}"
+        )
+        service_account = getattr(engine, "service_account", "") or ""
+    except ImportError:
+        print(f"{Colors.YELLOW}Warning: vertexai SDK not installed. Install with: pip install google-cloud-aiplatform[agent_engines]{Colors.NC}")
+    except Exception as e:
+        print(f"{Colors.YELLOW}Warning: Could not retrieve agent engine info: {e}{Colors.NC}")
 
     # Run security checks
     results = {}

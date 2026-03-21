@@ -22,52 +22,44 @@ Provide code examples for:
 
 ```python
 # ADK Agent with Code Execution and Memory Bank
-from google.cloud import aiplatform
-from google.cloud.aiplatform import agent_builder
+# Based on google/adk-samples
+from google.adk.agents import Agent
+from google.adk.tools import FunctionTool
 
-def create_adk_agent_with_tools(project_id: str, location: str):
+def create_adk_agent_with_tools():
     """
-    Create ADK agent with Code Execution Sandbox and Memory Bank.
-    Based on google/adk-samples/python/basic-agent
+    Create ADK agent with tool calling.
+    Based on google/adk-samples patterns.
     """
 
-    client = agent_builder.AgentBuilderClient()
+    def analyze_data(query: str, dataset_path: str) -> dict:
+        """Analyze a dataset based on a natural language query."""
+        # Implementation: load data, run analysis, return results
+        return {"status": "success", "query": query, "rows_analyzed": 1000}
 
-    agent_config = {
-        "display_name": "production-adk-agent",
-        "model": "gemini-2.5-flash",
+    agent = Agent(
+        name="production-adk-agent",
+        model="gemini-2.5-flash",
+        description="Analyzes datasets using code execution with persistent memory",
+        instruction="""You are a data analyst agent.
 
-        # Code Execution Sandbox (14-day state persistence)
-        "code_execution_config": {
-            "enabled": True,
-            "state_ttl_days": 14,
-            "sandbox_type": "SECURE_ISOLATED",
-            "timeout_seconds": 300,
-        },
+CAPABILITIES:
+- Execute Python code to analyze data
+- Remember previous analyses and user preferences
+- Generate visualizations and statistical summaries
 
-        # Memory Bank (persistent conversation memory)
-        "memory_bank_config": {
-            "enabled": True,
-            "max_memories": 1000,
-            "retention_days": 90,
-            "indexing_enabled": True,
-            "auto_cleanup": True,
-        },
+WORKFLOW:
+1. Understand the user's data question
+2. Write and execute Python code to analyze the data
+3. Return clear, actionable insights with visualizations
 
-        # Tools configuration
-        "tools": [
-            {"type": "CODE_EXECUTION"},
-            {"type": "MEMORY_BANK"},
-        ],
-
-        # VPC configuration for enterprise security
-        "vpc_config": {
-            "network": f"projects/{project_id}/global/networks/default"
-        },
-    }
-
-    parent = f"projects/{project_id}/locations/{location}"
-    agent = client.create_agent(parent=parent, agent=agent_config)
+CONSTRAINTS:
+- Always validate data before analysis
+- Use pandas for tabular data, matplotlib/seaborn for plots
+- Cap output to 20 rows for large datasets
+""",
+        tools=[FunctionTool(func=analyze_data)],
+    )
 
     return agent
 
@@ -125,70 +117,44 @@ Provide production-ready templates for:
 
 ```python
 # Agent Starter Pack: Production Agent with Monitoring
-from google.cloud import aiplatform
+# Based on GoogleCloudPlatform/agent-starter-pack
 from google.cloud import monitoring_v3
-from google.cloud import logging
+from google.cloud import logging as cloud_logging
+import vertexai
 
 def production_agent_with_observability(project_id: str):
     """
-    Production agent with comprehensive monitoring and logging.
-    Based on GoogleCloudPlatform/agent-starter-pack
+    Deploy production agent with monitoring and logging.
+    Uses Agent Starter Pack patterns + Vertex AI SDK.
     """
 
-    # Initialize monitoring client
+    # Initialize monitoring and logging clients
     monitoring_client = monitoring_v3.MetricServiceClient()
-    logging_client = logging.Client(project=project_id)
+    logging_client = cloud_logging.Client(project=project_id)
     logger = logging_client.logger("agent-production")
 
-    # Create agent with production settings
-    agent = aiplatform.Agent.create(
-        display_name="production-agent",
-        model="gemini-2.5-pro",
+    # Deploy agent via Vertex AI SDK (Agent Engine)
+    vertexai.init(project=project_id, location="us-central1")
+    client = vertexai.Client(project=project_id, location="us-central1")
 
-        # Production configuration
-        config={
-            "auto_scaling": {
-                "min_instances": 2,
-                "max_instances": 10,
-                "target_cpu_utilization": 0.7,
-            },
+    # The agent app is defined using ADK (see ADK section above)
+    # Agent Starter Pack wraps this with production infrastructure:
+    # - Cloud Run deployment with auto-scaling
+    # - IAM least-privilege service account
+    # - VPC Service Controls perimeter
+    # - Model Armor for prompt injection protection
 
-            # Security
-            "vpc_service_controls": {
-                "enabled": True,
-                "perimeter": f"projects/{project_id}/accessPolicies/default"
-            },
+    # Set up monitoring dashboard
+    create_agent_dashboard(monitoring_client, project_id, "production-agent")
 
-            "model_armor": {
-                "enabled": True,  # Prompt injection protection
-            },
-
-            # IAM
-            "service_account": f"agent-sa@{project_id}.iam.gserviceaccount.com",
-            "iam_policy": {
-                "bindings": [
-                    {
-                        "role": "roles/aiplatform.user",
-                        "members": [f"serviceAccount:agent-sa@{project_id}.iam.gserviceaccount.com"]
-                    }
-                ]
-            },
-        }
-    )
-
-    # Set up monitoring
-    create_agent_dashboard(monitoring_client, project_id, agent.resource_name)
-
-    # Set up alerting
-    create_agent_alerts(monitoring_client, project_id, agent.resource_name)
+    # Set up alerting policies
+    create_agent_alerts(monitoring_client, project_id, "production-agent")
 
     logger.log_struct({
-        "message": "Production agent created",
-        "agent_id": agent.resource_name,
-        "severity": "INFO"
+        "message": "Production agent deployed",
+        "project_id": project_id,
+        "severity": "INFO",
     })
-
-    return agent
 
 
 def create_agent_dashboard(client, project_id: str, agent_id: str):
@@ -253,7 +219,7 @@ def create_agent_dashboard(client, project_id: str, agent_id: str):
 
 ### 3. Firebase Genkit Examples
 
-**Repository**: firebase/genkit
+**Repository**: genkit-ai/genkit
 
 Provide Genkit flow templates:
 
@@ -719,7 +685,7 @@ Activate this agent when developers need:
 
 - **ADK Samples**: https://github.com/google/adk-samples
 - **Agent Starter Pack**: https://github.com/GoogleCloudPlatform/agent-starter-pack
-- **Genkit**: https://github.com/firebase/genkit
+- **Genkit**: https://github.com/genkit-ai/genkit
 - **Vertex AI Samples**: https://github.com/GoogleCloudPlatform/vertex-ai-samples
 - **Generative AI**: https://github.com/GoogleCloudPlatform/generative-ai
 - **AgentSmithy**: https://github.com/GoogleCloudPlatform/agentsmithy

@@ -20,16 +20,16 @@ The A2A protocol enables standardized communication between different agent syst
 
 ```
 Claude Code Plugin (You)
-    ↓ HTTP/REST
-AgentCard Discovery → Metadata about agent capabilities
+    ↓ HTTP/JSON-RPC 2.0
+AgentCard Discovery → GET /.well-known/agent-card
     ↓
-Task Submission → POST /v1/agents/{agent_id}/tasks:send
+Task Submission → POST / (method: "tasks/send")
     ↓
-Session Management → session_id for Memory Bank persistence
+Session Management → session_id for state persistence
     ↓
-Status Polling → GET /v1/tasks/{task_id}/status
+Task Status → POST / (method: "tasks/get")
     ↓
-Result Retrieval → Task output or streaming results
+Result Retrieval → Task output with artifacts
 ```
 
 ### 2. AgentCard Discovery & Metadata
@@ -142,17 +142,21 @@ class A2AClient:
             self.session_id = session_id
 
         payload = {
-            "message": message,
-            "session_id": self.session_id,
-            "context": context or {},
-            "config": {
-                "enable_code_execution": True,
-                "enable_memory_bank": True,
-            }
+            "jsonrpc": "2.0",
+            "method": "tasks/send",
+            "params": {
+                "id": self.session_id,
+                "message": {
+                    "role": "user",
+                    "parts": [{"text": message}],
+                },
+                "metadata": context or {},
+            },
+            "id": f"req-{self.session_id}",
         }
 
         response = requests.post(
-            f"{self.agent_endpoint}/v1/tasks:send",
+            self.agent_endpoint,
             json=payload,
             headers={
                 "Content-Type": "application/json",
@@ -164,20 +168,25 @@ class A2AClient:
 
     def get_task_status(self, task_id: str) -> Dict[str, Any]:
         """
-        Check status of a long-running task.
+        Check status of a task via A2A JSON-RPC.
 
         Returns:
-            {
-                "task_id": "...",
-                "status": "PENDING" | "RUNNING" | "SUCCESS" | "FAILURE",
-                "output": "...",  # If completed
-                "error": "...",   # If failed
-                "progress": 0.75  # Optional progress indicator
-            }
+            JSON-RPC response with task status:
+            - "submitted", "working", "input-required", "completed", "failed", "canceled"
         """
-        response = requests.get(
-            f"{self.agent_endpoint}/v1/tasks/{task_id}",
-            headers={"Authorization": f"Bearer {self._get_auth_token()}"}
+        payload = {
+            "jsonrpc": "2.0",
+            "method": "tasks/get",
+            "params": {"id": task_id},
+            "id": f"status-{task_id}",
+        }
+        response = requests.post(
+            self.agent_endpoint,
+            json=payload,
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {self._get_auth_token()}",
+            }
         )
         return response.json()
 ```

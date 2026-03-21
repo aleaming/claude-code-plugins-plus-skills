@@ -1,12 +1,14 @@
 ---
 name: vertex-engine-inspector
 description: |
-  Execute inspect and validate Vertex AI Agent Engine deployments including Code Execution Sandbox, Memory Bank, A2A protocol compliance, and security posture. Generates production readiness scores. Use when asked to "inspect agent engine" or "validate depl... Trigger with relevant phrases based on skill purpose.
+  Inspect and validate Vertex AI Agent Engine deployments including Code Execution Sandbox, Memory Bank, A2A protocol compliance, and security posture. Generates production readiness scores. Use when asked to inspect, validate, or audit an Agent Engine deployment. Trigger with "inspect agent engine", "validate agent engine deployment", "check agent engine config", "audit agent engine security", "agent engine readiness check", "vertex engine health", or "reasoning engine status".
 allowed-tools: Read, Grep, Glob, Bash(cmd:*)
-version: 1.0.0
+version: 2.1.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
+argument-hint: "<project-id> <agent-engine-id> [location]"
+effort: high
 ---
 # Vertex Engine Inspector
 
@@ -16,15 +18,19 @@ Inspect and validate Vertex AI Agent Engine deployments across seven categories:
 
 ## Prerequisites
 
-- `gcloud` CLI authenticated with `roles/aiplatform.viewer` and `roles/monitoring.viewer` IAM roles
+- `google-cloud-aiplatform[agent_engines]>=1.120.0` Python SDK installed
+- `gcloud` CLI authenticated (for IAM and monitoring queries — **not** for Agent Engine CRUD)
+- IAM roles: `roles/aiplatform.user` and `roles/monitoring.viewer` granted on the target project
 - Access to the target Google Cloud project hosting the Agent Engine deployment
-- `curl` or `gcloud` for A2A protocol endpoint testing (AgentCard, Task API, Status API)
+- `curl` for A2A protocol endpoint testing (AgentCard, Task API, Status API)
 - Cloud Monitoring API enabled for performance metrics retrieval
 - Familiarity with Vertex AI Agent Engine concepts: Code Execution Sandbox, Memory Bank, Model Armor
 
+**Important**: There is no `gcloud` CLI surface for Agent Engine (no `gcloud ai agents`, `gcloud ai reasoning-engines`, or `gcloud alpha ai agent-engines` commands exist). All Agent Engine operations use the Python SDK via `vertexai.Client()` or `vertexai.preview.reasoning_engines`.
+
 ## Instructions
 
-1. Connect to the Agent Engine deployment by retrieving agent metadata via `gcloud ai agents describe`
+1. Connect to the Agent Engine deployment by retrieving agent metadata via the Python SDK (`client.agent_engines.get(name=...)`)
 2. Parse the runtime configuration: model selection (Gemini 2.5 Pro/Flash), tools enabled, VPC settings, and scaling policies
 3. Validate Code Execution Sandbox settings: confirm state TTL is 7-14 days, sandbox type is `SECURE_ISOLATED`, and IAM permissions are scoped to required GCP services only
 4. Check Memory Bank configuration: verify enabled status, retention policy (min 100 memories), Firestore encryption, indexing enabled, and auto-cleanup active
@@ -52,7 +58,7 @@ See `${CLAUDE_SKILL_DIR}/references/example-inspection-report.md` for a complete
 
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Agent metadata not accessible | Insufficient IAM permissions or incorrect agent ID | Verify `roles/aiplatform.viewer` granted; confirm agent ID with `gcloud ai agents list` |
+| Agent metadata not accessible | Insufficient IAM permissions or incorrect agent ID | Verify `roles/aiplatform.user` granted; confirm agent ID with `client.agent_engines.list()` via Python SDK |
 | A2A AgentCard endpoint 404 | Agent not configured for A2A protocol or endpoint path incorrect | Check agent configuration for A2A enablement; verify `/.well-known/agent-card` path |
 | Cloud Monitoring metrics empty | Monitoring API not enabled or no recent traffic | Run `gcloud services enable monitoring.googleapis.com`; generate test traffic first |
 | VPC-SC perimeter blocking access | Inspector running outside VPC Service Controls perimeter | Add inspector service account to access level; use VPC-SC bridge or access policy |

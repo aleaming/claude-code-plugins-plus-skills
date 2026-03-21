@@ -161,7 +161,8 @@ project/
 **Base Agent Implementation (Python)**:
 ```python
 # src/agents/base_agent.py
-from google import adk
+from google.adk.agents import Agent
+from google.adk.tools import FunctionTool
 from typing import Dict, Any, Optional
 import logging
 
@@ -173,25 +174,19 @@ class BaseAgent:
     def __init__(
         self,
         model: str = "gemini-2.5-flash",
-        enable_code_execution: bool = False,
-        enable_memory_bank: bool = False,
+        name: str = "base-agent",
         system_instruction: Optional[str] = None,
+        tools: Optional[list] = None,
     ):
         self.model = model
-        self.tools = []
-
-        # Configure tools
-        if enable_code_execution:
-            self.tools.append(adk.tools.CodeExecution())
-
-        if enable_memory_bank:
-            self.tools.append(adk.tools.MemoryBank())
+        self.tools = tools or []
 
         # Create agent
-        self.agent = adk.Agent(
+        self.agent = Agent(
             model=self.model,
+            name=name,
             tools=self.tools,
-            system_instruction=system_instruction or self._default_instruction(),
+            instruction=system_instruction or self._default_instruction(),
         )
 
     def _default_instruction(self) -> str:
@@ -294,7 +289,7 @@ Validate configuration, create cluster, and verify it's running.
 **Multi-Agent Orchestration**:
 ```python
 # src/orchestrators/workflows.py
-from google import adk
+from google.adk.agents import SequentialAgent
 from ..agents.specialized_agents.deployment_agent import DeploymentAgent
 
 class DeploymentWorkflow:
@@ -307,9 +302,10 @@ class DeploymentWorkflow:
         self.monitor = self._create_monitor_agent()
 
         # Create orchestrator
-        self.orchestrator = adk.SequentialAgent(
-            agents=[self.validator.agent, self.deployer.agent, self.monitor.agent],
-            system_instruction="Coordinate validation → deployment → monitoring"
+        self.orchestrator = SequentialAgent(
+            name="deploy-pipeline",
+            sub_agents=[self.validator.agent, self.deployer.agent, self.monitor.agent],
+            description="Coordinate validation -> deployment -> monitoring",
         )
 
     def _create_validator_agent(self):
@@ -551,11 +547,12 @@ adk deploy --agent-file src/agents/main_agent.py
 
 ### Simple Chat Agent
 ```python
-from google import adk
+from google.adk.agents import Agent
 
-agent = adk.Agent(
+agent = Agent(
     model="gemini-2.5-flash",
-    system_instruction="You are a helpful assistant."
+    name="chat-agent",
+    instruction="You are a helpful assistant.",
 )
 
 response = agent.run("What is ADK?")

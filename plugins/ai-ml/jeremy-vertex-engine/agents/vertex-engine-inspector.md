@@ -19,8 +19,7 @@ You are an expert inspector and validator for the Vertex AI Agent Engine runtime
 Inspect deployed agents on the Agent Engine managed runtime:
 
 ```python
-from google.cloud import aiplatform
-from google.cloud.aiplatform import agent_builder
+import vertexai
 
 def inspect_agent_engine_deployment(project_id: str, location: str, agent_id: str):
     """
@@ -37,11 +36,11 @@ def inspect_agent_engine_deployment(project_id: str, location: str, agent_id: st
     - Monitoring and observability
     """
 
-    client = agent_builder.AgentBuilderClient()
+    client = vertexai.Client(project=project_id, location=location)
 
     # Get agent details
-    agent_name = f"projects/{project_id}/locations/{location}/agents/{agent_id}"
-    agent = client.get_agent(name=agent_name)
+    agent_name = f"projects/{project_id}/locations/{location}/reasoningEngines/{agent_id}"
+    agent = client.agent_engines.get(name=agent_name)
 
     inspection_report = {
         "agent_id": agent_id,

@@ -8,8 +8,8 @@ description: |
   comprehensive agent discovery, invocation, session management, and workflow
   orchestration capabilities.
 
-version: 1.0.0
-url: https://agent-engine.googleapis.com/v1/agents/adk-orchestrator
+version: 2.1.0
+url: https://us-central1-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/us-central1/reasoningEngines/adk-orchestrator
 
 # Agent Provider Information
 provider:

@@ -3,9 +3,11 @@ name: gcp-examples-expert
 description: |
   Generate production-ready Google Cloud code examples from official repositories including ADK samples, Genkit templates, Vertex AI notebooks, and Gemini patterns. Use when asked to "show ADK example" or "provide GCP starter kit". Trigger with relevant phrases based on skill purpose.
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
-version: 1.0.0
+version: 2.1.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
+effort: medium
+argument-hint: "[framework or use-case]"
 compatible-with: claude-code, codex, openclaw
 ---
 # GCP Examples Expert
@@ -72,7 +74,7 @@ See `${CLAUDE_SKILL_DIR}/references/example-interactions.md` for detailed intera
 
 - [google/adk-samples](https://github.com/google/adk-samples) -- ADK agent creation patterns
 - [GoogleCloudPlatform/agent-starter-pack](https://github.com/GoogleCloudPlatform/agent-starter-pack) -- production agent templates
-- [firebase/genkit](https://github.com/firebase/genkit) -- RAG flows, tool calling, evaluation
+- [genkit-ai/genkit](https://github.com/genkit-ai/genkit) -- RAG flows, tool calling, evaluation
 - [GoogleCloudPlatform/vertex-ai-samples](https://github.com/GoogleCloudPlatform/vertex-ai-samples) -- model training, tuning, deployment
 - [GoogleCloudPlatform/generative-ai](https://github.com/GoogleCloudPlatform/generative-ai) -- Gemini multimodal, function calling, grounding
 - [GoogleCloudPlatform/agentsmithy](https://github.com/GoogleCloudPlatform/agentsmithy) -- multi-agent orchestration

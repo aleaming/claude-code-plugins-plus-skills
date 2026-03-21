@@ -6,15 +6,19 @@ description: |
   weighted scores (0-100%) with actionable remediation plans. Use when asked to
   validate a deployment, run a production readiness check, audit security posture,
   or verify compliance for Vertex AI agents. Trigger with "validate deployment",
-  "production readiness", "security audit", or "compliance check".
-  Make sure to use this skill whenever validating ADK agents for Agent Engine.
+  "production readiness", "security audit", "compliance check", "is this agent
+  ready for prod", "check my ADK agent", "review before deploy", or
+  "production readiness check". Make sure to use this skill whenever validating
+  ADK agents for Agent Engine.
 allowed-tools: "Read,Grep,Glob,Bash(gcloud:*),Bash(python:*),Bash(pylint:*),Bash(flake8:*),Bash(mypy:*),Bash(bandit:*),Bash(pytest:*)"
-version: 2.0.0
+version: 2.1.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 tags: [vertex-ai, security, compliance, validation, production-readiness, gcp]
 model: inherit
+effort: high
+argument-hint: "[project-id]"
 ---
 # Validator Expert
 
@@ -24,7 +28,7 @@ model: inherit
 
 ## Overview
 
-Validate production readiness of Vertex AI Agent Engine deployments by executing weighted checks across five categories: security (30 points), monitoring (20 points), performance (25 points), compliance (15 points), and reliability (10 points). This skill produces a 0-100% composite score with pass/fail per check and prioritized remediation recommendations.
+Validate production readiness of Vertex AI Agent Engine deployments by executing weighted checks across five categories: security (30 points), monitoring (20 points), performance (25 points), compliance (15 points), and best practices (10 points). This skill produces a 0-100% composite score with pass/fail per check and prioritized remediation recommendations.
 
 ## Prerequisites
 
@@ -36,7 +40,7 @@ Validate production readiness of Vertex AI Agent Engine deployments by executing
 
 ## Instructions
 
-1. Retrieve the deployment configuration using `gcloud ai agents describe` and parse model, scaling, and feature settings
+1. Retrieve the deployment configuration using the Python SDK (`vertexai.Client().agent_engines.get(name)`) or REST API (`GET https://{LOCATION}-aiplatform.googleapis.com/v1/projects/{PROJECT}/locations/{LOCATION}/reasoningEngines/{ID}`) and parse model, scaling, and feature settings
 2. Run the security validation suite (see [security checklist](references/security-checklist.md)):
    - Check if Agent Identity is enabled (recommended over service accounts for 2025+ deployments)
    - If using service accounts, verify IAM roles follow least-privilege (`roles/aiplatform.expressUser`, not `roles/aiplatform.admin`)
@@ -68,7 +72,7 @@ Validate production readiness of Vertex AI Agent Engine deployments by executing
 ## Output
 
 - Production readiness score: 0-100% with status (READY >= 85%, NEEDS WORK 70-84%, NOT READY < 70%)
-- Per-category breakdown: security (x/30), monitoring (x/20), performance (x/25), compliance (x/15), reliability (x/10)
+- Per-category breakdown: security (x/30), monitoring (x/20), performance (x/25), compliance (x/15), best practices (x/10)
 - Pass/fail table for each individual check with evidence notes
 - Prioritized remediation plan: action items ranked by score improvement per effort
 - Comparison to previous validation run (if available) showing score delta
@@ -78,7 +82,7 @@ Validate production readiness of Vertex AI Agent Engine deployments by executing
 | Error | Cause | Solution |
 |-------|-------|----------|
 | Insufficient IAM permissions | Viewer roles not granted on target project | Request `roles/aiplatform.viewer` and `roles/iam.securityReviewer` from project admin |
-| Agent deployment not found | Incorrect agent ID or deployment deleted | Verify agent ID with `gcloud ai agents list`; confirm deployment region |
+| Agent deployment not found | Incorrect agent ID or deployment deleted | Verify agent ID with `vertexai.Client().agent_engines.list()` or REST `GET .../reasoningEngines`; confirm deployment region |
 | Monitoring API returns no data | API not enabled or agent has zero traffic | Enable Monitoring API; generate synthetic traffic to populate baseline metrics |
 | VPC-SC configuration inaccessible | Organization policy restricts VPC-SC reads | Request `roles/accesscontextmanager.policyReader` at organization level |
 | Compliance check inconclusive | Audit logs not enabled or retention too short | Enable Data Access audit logs; set log retention to minimum 365 days |

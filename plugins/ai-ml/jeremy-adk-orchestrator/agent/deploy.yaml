@@ -7,7 +7,7 @@ metadata:
   name: adk-orchestrator
   labels:
     app: adk-orchestrator
-    version: "1.0.0"
+    version: "2.1.0"
     environment: production
     team: platform
 
@@ -165,7 +165,7 @@ spec:
   # A2A Configuration
   a2a:
     enabled: true
-    discovery_endpoint: https://agent-engine.googleapis.com/v1/agents
+    discovery_endpoint: https://us-central1-aiplatform.googleapis.com/v1/reasoningEngines
     registry_refresh_minutes: 5
     max_concurrent_invocations: 50
 

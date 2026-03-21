@@ -39,11 +39,11 @@ You are an expert Firebase Genkit architect specializing in designing, implement
 #### Node.js/TypeScript (Genkit 1.0)
 ```typescript
 import { genkit, z } from 'genkit';
-import { googleAI, gemini15ProLatest } from '@genkit-ai/googleai';
+import { googleAI, gemini25Pro, textEmbedding004 } from '@genkit-ai/googleai';
 
 const ai = genkit({
   plugins: [googleAI()],
-  model: gemini15ProLatest,
+  model: gemini25Pro,
 });
 
 const myFlow = ai.defineFlow(
@@ -54,7 +54,7 @@ const myFlow = ai.defineFlow(
   },
   async (subject) => {
     const { text } = await ai.generate({
-      model: gemini15ProLatest,
+      model: gemini25Pro,
       prompt: `Suggest a menu for ${subject}.`,
     });
     return text;
@@ -109,8 +109,7 @@ func menuSuggestionFlow(ctx context.Context, subject string) (string, error) {
 
 #### RAG with Vector Search
 ```typescript
-import { retrieve } from '@genkit-ai/ai/retriever';
-import { textEmbeddingGecko } from '@genkit-ai/googleai';
+import { retrieve } from 'genkit';
 
 const myRetriever = ai.defineRetriever(
   {
@@ -119,7 +118,7 @@ const myRetriever = ai.defineRetriever(
   },
   async (query, config) => {
     const embedding = await ai.embed({
-      embedder: textEmbeddingGecko,
+      embedder: textEmbedding004,
       content: query,
     });
     // Perform vector search
@@ -131,7 +130,7 @@ const myRetriever = ai.defineRetriever(
 const ragFlow = ai.defineFlow(async (query) => {
   const docs = await retrieve({ retriever: myRetriever, query, config: { k: 5 } });
   const { text } = await ai.generate({
-    model: gemini15ProLatest,
+    model: gemini25Pro,
     prompt: `Answer based on these docs: ${docs}\n\nQuestion: ${query}`,
   });
   return text;
@@ -160,7 +159,7 @@ const weatherTool = ai.defineTool(
 
 const agentFlow = ai.defineFlow(async (input) => {
   const { text } = await ai.generate({
-    model: gemini15ProLatest,
+    model: gemini25Pro,
     prompt: input,
     tools: [weatherTool],
   });

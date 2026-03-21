@@ -81,20 +81,48 @@ def validate_performance(agent_config):
 ### Validation
 
 ```python
-def validate_compliance(agent_config, project_id):
-    from google.cloud import logging_v2
-    client = logging_v2.ConfigServiceV2Client()
-    parent = f"projects/{project_id}"
-    sinks = client.list_sinks(parent=parent)
-    audit_sink_exists = any('audit' in sink.name.lower() for sink in sinks)
-    if not audit_sink_exists:
+def validate_compliance(project_id):
+    """Check audit log configuration for Vertex AI / Agent Engine.
+
+    Verifies that auditConfigs include aiplatform.googleapis.com
+    with ADMIN_READ, DATA_READ, and DATA_WRITE enabled.
+
+    CLI equivalent:
+      gcloud projects get-iam-policy PROJECT_ID --format=json
+      # Look for auditConfigs with service "aiplatform.googleapis.com"
+    """
+    import subprocess, json
+    result = subprocess.run(
+        ["gcloud", "projects", "get-iam-policy", project_id, "--format=json"],
+        capture_output=True, text=True
+    )
+    policy = json.loads(result.stdout)
+    audit_configs = policy.get("auditConfigs", [])
+    ai_audit = next(
+        (cfg for cfg in audit_configs
+         if cfg.get("service") == "aiplatform.googleapis.com"),
+        None
+    )
+    if not ai_audit:
         return {
             "category": "Compliance", "check": "Audit Logging",
-            "status": "FAIL", "message": "No audit log sink configured"
+            "status": "FAIL",
+            "message": "No audit log config for aiplatform.googleapis.com"
+        }
+    enabled_types = {
+        entry.get("logType") for entry in ai_audit.get("auditLogConfigs", [])
+    }
+    required = {"ADMIN_READ", "DATA_READ", "DATA_WRITE"}
+    missing = required - enabled_types
+    if missing:
+        return {
+            "category": "Compliance", "check": "Audit Logging",
+            "status": "WARNING",
+            "message": f"Missing audit log types: {', '.join(sorted(missing))}"
         }
     return {
         "category": "Compliance", "check": "Audit Logging",
-        "status": "PASS", "message": "Audit logging configured"
+        "status": "PASS", "message": "Audit logging fully configured"
     }
 ```
 

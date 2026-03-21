@@ -6,19 +6,24 @@ Run all 28 checklist items against a newly deployed ADK agent before production 
 
 ### Running the Inspection
 
-```bash
-# Authenticate and set project
-gcloud auth login
-gcloud config set project my-gcp-project
+```python
+# Authenticate and connect via Python SDK
+# (There is NO gcloud CLI for Agent Engine — use the SDK)
+import vertexai
 
-# List available agents to find the target
-gcloud ai agents list --region=us-central1 --format="table(name,displayName,state)"
-# NAME                                                              DISPLAY_NAME       STATE
-# projects/my-gcp-project/locations/us-central1/agents/agent-001    data-analyst       ACTIVE
-# projects/my-gcp-project/locations/us-central1/agents/agent-002    support-bot        ACTIVE
+client = vertexai.Client(project="my-gcp-project", location="us-central1")
 
-# Get agent details
-gcloud ai agents describe agent-001 --region=us-central1 --format=yaml
+# List available agent engines to find the target
+for engine in client.agent_engines.list():
+    print(f"{engine.name}  {engine.display_name}  {engine.state}")
+# projects/my-gcp-project/locations/us-central1/reasoningEngines/001    data-analyst       ACTIVE
+# projects/my-gcp-project/locations/us-central1/reasoningEngines/002    support-bot        ACTIVE
+
+# Get agent engine details
+engine = client.agent_engines.get(
+    name="projects/my-gcp-project/locations/us-central1/reasoningEngines/001"
+)
+print(engine)
 ```
 
 ### Inspection Script
@@ -62,8 +67,18 @@ CATEGORY_WEIGHTS = {
 }
 
 
+def get_agent_engine(project_id: str, location: str, engine_id: str):
+    """Retrieve agent engine metadata via the Vertex AI Python SDK."""
+    import vertexai
+    client = vertexai.Client(project=project_id, location=location)
+    name = f"projects/{project_id}/locations/{location}/reasoningEngines/{engine_id}"
+    return client.agent_engines.get(name=name)
+
+
 def run_gcloud(args: list[str]) -> dict:
-    """Execute a gcloud command and return parsed JSON output."""
+    """Execute a gcloud command and return parsed JSON output.
+    NOTE: Only for IAM/monitoring/logging queries — NOT for Agent Engine CRUD.
+    """
     cmd = ["gcloud"] + args + ["--format=json"]
     result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
     if result.returncode != 0:
@@ -549,21 +564,25 @@ diagnosis:
 
 ### Remediation Steps
 
-```bash
-# 1. Request quota increase for the agent endpoint
-gcloud services quotas update aiplatform.googleapis.com/agent_requests \
-  --project=my-gcp-project \
-  --value=10000
+```python
+# 1. Request quota increase via Google Cloud Console or API
+#    Navigate to: IAM & Admin > Quotas > aiplatform.googleapis.com
+#    Or use the Service Usage API to request an increase.
 
-# 2. Increase max instances for auto-scaling
-gcloud ai agents update agent-001 \
-  --region=us-central1 \
-  --scaling-max-instances=20
+# 2. Update agent engine configuration via Python SDK
+import vertexai
+
+client = vertexai.Client(project="my-gcp-project", location="us-central1")
+engine = client.agent_engines.get(
+    name="projects/my-gcp-project/locations/us-central1/reasoningEngines/001"
+)
+
+# Note: To change scaling or config, redeploy with updated config:
+# client.agent_engines.create(agent=updated_app, config={...})
 
 # 3. Verify changes took effect
-gcloud ai agents describe agent-001 --region=us-central1 \
-  --format="yaml(scalingConfig)"
-# scalingConfig:
-#   minInstances: 2
-#   maxInstances: 20
+updated = client.agent_engines.get(
+    name="projects/my-gcp-project/locations/us-central1/reasoningEngines/001"
+)
+print(updated)
 ```

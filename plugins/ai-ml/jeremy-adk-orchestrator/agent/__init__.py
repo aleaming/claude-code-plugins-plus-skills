@@ -9,4 +9,4 @@ from .agent import get_agent, create_runner, root_agent
 
 __all__ = ["get_agent", "create_runner", "root_agent"]
 
-__version__ = "1.0.0"
+__version__ = "2.1.0"

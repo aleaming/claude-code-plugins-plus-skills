@@ -36,17 +36,16 @@ class AgentConfig:
 
 ```python
 # src/tools.py
-from google.adk import tool
+from google.adk.tools import FunctionTool
 from typing import Dict, List
 import subprocess
 import json
 
-@tool(
-    name="run_linter",
-    description="Run a linter on a file and return findings",
-)
+# ADK tools: define plain functions, wrap with FunctionTool.
+# The function docstring becomes the tool description for the LLM.
+
 def run_linter(file_path: str, language: str = "python") -> Dict:
-    """Run language-appropriate linter and return structured results."""
+    """Run a linter on a file and return findings as structured results."""
     linter_map = {
         "python": ["ruff", "check", "--output-format=json"],
         "typescript": ["eslint", "--format=json"],
@@ -71,10 +70,6 @@ def run_linter(file_path: str, language: str = "python") -> Dict:
         return {"status": "error", "error": f"Linter '{cmd[0]}' not installed"}
 
 
-@tool(
-    name="read_file_section",
-    description="Read a specific line range from a file for focused review",
-)
 def read_file_section(file_path: str, start_line: int, end_line: int) -> Dict:
     """Read lines from a file. Returns content with line numbers."""
     try:
@@ -98,10 +93,6 @@ def read_file_section(file_path: str, start_line: int, end_line: int) -> Dict:
         return {"status": "error", "error": f"File not found: {file_path}"}
 
 
-@tool(
-    name="check_test_coverage",
-    description="Check test coverage for a Python module",
-)
 def check_test_coverage(module_path: str) -> Dict:
     """Run pytest with coverage and return summary."""
     try:
@@ -128,7 +119,8 @@ def check_test_coverage(module_path: str) -> Dict:
 
 ```python
 # src/agent.py
-from google import adk
+from google.adk.agents import Agent
+from google.adk.tools import FunctionTool
 from src.tools import run_linter, read_file_section, check_test_coverage
 from src.config import AgentConfig
 
@@ -148,16 +140,20 @@ REVIEW FORMAT:
 Always explain WHY something is an issue and provide a concrete fix.
 """
 
-def create_review_agent(config: AgentConfig = None) -> adk.Agent:
+def create_review_agent(config: AgentConfig = None) -> Agent:
     """Create a configured code review agent."""
     config = config or AgentConfig()
 
-    agent = adk.Agent(
+    agent = Agent(
         model=config.model,
         name="code-review-agent",
         description="Reviews code for quality, security, and test coverage",
-        system_instruction=SYSTEM_INSTRUCTION,
-        tools=[run_linter, read_file_section, check_test_coverage],
+        instruction=SYSTEM_INSTRUCTION,
+        tools=[
+            FunctionTool(func=run_linter),
+            FunctionTool(func=read_file_section),
+            FunctionTool(func=check_test_coverage),
+        ],
     )
     return agent
 
@@ -283,41 +279,38 @@ Build a validator-deployer-monitor agent team.
 
 ```python
 # orchestrator.py
-from google import adk
-from google.adk import SequentialAgent
+from google.adk.agents import Agent, SequentialAgent
 
 # Agent 1: Configuration Validator
-validator = adk.Agent(
+validator = Agent(
     model="gemini-2.5-flash",
     name="config-validator",
-    system_instruction="""Validate deployment configurations.
+    instruction="""Validate deployment configurations.
 Check: required fields present, valid regions, resource limits within quotas,
 IAM roles follow least-privilege, no hardcoded secrets.""",
     tools=[],  # Pure reasoning, no tools needed
 )
 
 # Agent 2: Deployer
-deployer = adk.Agent(
+deployer = Agent(
     model="gemini-2.5-flash",
     name="deployer",
-    system_instruction="""Execute deployments based on validated configurations.
+    instruction="""Execute deployments based on validated configurations.
 Run gcloud commands, verify resources are created, report deployment status.""",
-    tools=[adk.tools.CodeExecution()],
 )
 
 # Agent 3: Health Monitor
-monitor = adk.Agent(
+monitor = Agent(
     model="gemini-2.5-flash",
     name="health-monitor",
-    system_instruction="""After deployment, verify health.
+    instruction="""After deployment, verify health.
 Check: endpoint responds 200, latency < 500ms, no error logs in last 5 min.""",
-    tools=[adk.tools.CodeExecution()],
 )
 
 # Wire into sequential orchestrator
 pipeline = SequentialAgent(
     name="deploy-pipeline",
-    agents=[validator, deployer, monitor],
+    sub_agents=[validator, deployer, monitor],
     description="Validate config -> Deploy -> Monitor health",
 )
 
@@ -367,9 +360,9 @@ Refactor and add regression tests to untested agent code.
 ```python
 # Before: untested agent code
 # src/chat_agent.py (original)
-from google import adk
+from google.adk.agents import Agent
 
-agent = adk.Agent(model="gemini-2.5-flash")
+agent = Agent(model="gemini-2.5-flash", name="chat")
 
 def chat(msg):
     return agent.run(msg)
@@ -378,18 +371,18 @@ def chat(msg):
 ```python
 # After: refactored with testability
 # src/chat_agent.py (refactored)
-from google import adk
+from google.adk.agents import Agent
 from typing import Optional, Protocol
 
 class LLMProvider(Protocol):
     """Protocol for dependency injection in tests."""
     def run(self, message: str, session_id: Optional[str] = None) -> object: ...
 
-def create_chat_agent(model: str = "gemini-2.5-flash") -> adk.Agent:
-    return adk.Agent(
+def create_chat_agent(model: str = "gemini-2.5-flash") -> Agent:
+    return Agent(
         model=model,
         name="chat-agent",
-        system_instruction="You are a helpful assistant. Be concise.",
+        instruction="You are a helpful assistant. Be concise.",
     )
 
 def chat(message: str, agent: Optional[LLMProvider] = None,

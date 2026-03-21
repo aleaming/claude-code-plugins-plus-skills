@@ -71,10 +71,16 @@ gcloud projects get-iam-policy PROJECT_ID \
 gcloud projects get-iam-policy PROJECT_ID \
   --flatten="bindings[].members" \
   --filter="bindings.role:(roles/owner OR roles/editor OR roles/aiplatform.admin)"
+```
 
-# Check agent identity status
-gcloud ai agent-engines describe AGENT_ID \
-  --location=REGION --format="yaml(agentIdentity)"
+```python
+# Check agent identity status (no gcloud CLI — use Python SDK)
+import vertexai
+client = vertexai.Client(project="PROJECT_ID", location="LOCATION")
+remote_agent = client.agent_engines.get(
+    name="projects/PROJECT_ID/locations/LOCATION/reasoningEngines/AGENT_ID"
+)
+print(remote_agent)  # Inspect agent identity configuration
 ```
 
 Source: [Custom Service Accounts](https://cloud.google.com/vertex-ai/docs/general/custom-service-account)
@@ -101,7 +107,7 @@ Source: [Memory Bank IAM Conditions](https://cloud.google.com/agent-builder/agen
 
 ## Model Armor
 
-- Model Armor enabled for all ADK-based agents
+- Model Armor enabled for all ADK-based agents (GA with `gcloud model-armor` command group)
 - Agent needs `roles/modelarmor.user` for sanitize APIs
 - Templates managed via `roles/modelarmor.admin`
 - Org-level floor settings via `roles/modelarmor.floorSettingsAdmin`
@@ -109,6 +115,19 @@ Source: [Memory Bank IAM Conditions](https://cloud.google.com/agent-builder/agen
 **Agent permissions needed:**
 - `modelarmor.templates.useToSanitizeUserPrompt`
 - `modelarmor.templates.useToSanitizeModelResponse`
+
+**Key CLI commands:**
+```bash
+# Create a Model Armor template
+gcloud model-armor templates create TEMPLATE_ID \
+  --location=LOCATION \
+  --rai-settings-filters='[{"confidenceLevel":"MEDIUM_AND_ABOVE","filterType":"SEXUALLY_EXPLICIT"}]'
+
+# Sanitize a user prompt
+gcloud model-armor templates sanitize-user-prompt TEMPLATE_ID \
+  --location=LOCATION \
+  --user-prompt-data='{"text":"prompt text here"}'
+```
 
 Source: [Model Armor](https://cloud.google.com/vertex-ai/docs/generative-ai/model-armor) · [Model Armor IAM](https://cloud.google.com/iam/docs/roles-permissions/modelarmor)
 

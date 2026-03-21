@@ -94,6 +94,8 @@ pip install --upgrade \
 
 ### Required gcloud CLI Tools
 
+The `gcloud` CLI is used for IAM policy queries, Cloud Monitoring, and Cloud Logging -- **not** for Agent Engine CRUD operations. There is no `gcloud ai agents`, `gcloud ai reasoning-engines`, or `gcloud alpha ai agent-engines` CLI surface. All Agent Engine operations use the Python SDK.
+
 **Install gcloud CLI:**
 ```bash
 # Install gcloud (if not already installed)
@@ -102,9 +104,6 @@ exec -l $SHELL
 
 # Update to latest version
 gcloud components update
-
-# Install alpha commands (for Agent Engine)
-gcloud components install alpha
 ```
 
 **Verify Installation:**
@@ -112,8 +111,13 @@ gcloud components install alpha
 gcloud --version
 # Should show: Google Cloud SDK 450.0.0+ (or higher)
 
-# Test Agent Engine access
-gcloud alpha ai agent-engines list --location=us-central1 --project=YOUR_PROJECT_ID
+# Test Agent Engine access via Python SDK
+python3 -c "
+import vertexai
+client = vertexai.Client(project='YOUR_PROJECT_ID', location='us-central1')
+for engine in client.agent_engines.list():
+    print(engine.name, engine.display_name)
+"
 ```
 
 ### Vertex AI Agent Engine Requirements
@@ -122,16 +126,18 @@ gcloud alpha ai agent-engines list --location=us-central1 --project=YOUR_PROJECT
 
 1. **ADK Deployment to Agent Engine:**
 ```python
-from google.cloud import aiplatform
+import vertexai
+from google.adk.agents import Agent
 
-client = aiplatform.Client(project=PROJECT_ID, location=LOCATION)
+client = vertexai.Client(project=PROJECT_ID, location=LOCATION)
+
+# Define an ADK agent
+agent = Agent(name="my-adk-agent", model="gemini-2.5-flash")
 
 # Deploy ADK agent to Agent Engine
 agent_engine = client.agent_engines.create(
-    config={
-        "display_name": "my-adk-agent",
-        "agent_framework": "google-adk"  # ← Required for ADK
-    }
+    agent=agent,
+    config={"display_name": "my-adk-agent"},
 )
 ```
 
@@ -192,7 +198,7 @@ agent = ReasoningEngine.create(
 ### Skills (Auto-Activating)
 - **vertex-engine-inspector**: Triggers on "inspect agent engine", "validate deployment"
   - **Tool Permissions**: Read, Grep, Glob, Bash (read-only)
-  - **Version**: 1.0.0 (2026 schema compliant)
+  - **Version**: 2.1.0 (2026 schema compliant)
 
 ## Quick Start
 
@@ -364,7 +370,7 @@ from opentelemetry import trace
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.exporter.cloud_trace import CloudTraceSpanExporter
-from google.cloud import aiplatform
+import vertexai
 
 # Configure Cloud Trace exporter
 trace.set_tracer_provider(TracerProvider())
@@ -519,27 +525,26 @@ policy = policy_client.create_alert_policy(
 **Setup BigQuery Export:**
 
 ```python
-from google.cloud import aiplatform
+# Export agent logs to BigQuery via Cloud Logging log sink
+# (Agent Engine logs flow through Cloud Logging; use a sink to route to BigQuery)
 
-# Configure BigQuery connector for agent logs
-connector_config = {
-    "bigquery_destination": {
-        "output_uri": f"bq://{PROJECT_ID}.agent_analytics.agent_logs"
-    },
-    "export_interval_hours": 1,  # Export every hour
-    "log_types": [
-        "AGENT_QUERIES",
-        "MEMORY_BANK_OPERATIONS",
-        "CODE_EXECUTION_EVENTS",
-        "A2A_PROTOCOL_CALLS"
-    ]
-}
+from google.cloud import logging_v2
 
-client = aiplatform.gapic.ReasoningEngineServiceClient()
-connector = client.create_data_connector(
-    parent=f"projects/{PROJECT_ID}/locations/{LOCATION}/reasoningEngines/{agent_engine_id}",
-    data_connector=connector_config
+client = logging_v2.ConfigServiceV2Client()
+
+sink_name = f"projects/{PROJECT_ID}/sinks/agent-logs-to-bq"
+sink = logging_v2.LogSink(
+    name=sink_name,
+    destination=f"bigquery.googleapis.com/projects/{PROJECT_ID}/datasets/agent_analytics",
+    filter_='resource.type="aiplatform.googleapis.com/Agent"',
 )
+
+# Create the log sink (routes agent logs to BigQuery automatically)
+created_sink = client.create_sink(
+    parent=f"projects/{PROJECT_ID}",
+    sink=sink,
+)
+print(f"Log sink created: {created_sink.name}")
 ```
 
 **Query agent analytics in BigQuery:**
@@ -711,37 +716,41 @@ gsutil lifecycle set lifecycle.json gs://[PROJECT_ID]-agent-artifacts/
 **Example: Weekly compliance export**
 
 ```python
-from google.cloud import aiplatform
+from google.cloud import logging_v2
 import datetime
 
 def export_compliance_logs():
-    """Export agent logs for compliance audit."""
-    end_time = datetime.datetime.now()
+    """Export agent logs for compliance audit via Cloud Logging.
+    Agent Engine does not have a direct export_logs API — use Cloud Logging sinks
+    or the Logging API to read and export logs to GCS.
+    """
+    end_time = datetime.datetime.now(datetime.timezone.utc)
     start_time = end_time - datetime.timedelta(days=7)
 
-    export_config = {
-        "gcs_destination": {
-            "output_uri_prefix": f"gs://{PROJECT_ID}-compliance/agents/{start_time.strftime('%Y-%m-%d')}/"
-        },
-        "time_range": {
-            "start_time": start_time.isoformat(),
-            "end_time": end_time.isoformat()
-        },
-        "log_filters": [
-            "severity>=WARNING",  # All warnings and errors
-            "jsonPayload.user_pii_accessed=true",  # PII access logs
-            "jsonPayload.model_armor_triggered=true"  # Security events
-        ]
-    }
+    client = logging_v2.Client(project=PROJECT_ID)
 
-    client = aiplatform.gapic.ReasoningEngineServiceClient()
-    operation = client.export_logs(
-        parent=f"projects/{PROJECT_ID}/locations/{LOCATION}/reasoningEngines/{agent_engine_id}",
-        export_config=export_config
-    )
+    # Query agent logs for the compliance window
+    filter_str = f'''
+    resource.type="aiplatform.googleapis.com/Agent"
+    timestamp>="{start_time.isoformat()}"
+    timestamp<="{end_time.isoformat()}"
+    (severity>=WARNING OR jsonPayload.model_armor_triggered=true)
+    '''
 
-    print(f"Compliance export started: {operation.name}")
-    return operation
+    entries = list(client.list_entries(filter_=filter_str, page_size=1000))
+    print(f"Compliance export: {len(entries)} log entries found")
+
+    # Write to GCS for archival
+    from google.cloud import storage
+    storage_client = storage.Client(project=PROJECT_ID)
+    bucket = storage_client.bucket(f"{PROJECT_ID}-compliance")
+    blob = bucket.blob(f"agents/{start_time.strftime('%Y-%m-%d')}/logs.json")
+
+    import json
+    log_data = [{"timestamp": str(e.timestamp), "payload": str(e.payload)} for e in entries]
+    blob.upload_from_string(json.dumps(log_data, indent=2))
+    print(f"Exported to gs://{bucket.name}/{blob.name}")
+    return entries
 
 # Schedule with Cloud Scheduler
 # gcloud scheduler jobs create http compliance-export \
@@ -770,4 +779,4 @@ MIT
 
 ## Version
 
-1.0.0 (2026) - Agent Engine GA support with comprehensive inspection capabilities
+2.1.0 (2026) - Agent Engine GA support with comprehensive inspection capabilities; SDK-only patterns (no fabricated gcloud CLI)

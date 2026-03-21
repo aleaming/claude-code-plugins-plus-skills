@@ -20,11 +20,11 @@ gcloud services enable aiplatform.googleapis.com
 
 ```python
 # agent.py
-from google import adk
+from google.adk.agents import Agent
 from google.adk.tools import CodeExecution, MemoryBank
 
 # Define the agent with Code Execution Sandbox and Memory Bank
-agent = adk.Agent(
+agent = Agent(
     model="gemini-2.5-flash",
     name="data-analyst",
     description="Analyzes datasets using code execution with persistent memory",
@@ -79,7 +79,7 @@ adk deploy \
   --max-instances 5
 
 # Verify deployment
-gcloud ai agents list --project=my-gcp-project --region=us-central1
+gcloud run services list --project=my-gcp-project --region=us-central1
 ```
 
 ### Expected Output

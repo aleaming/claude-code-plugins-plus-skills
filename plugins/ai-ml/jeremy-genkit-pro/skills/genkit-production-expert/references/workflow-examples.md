@@ -45,7 +45,7 @@ const docRetriever = ai.defineRetriever(
   async (query, config) => {
     // Generate embedding
     const embedding = await ai.embed({
-      embedder: textEmbeddingGecko,
+      embedder: textEmbedding004,
       content: query,
     });
 

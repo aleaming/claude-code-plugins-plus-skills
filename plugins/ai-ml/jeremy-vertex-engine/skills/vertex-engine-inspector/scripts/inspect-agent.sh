@@ -45,29 +45,36 @@ if [[ -z "$PROJECT_ID" ]]; then
 fi
 
 echo "Inspecting Vertex AI Agent Engine deployment..."
-echo "Agent: $AGENT_ID"
+echo "Agent Engine ID: $AGENT_ID"
 echo "Project: $PROJECT_ID"
 echo "Region: $REGION"
 echo ""
 
 # Phase 1: Configuration Analysis
 echo -e "${GREEN}Phase 1: Configuration Analysis${NC}"
-echo "Retrieving agent metadata..."
+echo "Retrieving agent engine metadata via Python SDK..."
+echo "NOTE: There is no 'gcloud ai agents' CLI — using vertexai Python SDK."
 
-AGENT_INFO=$(gcloud ai agents describe "$AGENT_ID" \
-    --project="$PROJECT_ID" \
-    --region="$REGION" \
-    --format=json 2>&1 || echo "{}")
+# Use Python SDK to retrieve agent engine metadata (no gcloud CLI exists for Agent Engine)
+AGENT_INFO=$(python3 -c "
+import json, vertexai
+client = vertexai.Client(project='${PROJECT_ID}', location='${REGION}')
+engine = client.agent_engines.get(
+    name='projects/${PROJECT_ID}/locations/${REGION}/reasoningEngines/${AGENT_ID}'
+)
+print(json.dumps({'name': engine.name, 'display_name': getattr(engine, 'display_name', 'unknown'), 'state': getattr(engine, 'state', 'unknown'), 'create_time': str(getattr(engine, 'create_time', 'unknown'))}))
+" 2>&1 || echo "{}")
 
 if [[ "$AGENT_INFO" == "{}" ]]; then
-    echo -e "${RED}Failed to retrieve agent information${NC}"
+    echo -e "${RED}Failed to retrieve agent engine information${NC}"
+    echo "Ensure google-cloud-aiplatform[agent_engines] is installed and credentials are configured."
     exit 1
 fi
 
 echo "$AGENT_INFO" | jq -r '
-    "Model: \(.model // "unknown")",
+    "Display Name: \(.display_name // "unknown")",
     "State: \(.state // "unknown")",
-    "Created: \(.createTime // "unknown")"
+    "Created: \(.create_time // "unknown")"
 '
 
 # Check Code Execution configuration

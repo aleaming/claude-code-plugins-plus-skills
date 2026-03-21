@@ -62,7 +62,7 @@ async def discover_agents(
     try:
         # Default to Vertex AI Engine agent registry
         if not registry_url:
-            registry_url = "https://agent-engine.googleapis.com/v1/agents"
+            registry_url = "https://us-central1-aiplatform.googleapis.com/v1/reasoningEngines"
 
         discovered_agents = []
 
@@ -78,13 +78,13 @@ async def discover_agents(
                 {
                     "name": "data-analyst",
                     "description": "Analyzes data and generates insights",
-                    "url": "https://agent-engine.googleapis.com/v1/agents/data-analyst",
+                    "url": "https://us-central1-aiplatform.googleapis.com/v1/reasoningEngines/data-analyst",
                     "capabilities": ["sql", "visualization", "statistics"],
                 },
                 {
                     "name": "code-generator",
                     "description": "Generates code in multiple languages",
-                    "url": "https://agent-engine.googleapis.com/v1/agents/code-generator",
+                    "url": "https://us-central1-aiplatform.googleapis.com/v1/reasoningEngines/code-generator",
                     "capabilities": ["python", "javascript", "sql"],
                 }
             ]
@@ -268,8 +268,8 @@ async def validate_agent_card(
     """
     try:
         async with httpx.AsyncClient() as client:
-            # Fetch agent card
-            # response = await client.get(f"{agent_url}/agent-card")
+            # Fetch agent card from A2A well-known endpoint
+            # response = await client.get(f"{agent_url}/.well-known/agent-card")
             # card_data = response.json()
 
             # Example validation
@@ -323,10 +323,12 @@ async def deploy_to_vertex_engine(
             "auto_scaling": True
         }
 
-        # In production, use Vertex AI SDK
-        # from google.cloud import aiplatform
-        # aiplatform.init(project=project_id, location=location)
-        # endpoint = aiplatform.Endpoint.create(...)
+        # In production, use the vertexai SDK:
+        # import vertexai
+        # client = vertexai.Client(project=project_id, location=location)
+        # remote_agent = client.agent_engines.create(
+        #     agent_engine=agent_app, requirements=[...], display_name=agent_name
+        # )
 
         return {
             "status": "deployed",

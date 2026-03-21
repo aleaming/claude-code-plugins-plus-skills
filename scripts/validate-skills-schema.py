@@ -78,6 +78,7 @@ OPTIONAL_FIELDS = {
     'name', 'description', 'allowed-tools', 'version', 'author', 'license',
     'model', 'disable-model-invocation', 'mode', 'tags', 'metadata', 'compatible-with',
     'argument-hint', 'context', 'agent', 'user-invocable', 'hooks', 'compatibility',
+    'effort',
 }
 
 # Deprecated fields (warn but don't error)
@@ -181,8 +182,10 @@ def score_progressive_disclosure(path: Path, body: str, fm: dict) -> dict:
     else:
         breakdown['token_economy'] = (0, f"Too long: {lines} lines (target ≤150)")
 
-    # Layered Structure (10 pts) - Has references/ with markdown files
+    # Layered Structure (10 pts) - Has references/ or resources/ with markdown files
     refs_dir = skill_dir / "references"
+    if not refs_dir.exists():
+        refs_dir = skill_dir / "resources"  # Accept resources/ as alternative
     if refs_dir.exists():
         ref_files = list(refs_dir.glob("*.md"))
         if ref_files:

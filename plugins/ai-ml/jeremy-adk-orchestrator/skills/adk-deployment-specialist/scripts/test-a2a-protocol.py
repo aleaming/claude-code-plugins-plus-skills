@@ -71,16 +71,20 @@ def test_task_submission(agent_url: str, token: str, message: str) -> Optional[s
     import urllib.request
     import urllib.error
 
-    print("\nTesting Task Submission API...")
-    task_url = f"{agent_url}/v1/tasks:send"
+    print("\nTesting Task Submission API (A2A JSON-RPC)...")
+    task_url = agent_url  # A2A uses a single endpoint with JSON-RPC methods
 
     payload = {
-        "message": message,
-        "session_id": f"test-session-{int(time.time())}",
-        "config": {
-            "enable_code_execution": True,
-            "enable_memory_bank": True
-        }
+        "jsonrpc": "2.0",
+        "method": "tasks/send",
+        "params": {
+            "id": f"test-task-{int(time.time())}",
+            "message": {
+                "role": "user",
+                "parts": [{"text": message}],
+            },
+        },
+        "id": f"req-{int(time.time())}",
     }
 
     try:
@@ -122,43 +126,59 @@ def test_task_status(agent_url: str, token: str, task_id: str, max_wait: int = 6
     import urllib.request
     import urllib.error
 
-    print("\nTesting Task Status API...")
-    status_url = f"{agent_url}/v1/tasks/{task_id}"
+    print("\nTesting Task Status API (A2A JSON-RPC tasks/get)...")
+    status_url = agent_url  # A2A uses single endpoint with JSON-RPC methods
 
     start_time = time.time()
 
     while time.time() - start_time < max_wait:
         try:
+            status_payload = json.dumps({
+                "jsonrpc": "2.0",
+                "method": "tasks/get",
+                "params": {"id": task_id},
+                "id": f"status-{int(time.time())}",
+            }).encode()
+
             req = urllib.request.Request(
                 status_url,
-                headers={"Authorization": f"Bearer {token}"}
+                data=status_payload,
+                headers={
+                    "Authorization": f"Bearer {token}",
+                    "Content-Type": "application/json",
+                },
+                method="POST",
             )
 
             with urllib.request.urlopen(req, timeout=10) as response:
                 result = json.loads(response.read().decode())
 
-            status = result.get("status")
-            progress = result.get("progress", 0)
+            # A2A task statuses: submitted, working, input-required, completed, failed, canceled
+            task_result = result.get("result", {})
+            status = task_result.get("status", {}).get("state", "unknown")
 
-            print(f"  Status: {status} ({int(progress * 100)}%)")
+            print(f"  Status: {status}")
 
-            if status == "SUCCESS":
-                print("✓ Task completed successfully")
-                response_text = result.get("response", {}).get("text", "")
-                if response_text:
-                    print(f"  Response: {response_text[:100]}...")
+            if status == "completed":
+                print("Task completed successfully")
+                artifacts = task_result.get("artifacts", [])
+                if artifacts:
+                    first_part = artifacts[0].get("parts", [{}])[0].get("text", "")
+                    if first_part:
+                        print(f"  Response: {first_part[:100]}...")
                 return True
 
-            elif status == "FAILURE":
-                print(f"✗ Task failed: {result.get('error', 'unknown error')}")
+            elif status == "failed":
+                error_msg = task_result.get("status", {}).get("message", "unknown error")
+                print(f"Task failed: {error_msg}")
                 return False
 
-            elif status in ["PENDING", "RUNNING"]:
+            elif status in ["submitted", "working"]:
                 time.sleep(5)
                 continue
 
             else:
-                print(f"⚠ Unknown status: {status}")
+                print(f"Unknown status: {status}")
                 time.sleep(5)
 
         except urllib.error.HTTPError as e:

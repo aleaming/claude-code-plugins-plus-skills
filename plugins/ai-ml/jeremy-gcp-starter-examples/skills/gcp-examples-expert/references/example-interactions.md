@@ -16,7 +16,7 @@
 **User**: "I need a Genkit starter template for RAG"
 
 **Skill Activates**:
-- Provides RAG flow code from firebase/genkit
+- Provides RAG flow code from genkit-ai/genkit
 - Shows vector search integration
 - Demonstrates embedding generation
 - Includes context retrieval logic

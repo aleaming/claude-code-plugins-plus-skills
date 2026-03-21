@@ -84,7 +84,7 @@ The skill auto-activates and provides production-ready code examples.
 
 ### 3. Firebase Genkit Flows
 
-**Source**: firebase/genkit
+**Source**: genkit-ai/genkit
 
 - RAG flows with vector search and embeddings
 - Multi-step workflows with tool calling
@@ -205,7 +205,7 @@ Plugin provides:
 User: "I need a Genkit RAG flow template"
 
 Plugin provides:
-1. RAG flow code from firebase/genkit
+1. RAG flow code from genkit-ai/genkit
 2. Vector search integration
 3. Embedding generation
 4. Context retrieval logic
@@ -268,7 +268,7 @@ This plugin aggregates code from these official Google Cloud repositories:
 
 1. **google/adk-samples** - ADK agent examples and patterns
 2. **GoogleCloudPlatform/agent-starter-pack** - Production agent templates
-3. **firebase/genkit** - Genkit flows and integrations
+3. **genkit-ai/genkit** - Genkit flows and integrations
 4. **GoogleCloudPlatform/vertex-ai-samples** - Vertex AI notebooks and code
 5. **GoogleCloudPlatform/generative-ai** - Gemini API examples
 6. **GoogleCloudPlatform/agentsmithy** - Multi-agent orchestration
@@ -292,4 +292,4 @@ MIT
 
 ## Version
 
-1.0.0 (2025) - Initial release with 6 official Google Cloud repository integrations
+2.1.0 (2026) - Accuracy audit: fixed imports, updated repo references, expanded error docs
