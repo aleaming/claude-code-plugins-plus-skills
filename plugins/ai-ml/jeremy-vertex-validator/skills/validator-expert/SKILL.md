@@ -1,14 +1,26 @@
 ---
 name: validator-expert
 description: |
-  Validate production readiness of Vertex AI Agent Engine deployments across security, monitoring, performance, compliance, and best practices. Generates weighted scores (0-100%) with actionable recommendations. Use when asked to "validate deploymen... Trigger with phrases like 'validate', 'check', or 'verify'.
-allowed-tools: Read, Grep, Glob, Bash(cmd:*)
-version: 1.0.0
+  Validate production readiness of Vertex AI Agent Engine deployments across
+  security, monitoring, performance, compliance, and best practices. Generates
+  weighted scores (0-100%) with actionable remediation plans. Use when asked to
+  validate a deployment, run a production readiness check, audit security posture,
+  or verify compliance for Vertex AI agents. Trigger with "validate deployment",
+  "production readiness", "security audit", or "compliance check".
+  Make sure to use this skill whenever validating ADK agents for Agent Engine.
+allowed-tools: "Read,Grep,Glob,Bash(gcloud:*),Bash(python:*),Bash(pylint:*),Bash(flake8:*),Bash(mypy:*),Bash(bandit:*),Bash(pytest:*)"
+version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
+tags: [vertex-ai, security, compliance, validation, production-readiness, gcp]
+model: inherit
 ---
 # Validator Expert
+
+## Current State
+!`gcloud config get-value project 2>/dev/null || echo 'no active project'`
+!`gcloud auth list --filter=status:ACTIVE --format="value(account)" 2>/dev/null || echo 'not authenticated'`
 
 ## Overview
 
@@ -80,8 +92,14 @@ Validate production readiness of Vertex AI Agent Engine deployments by executing
 
 ## Resources
 
-- [Vertex AI Security Best Practices](https://cloud.google.com/vertex-ai/docs/security) -- IAM, encryption, VPC-SC
-- [Cloud Monitoring Alerting](https://cloud.google.com/monitoring/alerts) -- policy configuration
-- [VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs) -- perimeter setup
-- [Model Armor Documentation](https://cloud.google.com/vertex-ai/docs/generative-ai/model-armor) -- prompt injection protection
-- [Cloud Audit Logs](https://cloud.google.com/logging/docs/audit) -- admin and data access logging
+**Validation checklists** (read the relevant one during each validation step):
+- [Security checklist](references/security-checklist.md) — IAM, VPC-SC, encryption, Model Armor (30% weight)
+- [Monitoring checklist](references/monitoring-checklist.md) — dashboards, alerts, SLOs, logging (20% weight)
+- [Performance & compliance checklist](references/performance-compliance-checklist.md) — auto-scaling, caching, audit logs, DR (40% weight)
+
+**Official Google Cloud documentation:**
+- [Vertex AI Security Best Practices](https://cloud.google.com/vertex-ai/docs/security)
+- [Cloud Monitoring Alerting](https://cloud.google.com/monitoring/alerts)
+- [VPC Service Controls](https://cloud.google.com/vpc-service-controls/docs)
+- [Model Armor](https://cloud.google.com/vertex-ai/docs/generative-ai/model-armor)
+- [Cloud Audit Logs](https://cloud.google.com/logging/docs/audit)
