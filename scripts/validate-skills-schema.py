@@ -2493,6 +2493,7 @@ def validate_skill(path: Path, tier: str = TIER_STANDARD) -> Dict[str, Any]:
         'line_count': len(body.splitlines()),
         'description_length': len(description),
         'grade': grade_result,
+        'frontmatter': fm,
     }
 
 
@@ -2603,6 +2604,123 @@ def validate_plugin(plugin_dir: Path, tier: str = TIER_STANDARD) -> Dict[str, An
     }
 
 
+# === COMPLIANCE DATABASE ===
+
+def populate_compliance_db(db_path: str, skill_results: list, agent_results: list = None, validator_version: str = "5.0.0"):
+    """Write validation results to SQLite compliance tables."""
+    import sqlite3
+    from datetime import datetime, timezone
+
+    conn = sqlite3.connect(db_path)
+    c = conn.cursor()
+
+    c.execute('''CREATE TABLE IF NOT EXISTS skill_compliance (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        skill_path TEXT UNIQUE,
+        total_fields INTEGER,
+        anthropic_fields INTEGER,
+        enterprise_fields INTEGER,
+        missing_fields TEXT,
+        has_references_dir INTEGER,
+        has_examples INTEGER,
+        has_scripts_dir INTEGER,
+        is_stub INTEGER,
+        stub_reasons TEXT,
+        score INTEGER,
+        grade TEXT,
+        error_count INTEGER,
+        warning_count INTEGER,
+        validated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        source_modified_at TIMESTAMP,
+        validator_version TEXT
+    )''')
+
+    c.execute('''CREATE TABLE IF NOT EXISTS agent_compliance (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        agent_path TEXT UNIQUE,
+        total_fields INTEGER,
+        anthropic_fields INTEGER,
+        missing_fields TEXT,
+        has_invalid_fields INTEGER,
+        invalid_fields TEXT,
+        is_plugin_agent INTEGER,
+        error_count INTEGER,
+        warning_count INTEGER,
+        validated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        validator_version TEXT
+    )''')
+
+    c.execute('''CREATE TABLE IF NOT EXISTS plugin_compliance (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        plugin_path TEXT UNIQUE,
+        plugin_json_valid INTEGER,
+        plugin_json_fields INTEGER,
+        skill_count INTEGER,
+        skill_avg_score REAL,
+        agent_count INTEGER,
+        has_hooks_json INTEGER,
+        has_mcp_json INTEGER,
+        has_license INTEGER,
+        has_changelog INTEGER,
+        overall_score REAL,
+        error_count INTEGER,
+        warning_count INTEGER,
+        validated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        validator_version TEXT
+    )''')
+
+    now = datetime.now(timezone.utc).isoformat()
+
+    for result in skill_results:
+        skill_path = result.get('path', '')
+        score = result.get('score', 0)
+        grade = result.get('grade', 'F')
+        errors = result.get('errors', 0)
+        warnings = result.get('warnings', 0)
+
+        fm = result.get('frontmatter', {})
+        anthropic_fields = len([k for k in fm if k in SKILL_FIELDS and SKILL_FIELDS[k].get('source') == 'anthropic'])
+        enterprise_fields = len([k for k in fm if k in SKILL_FIELDS and SKILL_FIELDS[k].get('source') == 'enterprise'])
+        total_fields = anthropic_fields + enterprise_fields
+        missing = [k for k in ALWAYS_REQUIRED if k not in fm]
+
+        try:
+            skill_file = Path(skill_path)
+            mtime = datetime.fromtimestamp(skill_file.stat().st_mtime, tz=timezone.utc).isoformat() if skill_file.exists() else None
+        except Exception:
+            mtime = None
+
+        skill_dir = Path(skill_path).parent if skill_path else Path('.')
+        has_refs = 1 if (skill_dir / 'references').exists() else 0
+        has_examples = 1 if (skill_dir / 'examples').exists() else 0
+        has_scripts = 1 if (skill_dir / 'scripts').exists() else 0
+
+        c.execute('''INSERT OR REPLACE INTO skill_compliance
+            (skill_path, total_fields, anthropic_fields, enterprise_fields, missing_fields,
+             has_references_dir, has_examples, has_scripts_dir, is_stub, stub_reasons,
+             score, grade, error_count, warning_count, validated_at, source_modified_at, validator_version)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+            (skill_path, total_fields, anthropic_fields, enterprise_fields,
+             json_module.dumps(missing), has_refs, has_examples, has_scripts,
+             0, '[]', score, grade, errors, warnings, now, mtime, validator_version))
+
+    if agent_results:
+        for result in agent_results:
+            agent_path = result.get('path', '')
+            errors = result.get('errors', 0)
+            warnings = result.get('warnings', 0)
+
+            c.execute('''INSERT OR REPLACE INTO agent_compliance
+                (agent_path, total_fields, anthropic_fields, missing_fields,
+                 has_invalid_fields, invalid_fields, is_plugin_agent,
+                 error_count, warning_count, validated_at, validator_version)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                (agent_path, 0, 0, '[]', 0, '[]', 0, errors, warnings, now, validator_version))
+
+    conn.commit()
+    conn.close()
+
+
 # === MAIN ===
 
 def main() -> int:
@@ -2661,6 +2779,13 @@ def main() -> int:
         "--json",
         action="store_true",
         help="Output machine-readable JSON with per-skill scoring data",
+    )
+    parser.add_argument(
+        "--populate-db",
+        type=str,
+        default=None,
+        metavar="DB_PATH",
+        help="Write validation results to SQLite database (e.g., freshie/inventory.sqlite)",
     )
     parser.add_argument(
         "path",
@@ -2853,11 +2978,12 @@ def main() -> int:
         grade_scores.append(score)
 
         json_skill_results.append({
-            'path': str(rel),
+            'path': str(skill),
             'score': score,
             'grade': letter,
             'errors': len(result.get('errors', [])),
             'warnings': len(result.get('warnings', [])),
+            'frontmatter': result.get('frontmatter', {}),
         })
 
         # Check min-grade threshold
@@ -2908,6 +3034,11 @@ def main() -> int:
     if args.json:
         print(json_module.dumps(json_skill_results))
         return 0
+
+    # Populate compliance database if requested
+    if args.populate_db:
+        populate_compliance_db(args.populate_db, json_skill_results, validator_version="5.0.0")
+        print(f"\n📊 Compliance data written to {args.populate_db}")
 
     # Validate commands
     for cmd in commands:
