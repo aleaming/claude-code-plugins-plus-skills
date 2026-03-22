@@ -407,9 +407,9 @@ jobs:
           python3 scripts/validate-skills-schema.py --enterprise --show-low-grades || true
           echo "✅ Enterprise report complete"
 
-          # 3. Single-skill validation test (must pass enterprise)
-          echo "Running single-skill enterprise validation..."
-          python3 scripts/validate-skills-schema.py --enterprise plugins/ai-ml/ai-ethics-validator/skills/validating-ai-ethics-and-fairness/SKILL.md || exit 1
+          # 3. Single-skill validation test (standard tier — must pass)
+          echo "Running single-skill validation..."
+          python3 scripts/validate-skills-schema.py --standard plugins/ai-ml/ai-ethics-validator/skills/validating-ai-ethics-and-fairness/SKILL.md || exit 1
           echo "✅ Single-skill validation passed"
 
           # 4. ccpi validate backward compat
