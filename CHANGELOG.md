@@ -5,6 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.21.0] - 2026-03-23
+
+### Added
+- **oraclecloud-pack rewrite** - All 26 OCI skills rewritten from stubs (61.3) to production quality (92.8/100). Pain-point-driven content covering auth config, capacity errors, IAM policies, SDK memory leaks, Terraform bugs. (#488)
+- **navan-pack rewrite** - All 25 Navan skills rewritten to 93.0/100 with Airbyte connector research, real API patterns. (#485, #486, #487)
+- **claude-pack hand-written** - Claude API skills at 95.3/100 with real SDK code. (#482)
+- **Killer Skill nomination form** - Firebase form for community skill nominations. (#483)
+- **105 SaaS packs total** - Notion, Supabase, Sentry packs fully built out (30 skills each). (#391-#480)
+- **Universal validator v5.0** - Anthropic schema alignment, 100-point rubric, `--populate-db` for freshie inventory. (#378)
+- **Pro tier + benchmarks** - CLI performance benchmark suite, Pro tier landing page. (#381)
+- **63 SaaS pack directories** - Generated from marketplace extended metadata. (#380)
+- **Infrastructure compliance** - Tags + compatible-with mass migration to 1,412 skills. (#379)
+- **Severity1 marketplace plugin** - Severity levels and prompt-improver. (#382)
+- **Slack channel plugin** - Added to ecosystem. (#375)
+
+### Changed
+- **Performance budget** - Bumped to 40MB gzipped, 1MB largest file, 2800-4000 routes for 414 plugins + 63 SaaS packs.
+- **Freshie inventory system** - SQLite CMDB with 50 tables, versioned discovery runs, batch remediation.
+- **Gold standard docs** - PRD/ARD/references pattern established for 13 Jeremy plugins.
+
+### Fixed
+- **Firebase forms** - Broken killer skill signup fixed. (#374)
+- **CI validation** - Python + pyyaml setup for validation-scripts job.
+- **Enterprise compliance** - 0 D/F grades after remediation rounds. (#384, #385)
+- **Bare except clauses** - Replaced with `except Exception`. (#387)
+
+### Metrics
+- Commits since v4.20.0: 124 features, 25 fixes
+- Files changed: 5,161 (+large delta)
+- SaaS packs: 105 total (42 newly populated)
+- Skills: 2,788+ across 414 plugins
+- Contributors: Jeremy Longshore, intentsolutions.io
+
+---
+
 ## [4.20.0] - 2026-03-20
 
 ### Added
