@@ -1,16 +1,20 @@
 {
-  "hooks": [
-    {
-      "event": "Stop",
-      "matcher": ".*",
-      "command": "${CLAUDE_PLUGIN_ROOT}/scripts/format-markdown.sh",
-      "priority": 100,
-      "timeout": 30000,
-      "continueOnError": true,
-      "description": "Automatically format markdown files with prettier after Claude stops responding",
-      "async": true
-    }
-  ],
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/format-markdown.sh",
+            "description": "Automatically format markdown files with prettier after Claude stops responding",
+            "timeout": 30000,
+            "continueOnError": true
+          }
+        ]
+      }
+    ]
+  },
   "_metadata": {
     "version": "1.0.0",
     "description": "Stop hook configuration for prettier-markdown-hook plugin",
@@ -20,8 +24,7 @@
       "command": "Uses ${CLAUDE_PLUGIN_ROOT} variable for portability across installations",
       "priority": "100 = early in hook chain (higher priority hooks run first)",
       "timeout": "30 seconds maximum execution time",
-      "continueOnError": "Other hooks continue even if this hook fails",
-      "async": "Hook runs asynchronously (fire-and-forget pattern)"
+      "continueOnError": "Other hooks continue even if this hook fails"
     },
     "troubleshooting": {
       "hookNotRunning": "Check that dependencies (prettier, jq, git) are installed",

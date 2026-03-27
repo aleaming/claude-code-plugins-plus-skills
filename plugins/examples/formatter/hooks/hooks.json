@@ -8,6 +8,7 @@
       {
         "description": "Auto-format code files after Write or Edit operations",
         "matcher": "Write|Edit",
+        "if": "Write(*.js)|Write(*.jsx)|Write(*.ts)|Write(*.tsx)|Write(*.json)|Write(*.css)|Write(*.scss)|Write(*.less)|Write(*.md)|Write(*.mdx)|Write(*.yaml)|Write(*.yml)|Write(*.html)|Write(*.vue)|Write(*.svelte)|Edit(*.js)|Edit(*.jsx)|Edit(*.ts)|Edit(*.tsx)|Edit(*.json)|Edit(*.css)|Edit(*.scss)|Edit(*.less)|Edit(*.md)|Edit(*.mdx)|Edit(*.yaml)|Edit(*.yml)|Edit(*.html)|Edit(*.vue)|Edit(*.svelte)",
         "priority": 100,
         "enabled": true,
         "hooks": [
