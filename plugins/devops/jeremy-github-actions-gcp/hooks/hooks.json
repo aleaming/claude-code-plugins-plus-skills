@@ -8,7 +8,7 @@
       {
         "description": "Validate GitHub Actions workflow files before writing",
         "matcher": "Write|Edit",
-        "filePattern": ".github/workflows/*.{yml,yaml}",
+        "if": "Write(.github/workflows/*.yml)|Write(.github/workflows/*.yaml)|Edit(.github/workflows/*.yml)|Edit(.github/workflows/*.yaml)",
         "priority": 100,
         "enabled": true,
         "hooks": [
