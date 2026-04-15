@@ -8,7 +8,7 @@ description: |
   buying from Z again", "remove X from my boycott list", or asks to see their list.
   Trigger phrases: "boycott", "never buying from", "sick of", "add to boycott",
   "show my boycott list", "remove from boycott".
-allowed-tools: Read, Write, Bash(curl:*), Bash(node:*), Bash(bash:*), Bash(ls:*), Bash(cat:*)
+allowed-tools: Bash(curl:*)
 version: 1.0.0
 author: Bubble Invest <contact@bubbleinvest.com>
 license: MIT
@@ -42,10 +42,13 @@ Check with:
 curl -s http://127.0.0.1:7847/health
 ```
 
-If not running:
+If not running, ask the user to run setup once in a terminal (the skill itself only has `curl` permission, by design — see README for security rationale):
+
 ```bash
 bash ${CLAUDE_PLUGIN_ROOT}/scripts/setup.sh
 ```
+
+Tell the user: "The boycott server isn't running. Open a terminal and run: `bash ${CLAUDE_PLUGIN_ROOT}/scripts/setup.sh` — that starts the local server and shows you how to load the Chrome extension. Then ask me again."
 
 ## Instructions
 
