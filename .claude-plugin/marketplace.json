@@ -10,7 +10,7 @@
     "version": "1.6.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 341,
+    "totalPlugins": 424,
     "skillsEnabled": 268,
     "lastUpdated": "2026-03-07"
   },
@@ -3434,6 +3434,29 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       }
+    },
+    {
+      "name": "promptbook",
+      "source": "./plugins/analytics/promptbook",
+      "description": "Opt-in session analytics for Claude Code. After setup consent, tracks prompts, tokens, build time, and lines changed per session. Publishes shareable build cards on promptbook.gg. Strict consent gating — no data transmitted without explicit opt-in. Background submission after session end.",
+      "version": "1.4.0",
+      "category": "analytics",
+      "keywords": [
+        "analytics",
+        "telemetry",
+        "builds",
+        "portfolio",
+        "tracking",
+        "metrics",
+        "sessions"
+      ],
+      "author": {
+        "name": "Promptbook",
+        "email": "contact@promptbook.gg"
+      },
+      "homepage": "https://promptbook.gg",
+      "repository": "https://github.com/promptbookgg/claude-code-plugin",
+      "license": "MIT"
     },
     {
       "name": "query-performance-analyzer",
