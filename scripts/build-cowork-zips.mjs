@@ -20,9 +20,8 @@ import { createRequire } from 'node:module';
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
 
-// Resolve archiver from marketplace/node_modules where it's installed,
-// since this script lives at root scripts/ but archiver is a marketplace dep
-const require = createRequire(join(ROOT, 'marketplace', 'package.json'));
+// Resolve archiver from root node_modules (declared in root package.json devDependencies)
+const require = createRequire(join(ROOT, 'package.json'));
 const archiver = require('archiver');
 const EXTENDED_JSON = join(ROOT, '.claude-plugin', 'marketplace.extended.json');
 const OUTPUT_DIR = join(ROOT, 'marketplace', 'public', 'downloads');
