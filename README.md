@@ -58,6 +58,40 @@ ccpi update                     # Pull latest versions
 
 ---
 
+<!-- NPM-STATS:START — do not edit; daily cron updates this -->
+
+### 📦 Live npm Downloads
+
+Across **26 published packages** in the 
+[claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
+
+| Window | Downloads |
+|--------|----------:|
+| Last 24 hours | 11 |
+| Last 7 days | 117 |
+| Last 30 days | 665 |
+
+**Top 10 by last 30 days:**
+
+| # | Package | Last 30d |
+|---|---------|---------:|
+| 1 | [`@intentsolutionsio/ccpi`](https://www.npmjs.com/package/@intentsolutionsio/ccpi) | 274 |
+| 2 | [`@intentsolutionsio/langchain-pack`](https://www.npmjs.com/package/@intentsolutionsio/langchain-pack) | 56 |
+| 3 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 52 |
+| 4 | [`@intentsolutionsio/retellai-pack`](https://www.npmjs.com/package/@intentsolutionsio/retellai-pack) | 33 |
+| 5 | [`@intentsolutionsio/windsurf-pack`](https://www.npmjs.com/package/@intentsolutionsio/windsurf-pack) | 33 |
+| 6 | [`@intentsolutionsio/firecrawl-pack`](https://www.npmjs.com/package/@intentsolutionsio/firecrawl-pack) | 22 |
+| 7 | [`@intentsolutionsio/sentry-pack`](https://www.npmjs.com/package/@intentsolutionsio/sentry-pack) | 20 |
+| 8 | [`@intentsolutionsio/supabase-pack`](https://www.npmjs.com/package/@intentsolutionsio/supabase-pack) | 17 |
+| 9 | [`@intentsolutionsio/vercel-pack`](https://www.npmjs.com/package/@intentsolutionsio/vercel-pack) | 13 |
+| 10 | [`@intentsolutionsio/customerio-pack`](https://www.npmjs.com/package/@intentsolutionsio/customerio-pack) | 12 |
+
+<sub>Last refreshed 2026-04-21T01:30:15.018Z.</sub>
+
+<!-- NPM-STATS:END -->
+
+---
+
 <!-- AUTO-TOC:START — do not edit; run `node scripts/generate-readme-toc.mjs` -->
 
 ## Browse Plugins by Category
@@ -80,7 +114,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | 📦 | [Packages](#packages) | 5 |
 | ⚡ | [Performance](#performance) | 25 |
 | ✅ | [Productivity](#productivity) | 18 |
-| 🎁 | [SaaS Skill Packs](#saas-skill-packs) | 106 |
+| 🎁 | [SaaS Skill Packs](#saas-skill-packs) | 105 |
 | 🔐 | [Security](#security) | 26 |
 | ✨ | [Skill Enhancers](#skill-enhancers) | 8 |
 | 🧪 | [Testing](#testing) | 26 |
@@ -470,7 +504,7 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 
 ### SaaS Skill Packs
 
-🎁 **106 plugins** · category slug: `saas-packs`
+🎁 **105 plugins** · category slug: `saas-packs`
 
 | Plugin | Description |
 |--------|-------------|
@@ -576,7 +610,6 @@ Jump to any of the 18 categories below. Plugin counts are catalog totals — aut
 | `veeva-pack` | Claude Code skill pack for Veeva (24 skills) |
 | `vercel-pack` | Complete Vercel integration skill pack with 30 skills covering deployments, edge functions, preview environments, performance… |
 | `webflow-pack` | Claude Code skill pack for Webflow (24 skills) |
-| `windsurf` | Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features. |
 | `windsurf-pack` | Complete Windsurf integration skill pack with 30 skills covering AI code editing, Cascade workflows, codebase understanding, and developer… |
 | `wispr-pack` | Claude Code skill pack for Wispr (18 skills) |
 | `workhuman-pack` | Claude Code skill pack for Workhuman (18 skills) |
