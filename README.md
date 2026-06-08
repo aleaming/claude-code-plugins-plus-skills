@@ -62,31 +62,31 @@ ccpi update                     # Pull latest versions
 
 ### 📦 Live npm Downloads
 
-Across **311 published packages** in the 
+Across **306 published packages** in the 
 [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
 | Window | Downloads |
 |--------|----------:|
-| Last 24 hours | 573 |
-| Last 7 days | 2,554 |
-| Last 30 days | 9,589 |
+| Last 24 hours | 544 |
+| Last 7 days | 2,531 |
+| Last 30 days | 9,324 |
 
 **Top 10 by last 30 days:**
 
 | # | Package | Last 30d |
 |---|---------|---------:|
 | 1 | [`@intentsolutionsio/ccpi`](https://www.npmjs.com/package/@intentsolutionsio/ccpi) | 520 |
-| 2 | [`@intentsolutionsio/guidewire-pack`](https://www.npmjs.com/package/@intentsolutionsio/guidewire-pack) | 267 |
-| 3 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 238 |
-| 4 | [`@intentsolutionsio/hubspot-pack`](https://www.npmjs.com/package/@intentsolutionsio/hubspot-pack) | 214 |
-| 5 | [`@intentsolutionsio/validate-plugin`](https://www.npmjs.com/package/@intentsolutionsio/validate-plugin) | 173 |
-| 6 | [`@intentsolutionsio/podium-pack`](https://www.npmjs.com/package/@intentsolutionsio/podium-pack) | 156 |
-| 7 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 138 |
-| 8 | [`@intentsolutionsio/cursor-pack`](https://www.npmjs.com/package/@intentsolutionsio/cursor-pack) | 99 |
-| 9 | [`@intentsolutionsio/openevidence-pack`](https://www.npmjs.com/package/@intentsolutionsio/openevidence-pack) | 90 |
-| 10 | [`@intentsolutionsio/ideogram-pack`](https://www.npmjs.com/package/@intentsolutionsio/ideogram-pack) | 85 |
+| 2 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 238 |
+| 3 | [`@intentsolutionsio/hubspot-pack`](https://www.npmjs.com/package/@intentsolutionsio/hubspot-pack) | 214 |
+| 4 | [`@intentsolutionsio/validate-plugin`](https://www.npmjs.com/package/@intentsolutionsio/validate-plugin) | 173 |
+| 5 | [`@intentsolutionsio/podium-pack`](https://www.npmjs.com/package/@intentsolutionsio/podium-pack) | 156 |
+| 6 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 138 |
+| 7 | [`@intentsolutionsio/cursor-pack`](https://www.npmjs.com/package/@intentsolutionsio/cursor-pack) | 99 |
+| 8 | [`@intentsolutionsio/openevidence-pack`](https://www.npmjs.com/package/@intentsolutionsio/openevidence-pack) | 90 |
+| 9 | [`@intentsolutionsio/ideogram-pack`](https://www.npmjs.com/package/@intentsolutionsio/ideogram-pack) | 85 |
+| 10 | [`@intentsolutionsio/klingai-pack`](https://www.npmjs.com/package/@intentsolutionsio/klingai-pack) | 79 |
 
-<sub>Last refreshed 2026-06-07T05:21:39.913Z.</sub>
+<sub>Last refreshed 2026-06-08T05:27:22.017Z.</sub>
 
 <!-- NPM-STATS:END -->
 
