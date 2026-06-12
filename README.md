@@ -62,14 +62,14 @@ ccpi update                     # Pull latest versions
 
 ### 📦 Live npm Downloads
 
-Across **318 published packages** in the 
+Across **315 published packages** in the 
 [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
 | Window | Downloads |
 |--------|----------:|
-| Last 24 hours | 548 |
-| Last 7 days | 2,476 |
-| Last 30 days | 9,405 |
+| Last 24 hours | 556 |
+| Last 7 days | 2,510 |
+| Last 30 days | 9,362 |
 
 **Top 10 by last 30 days:**
 
@@ -80,13 +80,13 @@ Across **318 published packages** in the
 | 3 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 238 |
 | 4 | [`@intentsolutionsio/hubspot-pack`](https://www.npmjs.com/package/@intentsolutionsio/hubspot-pack) | 214 |
 | 5 | [`@intentsolutionsio/validate-plugin`](https://www.npmjs.com/package/@intentsolutionsio/validate-plugin) | 173 |
-| 6 | [`@intentsolutionsio/podium-pack`](https://www.npmjs.com/package/@intentsolutionsio/podium-pack) | 156 |
+| 6 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 138 |
 | 7 | [`@intentsolutionsio/cursor-pack`](https://www.npmjs.com/package/@intentsolutionsio/cursor-pack) | 99 |
 | 8 | [`@intentsolutionsio/openevidence-pack`](https://www.npmjs.com/package/@intentsolutionsio/openevidence-pack) | 90 |
 | 9 | [`@intentsolutionsio/ideogram-pack`](https://www.npmjs.com/package/@intentsolutionsio/ideogram-pack) | 85 |
 | 10 | [`@intentsolutionsio/mattyp-changelog`](https://www.npmjs.com/package/@intentsolutionsio/mattyp-changelog) | 80 |
 
-<sub>Last refreshed 2026-06-11T05:23:48.353Z.</sub>
+<sub>Last refreshed 2026-06-12T05:29:30.807Z.</sub>
 
 <!-- NPM-STATS:END -->
 
