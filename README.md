@@ -62,31 +62,31 @@ ccpi update                     # Pull latest versions
 
 ### 📦 Live npm Downloads
 
-Across **330 published packages** in the 
+Across **305 published packages** in the 
 [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
 | Window | Downloads |
 |--------|----------:|
-| Last 24 hours | 2,215 |
-| Last 7 days | 50,670 |
-| Last 30 days | 57,588 |
+| Last 24 hours | 1,002 |
+| Last 7 days | 46,902 |
+| Last 30 days | 54,249 |
 
 **Top 10 by last 30 days:**
 
 | # | Package | Last 30d |
 |---|---------|---------:|
-| 1 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 493 |
-| 2 | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack) | 333 |
-| 3 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 314 |
-| 4 | [`@intentsolutionsio/langfuse-pack`](https://www.npmjs.com/package/@intentsolutionsio/langfuse-pack) | 252 |
-| 5 | [`@intentsolutionsio/geepers-agents`](https://www.npmjs.com/package/@intentsolutionsio/geepers-agents) | 243 |
-| 6 | [`@intentsolutionsio/kubernetes-deployment-creator`](https://www.npmjs.com/package/@intentsolutionsio/kubernetes-deployment-creator) | 241 |
-| 7 | [`@intentsolutionsio/flyio-pack`](https://www.npmjs.com/package/@intentsolutionsio/flyio-pack) | 239 |
-| 8 | [`@intentsolutionsio/market-price-tracker`](https://www.npmjs.com/package/@intentsolutionsio/market-price-tracker) | 236 |
-| 9 | [`@intentsolutionsio/podium-pack`](https://www.npmjs.com/package/@intentsolutionsio/podium-pack) | 236 |
-| 10 | [`@intentsolutionsio/openbb-terminal`](https://www.npmjs.com/package/@intentsolutionsio/openbb-terminal) | 234 |
+| 1 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 606 |
+| 2 | [`@intentsolutionsio/ccpi`](https://www.npmjs.com/package/@intentsolutionsio/ccpi) | 501 |
+| 3 | [`@intentsolutionsio/jeremy-plugin-tool`](https://www.npmjs.com/package/@intentsolutionsio/jeremy-plugin-tool) | 361 |
+| 4 | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack) | 338 |
+| 5 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 330 |
+| 6 | [`@intentsolutionsio/kubernetes-deployment-creator`](https://www.npmjs.com/package/@intentsolutionsio/kubernetes-deployment-creator) | 247 |
+| 7 | [`@intentsolutionsio/flyio-pack`](https://www.npmjs.com/package/@intentsolutionsio/flyio-pack) | 242 |
+| 8 | [`@intentsolutionsio/cohere-pack`](https://www.npmjs.com/package/@intentsolutionsio/cohere-pack) | 239 |
+| 9 | [`@intentsolutionsio/security-pro-pack`](https://www.npmjs.com/package/@intentsolutionsio/security-pro-pack) | 237 |
+| 10 | [`@intentsolutionsio/firecrawl-pack`](https://www.npmjs.com/package/@intentsolutionsio/firecrawl-pack) | 233 |
 
-<sub>Last refreshed 2026-06-13T05:17:29.946Z.</sub>
+<sub>Last refreshed 2026-06-14T05:34:18.581Z.</sub>
 
 <!-- NPM-STATS:END -->
 
