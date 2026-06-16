@@ -62,31 +62,31 @@ ccpi update                     # Pull latest versions
 
 ### 📦 Live npm Downloads
 
-Across **315 published packages** in the 
+Across **314 published packages** in the 
 [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
 | Window | Downloads |
 |--------|----------:|
-| Last 24 hours | 363 |
-| Last 7 days | 48,163 |
-| Last 30 days | 55,659 |
+| Last 24 hours | 371 |
+| Last 7 days | 49,296 |
+| Last 30 days | 57,245 |
 
 **Top 10 by last 30 days:**
 
 | # | Package | Last 30d |
 |---|---------|---------:|
 | 1 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 665 |
-| 2 | [`@intentsolutionsio/market-price-tracker`](https://www.npmjs.com/package/@intentsolutionsio/market-price-tracker) | 396 |
-| 3 | [`@intentsolutionsio/jeremy-plugin-tool`](https://www.npmjs.com/package/@intentsolutionsio/jeremy-plugin-tool) | 384 |
+| 2 | [`@intentsolutionsio/ccpi`](https://www.npmjs.com/package/@intentsolutionsio/ccpi) | 503 |
+| 3 | [`@intentsolutionsio/market-price-tracker`](https://www.npmjs.com/package/@intentsolutionsio/market-price-tracker) | 396 |
 | 4 | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack) | 339 |
 | 5 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 337 |
 | 6 | [`@intentsolutionsio/cursor-pack`](https://www.npmjs.com/package/@intentsolutionsio/cursor-pack) | 329 |
 | 7 | [`@intentsolutionsio/langfuse-pack`](https://www.npmjs.com/package/@intentsolutionsio/langfuse-pack) | 257 |
-| 8 | [`@intentsolutionsio/geepers-agents`](https://www.npmjs.com/package/@intentsolutionsio/geepers-agents) | 254 |
+| 8 | [`@intentsolutionsio/kubernetes-deployment-creator`](https://www.npmjs.com/package/@intentsolutionsio/kubernetes-deployment-creator) | 249 |
 | 9 | [`@intentsolutionsio/cohere-pack`](https://www.npmjs.com/package/@intentsolutionsio/cohere-pack) | 244 |
 | 10 | [`@intentsolutionsio/flyio-pack`](https://www.npmjs.com/package/@intentsolutionsio/flyio-pack) | 244 |
 
-<sub>Last refreshed 2026-06-15T05:53:33.920Z.</sub>
+<sub>Last refreshed 2026-06-16T05:59:51.652Z.</sub>
 
 <!-- NPM-STATS:END -->
 
