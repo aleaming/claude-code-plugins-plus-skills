@@ -62,31 +62,31 @@ ccpi update                     # Pull latest versions
 
 ### 📦 Live npm Downloads
 
-Across **316 published packages** in the 
+Across **314 published packages** in the 
 [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
 | Window | Downloads |
 |--------|----------:|
-| Last 24 hours | 4,029 |
-| Last 7 days | 9,617 |
-| Last 30 days | 61,679 |
+| Last 24 hours | 6,463 |
+| Last 7 days | 14,822 |
+| Last 30 days | 68,048 |
 
 **Top 10 by last 30 days:**
 
 | # | Package | Last 30d |
 |---|---------|---------:|
-| 1 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 1,169 |
-| 2 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 765 |
-| 3 | [`@intentsolutionsio/ccpi`](https://www.npmjs.com/package/@intentsolutionsio/ccpi) | 508 |
-| 4 | [`@intentsolutionsio/jeremy-plugin-tool`](https://www.npmjs.com/package/@intentsolutionsio/jeremy-plugin-tool) | 421 |
-| 5 | [`@intentsolutionsio/wondelai-hundred-million-offers`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-hundred-million-offers) | 380 |
-| 6 | [`@intentsolutionsio/gastown`](https://www.npmjs.com/package/@intentsolutionsio/gastown) | 374 |
-| 7 | [`@intentsolutionsio/wondelai-storybrand-messaging`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-storybrand-messaging) | 364 |
-| 8 | [`@intentsolutionsio/wondelai-influence-psychology`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-influence-psychology) | 353 |
-| 9 | [`@intentsolutionsio/wondelai-predictable-revenue`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-predictable-revenue) | 353 |
-| 10 | [`@intentsolutionsio/cursor-pack`](https://www.npmjs.com/package/@intentsolutionsio/cursor-pack) | 352 |
+| 1 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 1,167 |
+| 2 | [`@intentsolutionsio/ccpi`](https://www.npmjs.com/package/@intentsolutionsio/ccpi) | 501 |
+| 3 | [`@intentsolutionsio/geepers-agents`](https://www.npmjs.com/package/@intentsolutionsio/geepers-agents) | 436 |
+| 4 | [`@intentsolutionsio/n8n-workflow-designer`](https://www.npmjs.com/package/@intentsolutionsio/n8n-workflow-designer) | 425 |
+| 5 | [`@intentsolutionsio/market-price-tracker`](https://www.npmjs.com/package/@intentsolutionsio/market-price-tracker) | 424 |
+| 6 | [`@intentsolutionsio/gastown`](https://www.npmjs.com/package/@intentsolutionsio/gastown) | 418 |
+| 7 | [`@intentsolutionsio/jeremy-vertex-engine`](https://www.npmjs.com/package/@intentsolutionsio/jeremy-vertex-engine) | 402 |
+| 8 | [`@intentsolutionsio/orm-code-generator`](https://www.npmjs.com/package/@intentsolutionsio/orm-code-generator) | 402 |
+| 9 | [`@intentsolutionsio/wondelai-hundred-million-offers`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-hundred-million-offers) | 402 |
+| 10 | [`@intentsolutionsio/youtube-strategy`](https://www.npmjs.com/package/@intentsolutionsio/youtube-strategy) | 399 |
 
-<sub>Last refreshed 2026-06-20T05:06:48.845Z.</sub>
+<sub>Last refreshed 2026-06-21T05:44:10.186Z.</sub>
 
 <!-- NPM-STATS:END -->
 
