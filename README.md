@@ -62,31 +62,31 @@ ccpi update                     # Pull latest versions
 
 ### 📦 Live npm Downloads
 
-Across **311 published packages** in the 
+Across **325 published packages** in the 
 [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
 | Window | Downloads |
 |--------|----------:|
-| Last 24 hours | 1,599 |
-| Last 7 days | 5,699 |
-| Last 30 days | 75,364 |
+| Last 24 hours | 1,615 |
+| Last 7 days | 5,636 |
+| Last 30 days | 76,831 |
 
 **Top 10 by last 30 days:**
 
 | # | Package | Last 30d |
 |---|---------|---------:|
-| 1 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 1,196 |
-| 2 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 916 |
-| 3 | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack) | 796 |
+| 1 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 916 |
+| 2 | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack) | 796 |
+| 3 | [`@intentsolutionsio/general-legal-assistant`](https://www.npmjs.com/package/@intentsolutionsio/general-legal-assistant) | 546 |
 | 4 | [`@intentsolutionsio/gastown`](https://www.npmjs.com/package/@intentsolutionsio/gastown) | 532 |
-| 5 | [`@intentsolutionsio/n8n-workflow-designer`](https://www.npmjs.com/package/@intentsolutionsio/n8n-workflow-designer) | 523 |
-| 6 | [`@intentsolutionsio/wondelai-storybrand-messaging`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-storybrand-messaging) | 497 |
-| 7 | [`@intentsolutionsio/wondelai-blue-ocean-strategy`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-blue-ocean-strategy) | 491 |
-| 8 | [`@intentsolutionsio/youtube-strategy`](https://www.npmjs.com/package/@intentsolutionsio/youtube-strategy) | 487 |
-| 9 | [`@intentsolutionsio/wondelai-influence-psychology`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-influence-psychology) | 484 |
-| 10 | [`@intentsolutionsio/wondelai-scorecard-marketing`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-scorecard-marketing) | 483 |
+| 5 | [`@intentsolutionsio/wondelai-storybrand-messaging`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-storybrand-messaging) | 497 |
+| 6 | [`@intentsolutionsio/wondelai-blue-ocean-strategy`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-blue-ocean-strategy) | 491 |
+| 7 | [`@intentsolutionsio/youtube-strategy`](https://www.npmjs.com/package/@intentsolutionsio/youtube-strategy) | 487 |
+| 8 | [`@intentsolutionsio/wondelai-influence-psychology`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-influence-psychology) | 484 |
+| 9 | [`@intentsolutionsio/box-cloud-filesystem`](https://www.npmjs.com/package/@intentsolutionsio/box-cloud-filesystem) | 482 |
+| 10 | [`@intentsolutionsio/overnight-dev`](https://www.npmjs.com/package/@intentsolutionsio/overnight-dev) | 471 |
 
-<sub>Last refreshed 2026-07-02T04:56:28.008Z.</sub>
+<sub>Last refreshed 2026-07-03T04:35:15.989Z.</sub>
 
 <!-- NPM-STATS:END -->
 
