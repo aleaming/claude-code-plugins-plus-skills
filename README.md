@@ -62,31 +62,31 @@ ccpi update                     # Pull latest versions
 
 ### 📦 Live npm Downloads
 
-Across **325 published packages** in the 
+Across **317 published packages** in the 
 [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
 | Window | Downloads |
 |--------|----------:|
-| Last 24 hours | 1,615 |
-| Last 7 days | 5,636 |
-| Last 30 days | 76,831 |
+| Last 24 hours | 1,966 |
+| Last 7 days | 7,052 |
+| Last 30 days | 75,866 |
 
 **Top 10 by last 30 days:**
 
 | # | Package | Last 30d |
 |---|---------|---------:|
-| 1 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 916 |
-| 2 | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack) | 796 |
-| 3 | [`@intentsolutionsio/general-legal-assistant`](https://www.npmjs.com/package/@intentsolutionsio/general-legal-assistant) | 546 |
-| 4 | [`@intentsolutionsio/gastown`](https://www.npmjs.com/package/@intentsolutionsio/gastown) | 532 |
-| 5 | [`@intentsolutionsio/wondelai-storybrand-messaging`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-storybrand-messaging) | 497 |
-| 6 | [`@intentsolutionsio/wondelai-blue-ocean-strategy`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-blue-ocean-strategy) | 491 |
-| 7 | [`@intentsolutionsio/youtube-strategy`](https://www.npmjs.com/package/@intentsolutionsio/youtube-strategy) | 487 |
-| 8 | [`@intentsolutionsio/wondelai-influence-psychology`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-influence-psychology) | 484 |
-| 9 | [`@intentsolutionsio/box-cloud-filesystem`](https://www.npmjs.com/package/@intentsolutionsio/box-cloud-filesystem) | 482 |
-| 10 | [`@intentsolutionsio/overnight-dev`](https://www.npmjs.com/package/@intentsolutionsio/overnight-dev) | 471 |
+| 1 | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack) | 1,041 |
+| 2 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 918 |
+| 3 | [`@intentsolutionsio/general-legal-assistant`](https://www.npmjs.com/package/@intentsolutionsio/general-legal-assistant) | 560 |
+| 4 | [`@intentsolutionsio/gastown`](https://www.npmjs.com/package/@intentsolutionsio/gastown) | 548 |
+| 5 | [`@intentsolutionsio/n8n-workflow-designer`](https://www.npmjs.com/package/@intentsolutionsio/n8n-workflow-designer) | 525 |
+| 6 | [`@intentsolutionsio/wondelai-storybrand-messaging`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-storybrand-messaging) | 505 |
+| 7 | [`@intentsolutionsio/wondelai-blue-ocean-strategy`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-blue-ocean-strategy) | 504 |
+| 8 | [`@intentsolutionsio/youtube-strategy`](https://www.npmjs.com/package/@intentsolutionsio/youtube-strategy) | 502 |
+| 9 | [`@intentsolutionsio/wondelai-influence-psychology`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-influence-psychology) | 497 |
+| 10 | [`@intentsolutionsio/validate-plugin`](https://www.npmjs.com/package/@intentsolutionsio/validate-plugin) | 466 |
 
-<sub>Last refreshed 2026-07-03T04:35:15.989Z.</sub>
+<sub>Last refreshed 2026-07-04T04:27:51.369Z.</sub>
 
 <!-- NPM-STATS:END -->
 
