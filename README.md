@@ -62,20 +62,20 @@ ccpi update                     # Pull latest versions
 
 ### 📦 Live npm Downloads
 
-Across **317 published packages** in the 
+Across **309 published packages** in the 
 [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
 | Window | Downloads |
 |--------|----------:|
-| Last 24 hours | 1,966 |
-| Last 7 days | 7,052 |
-| Last 30 days | 75,866 |
+| Last 24 hours | 1,930 |
+| Last 7 days | 6,440 |
+| Last 30 days | 74,407 |
 
 **Top 10 by last 30 days:**
 
 | # | Package | Last 30d |
 |---|---------|---------:|
-| 1 | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack) | 1,041 |
+| 1 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 1,215 |
 | 2 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 918 |
 | 3 | [`@intentsolutionsio/general-legal-assistant`](https://www.npmjs.com/package/@intentsolutionsio/general-legal-assistant) | 560 |
 | 4 | [`@intentsolutionsio/gastown`](https://www.npmjs.com/package/@intentsolutionsio/gastown) | 548 |
@@ -84,9 +84,9 @@ Across **317 published packages** in the
 | 7 | [`@intentsolutionsio/wondelai-blue-ocean-strategy`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-blue-ocean-strategy) | 504 |
 | 8 | [`@intentsolutionsio/youtube-strategy`](https://www.npmjs.com/package/@intentsolutionsio/youtube-strategy) | 502 |
 | 9 | [`@intentsolutionsio/wondelai-influence-psychology`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-influence-psychology) | 497 |
-| 10 | [`@intentsolutionsio/validate-plugin`](https://www.npmjs.com/package/@intentsolutionsio/validate-plugin) | 466 |
+| 10 | [`@intentsolutionsio/box-cloud-filesystem`](https://www.npmjs.com/package/@intentsolutionsio/box-cloud-filesystem) | 495 |
 
-<sub>Last refreshed 2026-07-04T04:27:51.369Z.</sub>
+<sub>Last refreshed 2026-07-05T04:55:02.659Z.</sub>
 
 <!-- NPM-STATS:END -->
 
