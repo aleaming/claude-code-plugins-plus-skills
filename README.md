@@ -67,26 +67,26 @@ Across **317 published packages** in the
 
 | Window | Downloads |
 |--------|----------:|
-| Last 24 hours | 1,247 |
-| Last 7 days | 5,017 |
-| Last 30 days | 34,489 |
+| Last 24 hours | 668 |
+| Last 7 days | 5,266 |
+| Last 30 days | 34,521 |
 
 **Top 10 by last 30 days:**
 
 | # | Package | Last 30d |
 |---|---------|---------:|
-| 1 | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack) | 1,035 |
-| 2 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 824 |
-| 3 | [`@intentsolutionsio/wondelai-drive-motivation`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-drive-motivation) | 573 |
+| 1 | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack) | 1,051 |
+| 2 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 765 |
+| 3 | [`@intentsolutionsio/wondelai-influence-psychology`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-influence-psychology) | 684 |
 | 4 | [`@intentsolutionsio/000-jeremy-content-consistency-validator`](https://www.npmjs.com/package/@intentsolutionsio/000-jeremy-content-consistency-validator) | 441 |
-| 5 | [`@intentsolutionsio/sugar`](https://www.npmjs.com/package/@intentsolutionsio/sugar) | 426 |
-| 6 | [`@intentsolutionsio/skill-creator`](https://www.npmjs.com/package/@intentsolutionsio/skill-creator) | 421 |
-| 7 | [`@intentsolutionsio/nosql-data-modeler`](https://www.npmjs.com/package/@intentsolutionsio/nosql-data-modeler) | 385 |
-| 8 | [`@intentsolutionsio/gastown`](https://www.npmjs.com/package/@intentsolutionsio/gastown) | 374 |
-| 9 | [`@intentsolutionsio/n8n-workflow-designer`](https://www.npmjs.com/package/@intentsolutionsio/n8n-workflow-designer) | 356 |
-| 10 | [`@intentsolutionsio/wondelai-blue-ocean-strategy`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-blue-ocean-strategy) | 347 |
+| 5 | [`@intentsolutionsio/sugar`](https://www.npmjs.com/package/@intentsolutionsio/sugar) | 432 |
+| 6 | [`@intentsolutionsio/skill-creator`](https://www.npmjs.com/package/@intentsolutionsio/skill-creator) | 431 |
+| 7 | [`@intentsolutionsio/general-legal-assistant`](https://www.npmjs.com/package/@intentsolutionsio/general-legal-assistant) | 408 |
+| 8 | [`@intentsolutionsio/gastown`](https://www.npmjs.com/package/@intentsolutionsio/gastown) | 377 |
+| 9 | [`@intentsolutionsio/n8n-workflow-designer`](https://www.npmjs.com/package/@intentsolutionsio/n8n-workflow-designer) | 363 |
+| 10 | [`@intentsolutionsio/wondelai-storybrand-messaging`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-storybrand-messaging) | 348 |
 
-<sub>Last refreshed 2026-07-15T04:00:20.526Z.</sub>
+<sub>Last refreshed 2026-07-16T04:03:45.895Z.</sub>
 
 <!-- NPM-STATS:END -->
 
