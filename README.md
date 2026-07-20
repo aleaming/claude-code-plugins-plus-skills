@@ -62,31 +62,31 @@ ccpi update                     # Pull latest versions
 
 ### 📦 Live npm Downloads
 
-Across **313 published packages** in the 
+Across **312 published packages** in the 
 [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
 | Window | Downloads |
 |--------|----------:|
-| Last 24 hours | 402 |
-| Last 7 days | 3,558 |
-| Last 30 days | 34,031 |
+| Last 24 hours | 1,477 |
+| Last 7 days | 4,321 |
+| Last 30 days | 30,607 |
 
 **Top 10 by last 30 days:**
 
 | # | Package | Last 30d |
 |---|---------|---------:|
-| 1 | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack) | 1,085 |
-| 2 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 763 |
-| 3 | [`@intentsolutionsio/wondelai-influence-psychology`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-influence-psychology) | 673 |
-| 4 | [`@intentsolutionsio/wondelai-drive-motivation`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-drive-motivation) | 569 |
-| 5 | [`@intentsolutionsio/skill-creator`](https://www.npmjs.com/package/@intentsolutionsio/skill-creator) | 460 |
-| 6 | [`@intentsolutionsio/000-jeremy-content-consistency-validator`](https://www.npmjs.com/package/@intentsolutionsio/000-jeremy-content-consistency-validator) | 439 |
-| 7 | [`@intentsolutionsio/sugar`](https://www.npmjs.com/package/@intentsolutionsio/sugar) | 427 |
-| 8 | [`@intentsolutionsio/general-legal-assistant`](https://www.npmjs.com/package/@intentsolutionsio/general-legal-assistant) | 367 |
-| 9 | [`@intentsolutionsio/gastown`](https://www.npmjs.com/package/@intentsolutionsio/gastown) | 353 |
-| 10 | [`@intentsolutionsio/nosql-data-modeler`](https://www.npmjs.com/package/@intentsolutionsio/nosql-data-modeler) | 348 |
+| 1 | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack) | 1,088 |
+| 2 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 730 |
+| 3 | [`@intentsolutionsio/wondelai-influence-psychology`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-influence-psychology) | 532 |
+| 4 | [`@intentsolutionsio/skill-creator`](https://www.npmjs.com/package/@intentsolutionsio/skill-creator) | 459 |
+| 5 | [`@intentsolutionsio/000-jeremy-content-consistency-validator`](https://www.npmjs.com/package/@intentsolutionsio/000-jeremy-content-consistency-validator) | 435 |
+| 6 | [`@intentsolutionsio/wondelai-drive-motivation`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-drive-motivation) | 434 |
+| 7 | [`@intentsolutionsio/youtube-strategy`](https://www.npmjs.com/package/@intentsolutionsio/youtube-strategy) | 350 |
+| 8 | [`@intentsolutionsio/overnight-dev`](https://www.npmjs.com/package/@intentsolutionsio/overnight-dev) | 342 |
+| 9 | [`@intentsolutionsio/jeremy-adk-orchestrator`](https://www.npmjs.com/package/@intentsolutionsio/jeremy-adk-orchestrator) | 311 |
+| 10 | [`@intentsolutionsio/sugar`](https://www.npmjs.com/package/@intentsolutionsio/sugar) | 310 |
 
-<sub>Last refreshed 2026-07-19T04:20:40.020Z.</sub>
+<sub>Last refreshed 2026-07-20T04:30:59.689Z.</sub>
 
 <!-- NPM-STATS:END -->
 
