@@ -67,15 +67,15 @@ Across **316 published packages** in the
 
 | Window | Downloads |
 |--------|----------:|
-| Last 24 hours | 191 |
-| Last 7 days | 3,781 |
-| Last 30 days | 22,147 |
+| Last 24 hours | 192 |
+| Last 7 days | 3,633 |
+| Last 30 days | 21,634 |
 
 **Top 10 by last 30 days:**
 
 | # | Package | Last 30d |
 |---|---------|---------:|
-| 1 | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack) | 975 |
+| 1 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 650 |
 | 2 | [`@intentsolutionsio/000-jeremy-content-consistency-validator`](https://www.npmjs.com/package/@intentsolutionsio/000-jeremy-content-consistency-validator) | 428 |
 | 3 | [`@intentsolutionsio/wondelai-influence-psychology`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-influence-psychology) | 423 |
 | 4 | [`@intentsolutionsio/wondelai-drive-motivation`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-drive-motivation) | 395 |
@@ -86,7 +86,7 @@ Across **316 published packages** in the
 | 9 | [`@intentsolutionsio/clickhouse-pack`](https://www.npmjs.com/package/@intentsolutionsio/clickhouse-pack) | 260 |
 | 10 | [`@intentsolutionsio/freshie-inventory-manager`](https://www.npmjs.com/package/@intentsolutionsio/freshie-inventory-manager) | 239 |
 
-<sub>Last refreshed 2026-07-28T04:02:03.934Z.</sub>
+<sub>Last refreshed 2026-07-29T04:06:58.924Z.</sub>
 
 <!-- NPM-STATS:END -->
 
