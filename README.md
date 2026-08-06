@@ -62,31 +62,31 @@ ccpi update                     # Pull latest versions
 
 ### 📦 Live npm Downloads
 
-Across **333 published packages** in the 
+Across **308 published packages** in the 
 [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
 | Window | Downloads |
 |--------|----------:|
-| Last 24 hours | 175 |
-| Last 7 days | 1,628 |
-| Last 30 days | 14,477 |
+| Last 24 hours | 129 |
+| Last 7 days | 1,496 |
+| Last 30 days | 13,139 |
 
 **Top 10 by last 30 days:**
 
 | # | Package | Last 30d |
 |---|---------|---------:|
-| 1 | [`@intentsolutionsio/000-jeremy-content-consistency-validator`](https://www.npmjs.com/package/@intentsolutionsio/000-jeremy-content-consistency-validator) | 406 |
-| 2 | [`@intentsolutionsio/wallet-security-auditor`](https://www.npmjs.com/package/@intentsolutionsio/wallet-security-auditor) | 378 |
-| 3 | [`@intentsolutionsio/wondelai-drive-motivation`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-drive-motivation) | 366 |
-| 4 | [`@intentsolutionsio/wondelai-influence-psychology`](https://www.npmjs.com/package/@intentsolutionsio/wondelai-influence-psychology) | 363 |
-| 5 | [`@intentsolutionsio/clickhouse-pack`](https://www.npmjs.com/package/@intentsolutionsio/clickhouse-pack) | 285 |
-| 6 | [`@intentsolutionsio/notion-pack`](https://www.npmjs.com/package/@intentsolutionsio/notion-pack) | 274 |
-| 7 | [`@intentsolutionsio/skill-creator`](https://www.npmjs.com/package/@intentsolutionsio/skill-creator) | 267 |
-| 8 | [`@intentsolutionsio/groq-pack`](https://www.npmjs.com/package/@intentsolutionsio/groq-pack) | 255 |
-| 9 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 224 |
-| 10 | [`@intentsolutionsio/freshie-inventory-manager`](https://www.npmjs.com/package/@intentsolutionsio/freshie-inventory-manager) | 216 |
+| 1 | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack) | 514 |
+| 2 | [`@intentsolutionsio/000-jeremy-content-consistency-validator`](https://www.npmjs.com/package/@intentsolutionsio/000-jeremy-content-consistency-validator) | 408 |
+| 3 | [`@intentsolutionsio/clickhouse-pack`](https://www.npmjs.com/package/@intentsolutionsio/clickhouse-pack) | 283 |
+| 4 | [`@intentsolutionsio/notion-pack`](https://www.npmjs.com/package/@intentsolutionsio/notion-pack) | 272 |
+| 5 | [`@intentsolutionsio/skill-creator`](https://www.npmjs.com/package/@intentsolutionsio/skill-creator) | 266 |
+| 6 | [`@intentsolutionsio/groq-pack`](https://www.npmjs.com/package/@intentsolutionsio/groq-pack) | 257 |
+| 7 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 230 |
+| 8 | [`@intentsolutionsio/freshie-inventory-manager`](https://www.npmjs.com/package/@intentsolutionsio/freshie-inventory-manager) | 217 |
+| 9 | [`@intentsolutionsio/supabase-pack`](https://www.npmjs.com/package/@intentsolutionsio/supabase-pack) | 209 |
+| 10 | [`@intentsolutionsio/klaviyo-pack`](https://www.npmjs.com/package/@intentsolutionsio/klaviyo-pack) | 192 |
 
-<sub>Last refreshed 2026-08-05T03:55:27.830Z.</sub>
+<sub>Last refreshed 2026-08-06T04:03:48.851Z.</sub>
 
 <!-- NPM-STATS:END -->
 
