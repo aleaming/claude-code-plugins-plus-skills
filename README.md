@@ -62,31 +62,31 @@ ccpi update                     # Pull latest versions
 
 ### 📦 Live npm Downloads
 
-Across **317 published packages** in the 
+Across **313 published packages** in the 
 [claude-code-plugins](https://www.npmjs.com/~jeremylongshore) namespace. Updated daily by GitHub Actions.
 
 | Window | Downloads |
 |--------|----------:|
-| Last 24 hours | 257 |
-| Last 7 days | 2,935 |
-| Last 30 days | 10,899 |
+| Last 24 hours | 212 |
+| Last 7 days | 2,428 |
+| Last 30 days | 9,525 |
 
 **Top 10 by last 30 days:**
 
 | # | Package | Last 30d |
 |---|---------|---------:|
-| 1 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 735 |
-| 2 | [`@intentsolutionsio/groq-pack`](https://www.npmjs.com/package/@intentsolutionsio/groq-pack) | 432 |
+| 1 | [`@intentsolutionsio/openrouter-pack`](https://www.npmjs.com/package/@intentsolutionsio/openrouter-pack) | 565 |
+| 2 | [`@intentsolutionsio/groq-pack`](https://www.npmjs.com/package/@intentsolutionsio/groq-pack) | 336 |
 | 3 | [`@intentsolutionsio/databricks-pack`](https://www.npmjs.com/package/@intentsolutionsio/databricks-pack) | 168 |
 | 4 | [`@intentsolutionsio/langchain-py-pack`](https://www.npmjs.com/package/@intentsolutionsio/langchain-py-pack) | 154 |
-| 5 | [`@intentsolutionsio/mistral-pack`](https://www.npmjs.com/package/@intentsolutionsio/mistral-pack) | 154 |
-| 6 | [`@intentsolutionsio/neural-network-builder`](https://www.npmjs.com/package/@intentsolutionsio/neural-network-builder) | 141 |
-| 7 | [`@intentsolutionsio/penetration-tester`](https://www.npmjs.com/package/@intentsolutionsio/penetration-tester) | 117 |
-| 8 | [`@intentsolutionsio/elevenlabs-pack`](https://www.npmjs.com/package/@intentsolutionsio/elevenlabs-pack) | 114 |
-| 9 | [`@intentsolutionsio/clickhouse-pack`](https://www.npmjs.com/package/@intentsolutionsio/clickhouse-pack) | 106 |
-| 10 | [`@intentsolutionsio/klingai-pack`](https://www.npmjs.com/package/@intentsolutionsio/klingai-pack) | 106 |
+| 5 | [`@intentsolutionsio/neural-network-builder`](https://www.npmjs.com/package/@intentsolutionsio/neural-network-builder) | 143 |
+| 6 | [`@intentsolutionsio/intercom-pack`](https://www.npmjs.com/package/@intentsolutionsio/intercom-pack) | 107 |
+| 7 | [`@intentsolutionsio/claude-pack`](https://www.npmjs.com/package/@intentsolutionsio/claude-pack) | 98 |
+| 8 | [`@intentsolutionsio/jeremy-vertex-engine`](https://www.npmjs.com/package/@intentsolutionsio/jeremy-vertex-engine) | 93 |
+| 9 | [`@intentsolutionsio/hubspot-pack`](https://www.npmjs.com/package/@intentsolutionsio/hubspot-pack) | 72 |
+| 10 | [`@intentsolutionsio/notion-pack`](https://www.npmjs.com/package/@intentsolutionsio/notion-pack) | 72 |
 
-<sub>Last refreshed 2026-09-19T05:02:09.563Z.</sub>
+<sub>Last refreshed 2026-09-20T05:20:42.089Z.</sub>
 
 <!-- NPM-STATS:END -->
 
